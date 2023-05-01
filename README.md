@@ -48,7 +48,7 @@
 
 #### Linux系统
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51-20230501144214829-20230501151203895.png" style='float:left;'/>
+<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
 
 - [Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
 - 1991年底，Linus Torvalds公开了linux内核源码0.02版；1993年，Linux1.0版发行
