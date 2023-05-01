@@ -40,14 +40,19 @@
 
 #### Linux发展史
 
-<div style="left"><a href="https://linuxhistory.hdert.com/"><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Ken_Thompson_and_Dennis_Ritchie--1973.6b227a0e.webp" style="zoom:135%;" /></a><p style="color:#A8A8A8" front=1>肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) </p></div>
+#### <a href="https://linuxhistory.hdert.com/"><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-29-12.png" style="zoom:80%;" align="right" /></a>
 
 - UNIX:开源且免费理念；被收购，商业系统
   - Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由 **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) ** 等人于1970 年代在贝尔实验室研究中心开始开发。
-  
   - 1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
-
-<div style="left: ;"><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linus-torvalds-linux-kernel-arm.jpeg" alt="linus-torvalds-linux-kernel-arm" style="zoom:45%;" /><p style="color:#A8A8A8">林纳斯·本纳第克特·托瓦兹 (Linus Torvalds)</p></div> 
+  
+  
+  
+  
+  
+  
+  
+  <a href=""><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style="zoom:80%;" align="right" /></a>
 
 - Linux：开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
   - 1991年底，Linus Torvalds公开了linux内核源码0.02版；1993年，Linux1.0版发行
