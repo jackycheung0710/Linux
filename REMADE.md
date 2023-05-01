@@ -2033,12 +2033,12 @@ home/jack/.bash_history
 #### Linux常用分区格式
 
 - MBR分区格式：比较古老的分区格式，分为主分区与扩展分区，最大支持2.2T以内磁盘容量
-- GPT分区格式：可划分128个主分区，最大支持128EB磁盘容量（1EB=1024PB，1PB=1024TB）
+- GPT分区格式：可划分128个主分区，最大支持18EB磁盘容量（1EB=1024PB，1PB=1024TB）
 
 | 分区方式 | 位数 | 分区表大小 | 支持分区个数                      | 单个分区支持大小 |
 | -------- | ---- | ---------- | --------------------------------- | ---------------- |
 | MBR      | 32   | 64         | 主分区4个（3个主分区+1个扩展分区) | 2.2TB            |
-| GPT      | 64   | 128        | 128个主分区                       | 128EB            |
+| GPT      | 64   | 128        | 128个主分区                       | 18EB             |
 
 #### 文件系统类型详解
 
@@ -2676,8 +2676,191 @@ tmpfs                     tmpfs     181M     0  181M    0% /run/user/0
 - 在执行删除操作时，首先删除LV逻辑卷，在删除VG卷组，最后删除PV物理卷
 - 删除命令：lvremove 
 
+```shell
+# 查看逻辑卷的信息
+[root@Canvs ~]# lsblk -l /dev/dataVG/dataLV 
+NAME          MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+dataVG-dataLV 253:2    0  29G  0 lvm  /data
+[root@Canvs ~]# df -Th /data
+文件系统                  类型  容量  已用  可用 已用% 挂载点
+/dev/mapper/dataVG-dataLV xfs    29G  240M   29G    1% /data
+# 卸载逻辑卷挂载
+[root@Canvs ~]# umount /data
+[root@Canvs ~]# lsblk -l /dev/dataVG/dataLV 
+NAME          MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+dataVG-dataLV 253:2    0  29G  0 lvm  
+# 删除逻辑卷
+[root@Canvs ~]# lvremove /dev/dataVG/dataLV 
+Do you really want to remove active logical volume dataVG/dataLV? [y/n]: y
+  Logical volume "dataLV" successfully removed
+[root@Canvs ~]# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root rhel -wi-ao---- <17.00g                                                    
+  swap rhel -wi-ao----   2.00g                                                    
+[root@Canvs ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree  
+  dataVG   3   0   0 wz--n- <29.99g <29.99g
+  rhel     1   2   0 wz--n- <19.00g      0 
+# 删除卷组
+[root@Canvs ~]# vgremove /dev/dataVG
+  Volume group "dataVG" successfully removed
+  
+[root@Canvs ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree  
+  dataVG   3   0   0 wz--n- <29.99g <29.99g
+  rhel     1   2   0 wz--n- <19.00g      0 
+[root@Canvs ~]# vgremove /dev/dataVG
+  Volume group "dataVG" successfully removed
+[root@Canvs ~]# vgs
+  VG   #PV #LV #SN Attr   VSize   VFree
+  rhel   1   2   0 wz--n- <19.00g    0 
+[root@Canvs ~]# lsblk -l
+NAME      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sr0        11:0    1  6.6G  0 rom  
+rhel-root 253:0    0   17G  0 lvm  /
+rhel-swap 253:1    0    2G  0 lvm  [SWAP]
+nvme0n1   259:0    0   20G  0 disk 
+nvme0n1p1 259:1    0    1G  0 part /boot
+nvme0n1p2 259:2    0   19G  0 part 
+nvme0n2   259:3    0   25G  0 disk 
+nvme0n2p1 259:4    0   10G  0 part /test
+nvme0n2p2 259:5    0   10G  0 part 
+nvme0n3   259:6    0   20G  0 disk 
+nvme0n3p1 259:7    0   10G  0 part 
+nvme0n3p2 259:8    0   10G  0 part 
+```
+
+#### 根分区扩容
+
+- 1、查看/分区卷组和逻辑卷信息
+
+```shell
+[root@Canvs ~]# df -Th /
+文件系统              类型  容量  已用  可用 已用% 挂载点
+/dev/mapper/rhel-root xfs    17G  1.5G   16G    9% /
+[root@Canvs ~]# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root rhel -wi-ao---- <17.00g                                                    
+  swap rhel -wi-ao----   2.00g              
+[root@Canvs ~]# vgs
+  VG   #PV #LV #SN Attr   VSize   VFree
+  rhel   1   2   0 wz--n- <19.00g    0 
+```
+
+- 2、扩容/分区卷组
+
+```shell
+[root@Canvs ~]# vgextend rhel /dev/nvme0n2p2 
+  Volume group "rhel" successfully extended
+[root@Canvs ~]# vgs
+  VG   #PV #LV #SN Attr   VSize  VFree  
+  rhel   2   2   0 wz--n- 28.99g <10.00g
+```
+
+- 3、扩容/分区逻辑卷
+
+```shell
+[root@Canvs ~]# lvextend -L +9G /dev/rhel/root 
+  Size of logical volume rhel/root changed from <17.00 GiB (4351 extents) to <26.00 GiB (6655 extents).
+  Logical volume rhel/root successfully resized.
+[root@Canvs ~]# lvs
+  LV   VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root rhel -wi-ao---- <26.00g                                                    
+  swap rhel -wi-ao----   2.00g              
+```
+
+- 4、扩容文件系统
+
+```shell
+[root@Canvs ~]# xfs_growfs /
+meta-data=/dev/mapper/rhel-root  isize=512    agcount=4, agsize=1113856 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=4455424, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 4455424 to 6814720
+[root@Canvs ~]# df -Th /
+文件系统              类型  容量  已用  可用 已用% 挂载点
+/dev/mapper/rhel-root xfs    26G  1.6G   25G    7% /
+```
+
 #### lvreduce逻辑卷的缩减
 
 - 命令lvreduce
 - 不允许连接缩减
 - 先缩减文件系统空间，在缩减逻辑卷的空间
+
+#### RAID磁盘阵列
+
+- RAID独立磁盘冗余阵列，简称为【磁盘阵列】
+- RAID可通过技术（软件/硬件）将多个独立的磁盘整合成一个巨大容量大逻辑磁盘使用
+- RAID可以提高数据I/O（读写）速度，和冗余数据的功能
+
+
+
+
+
+
+
+**RAID磁盘阵列**
+
+RAID即独立磁盘冗余阵列，简称为【磁盘阵列】，其实就是用多个独立的磁盘组成在一起形成一个大的磁盘系统，从而实现比单块磁盘更好的存储性能和跟高的可靠性。
+
+#### RAID常见方案：
+
+- RAID0
+  - RAID0是一种非常简单的方式，它将多块磁盘组合在一起形成一个大容量的存储。当我们要写数据的时候，会将数据分为N份，以独立的方式实现N块磁盘的读写，那么这N份数据会同时并发的写到磁盘中，因此执行性能非常的高。RAID0 的读写性能理论上是单块磁盘的N倍（仅限理论，因为实际中磁盘的寻址时间也是性能占用的大头）
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid0.webp)
+
+
+
+- RAID1
+  - RAID1 是磁盘阵列中单位成本最高的一种方式。因为它的原理是在往磁盘写数据的时候，将同一份数据无差别的写两份到磁盘，分别写到工作磁盘和镜像磁盘，那么它的实际空间使用率只有50%了，两块磁盘当做一块用，这是一种比较昂贵的方案。
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid1.jpeg)
+
+- RAID3
+
+  - RAID3的方式是：将数据按照RAID0的形式，分成多份同时写入多块磁盘，但是还会另外再留出一块磁盘用于写「奇偶校验码」。例如总共有N块磁盘，那么就会让其中额度N-1块用来并发的写数据，第N块磁盘用记录校验码数据。一旦某一块磁盘坏掉了，就可以利用其它的N-1块磁盘去恢复数据。
+  - 由于第N块磁盘是校验码磁盘，因此有任何数据的写入都会要去更新这块磁盘，导致这块磁盘的读写是最频繁的，也就非常的容易损坏。
+
+- RAID5
+
+  - RAID5是目前用的最多的一种方式。因为 RAID5 是一种将 存储性能、数据安全、存储成本 兼顾的一种方案。RAID5的方式可以说是对RAID3进行了改进。
+
+  - RAID5模式中，不再需要用单独的磁盘写校验码了。它把校验码信息分布到各个磁盘上。例如，总共有N块磁盘，那么会将要写入的数据分成N份，并发的写入到N块磁盘中，同时还将数据的校验码信息也写入到这N块磁盘中（数据与对应的校验码信息必须得分开存储在不同的磁盘上）。一旦某一块磁盘损坏了，就可以用剩下的数据和对应的奇偶校验码信息去恢复损坏的数据。
+  - RAID5校验位算法原理：P = D1 xor D2 xor D3 … xor Dn （D1,D2,D3 … Dn为数据块，P为校验，xor为异或运算）
+  - RAID5的方式，最少需要三块磁盘来组建磁盘阵列，允许最多同时坏一块磁盘。如果有两块磁盘同时损坏了，那数据就无法恢复了。
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid5.png)
+
+
+
+- RAID6
+  - RAID6除了每块磁盘上都有同级数据XOR校验区以外，还有针对每个数据块的XOR校验区，这样的话，相当于每个数据块有两个校验保护措施，因此数据的冗余性更高了。可以在有两块磁盘同时损坏的情况下，也能保障数据可恢复。
+
+- RAID10
+  - RAID10其实就是RAID1与RAID0的一个合体。
+  - RAID10兼备了RAID1和RAID0的有优点。首先基于RAID1模式将磁盘分为2份，当要写入数据的时候，将所有的数据在两份磁盘上同时写入，相当于写了双份数据，起到了数据保障的作用。且在每一份磁盘上又会基于RAID0技术讲数据分为N份并发的读写，这样也保障了数据的效率。
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid10.webp)
+
+
+
+- **RAID0、RAID1、RAID5、RAID6、RAID10 的几个特征：**
+
+|     特性     |   RAID0    |        RAID1         |         RAID5          |                        RAID6                         |               RAID10               |
+| :----------: | :--------: | :------------------: | :--------------------: | :--------------------------------------------------: | :--------------------------------: |
+| 最小驱动器数 |     2      |          2           |           3            |                          4                           |                 4                  |
+|    容错率    |            |       单驱动器       |        单驱动器        |                      两个驱动器                      |    每个子阵列最多有1块硬盘故障     |
+|    读性能    |     高     |         媒介         |           低           |                          底                          |                 底                 |
+|    写性能    |     高     |         媒介         |           低           |                          底                          |                媒介                |
+|    利用率    |    100%    |         50%          |       67% - 94%        |                      50% - 88%                       |                50%                 |
+|   典型应用   | 高端工作站 | 操作系统，事务数据库 | 数据仓库，网络服务归档 | 数据归档、备份到磁盘、高可用性解决方案、大容量服务器 | 快速数据库，文件服务器，应用服务器 |
+
