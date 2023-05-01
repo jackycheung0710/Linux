@@ -52,9 +52,7 @@
 
 <img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51-20230501144214829.png" alt="Snipaste_2023-05-01_13-30-51"  align="left"/>
 
-
-
-**Linux发行版本**
+#### Linux发行版本
 
 ![2132px-Unix_history-simple.svg](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/2132px-Unix_history-simple.svg.png)
 
