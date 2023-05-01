@@ -48,12 +48,8 @@
   
   
   
+  <img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51-20230501142528916.png" align="left" />
   
-  
-  
-  
-  <img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style="zoom:80%;" align="left" />
-
 - Linux：开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
   - 1991年底，Linus Torvalds公开了linux内核源码0.02版；1993年，Linux1.0版发行
   - GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
