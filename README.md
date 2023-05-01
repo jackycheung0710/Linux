@@ -44,17 +44,12 @@
 
 - UNIX:开源且免费理念；被收购，商业系统
   - Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由 **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) ** 等人于1970 年代在贝尔实验室研究中心开始开发。
+  
   - 1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
   
+    
   
-  
-  
-  
-  
-  
-  
-
-  <a href=""><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style="zoom:80%;" align="right" /></a>
+  <a href=""><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style="zoom:60%;" align="right" /></a>
   
 - Linux：开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
   - 1991年底，Linus Torvalds公开了linux内核源码0.02版；1993年，Linux1.0版发行
