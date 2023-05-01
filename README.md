@@ -40,7 +40,7 @@
 
 #### Linux发展史
 
-#### <a href="https://linuxhistory.hdert.com/"><img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-29-12.png" style="zoom:80%;" align="right" /></a>
+<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" align="left" />
 
 - UNIX:开源且免费理念；被收购，商业系统
   - Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由 **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) ** 等人于1970 年代在贝尔实验室研究中心开始开发。
