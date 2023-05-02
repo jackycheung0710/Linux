@@ -51,8 +51,12 @@
 <img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
 
 - [Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
-- 1991年底，Linus Torvalds公开了linux内核源码0.02版；1993年，Linux1.0版发行
 - GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
+- 1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
+
+<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/%E6%88%AA%E5%B1%8F2023-05-02%2018.39.03.png" alt="截屏2023-05-02 18.39.03" style="zoom:120%;" />
+
+> Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
 
 #### Linux发行版本
 
@@ -2605,6 +2609,8 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 
 #### vgextend扩展卷组
 
+- 卷组的空间来源于物理分区，当卷组没有足够空间提供给逻辑卷时，须扩容卷组
+
 - 命令格式：vgextend  卷组名 设备名...
 
 ```shell
@@ -2623,7 +2629,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 - 命令格式：lvextend  [-选项...] 逻辑卷路径
 - 常用参数：
   - -L 指定逻辑卷的大小
-    - +10G   #表示添加10G大小
+    - +10G   #表示添加10G大小「K，M，G」
 
 ```shell
 [root@Canvs /]# lvextend -L +10G /dev/dataVG/dataLV 
@@ -2792,7 +2798,7 @@ data blocks changed from 4455424 to 6814720
 #### lvreduce逻辑卷的缩减
 
 - 命令lvreduce
-- 不允许连接缩减
+- 不允许联机缩减
 - 先缩减文件系统空间，在缩减逻辑卷的空间
 
 #### RAID磁盘阵列
@@ -2806,14 +2812,14 @@ data blocks changed from 4455424 to 6814720
 - RAID0
   - RAID0是一种非常简单的方式，它将多块磁盘组合在一起形成一个大容量的存储。当我们要写数据的时候，会将数据分为N份，以独立的方式实现N块磁盘的读写，那么这N份数据会同时并发的写到磁盘中，因此执行性能非常的高。RAID0 的读写性能理论上是单块磁盘的N倍（仅限理论，因为实际中磁盘的寻址时间也是性能占用的大头）
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid0.webp)
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-0-1.jpeg)
 
 
 
 - RAID1
   - RAID1 是磁盘阵列中单位成本最高的一种方式。因为它的原理是在往磁盘写数据的时候，将同一份数据无差别的写两份到磁盘，分别写到工作磁盘和镜像磁盘，那么它的实际空间使用率只有50%了，两块磁盘当做一块用，这是一种比较昂贵的方案。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid1.jpeg)
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-1-1.jpeg)
 
 - RAID3
 
@@ -2828,7 +2834,7 @@ data blocks changed from 4455424 to 6814720
   - RAID5校验位算法原理：P = D1 xor D2 xor D3 … xor Dn （D1,D2,D3 … Dn为数据块，P为校验，xor为异或运算）
   - RAID5的方式，最少需要三块磁盘来组建磁盘阵列，允许最多同时坏一块磁盘。如果有两块磁盘同时损坏了，那数据就无法恢复了。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid5.png)
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-5-1.jpeg)
 
 
 
@@ -2839,7 +2845,7 @@ data blocks changed from 4455424 to 6814720
   - RAID10其实就是RAID1与RAID0的一个合体。
   - RAID10兼备了RAID1和RAID0的有优点。首先基于RAID1模式将磁盘分为2份，当要写入数据的时候，将所有的数据在两份磁盘上同时写入，相当于写了双份数据，起到了数据保障的作用。且在每一份磁盘上又会基于RAID0技术讲数据分为N份并发的读写，这样也保障了数据的效率。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/raid10.webp)
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-10-2.jpeg)
 
 
 
@@ -2862,3 +2868,815 @@ data blocks changed from 4455424 to 6814720
 - 硬RAID比软RAID更加安全稳定，RAID卡带有缓存功能可实现数据自恢复。
 
 > [**华为2288H-V5服务器做raid的详细步骤**](https://blog.csdn.net/qq_50263172/article/details/114539789)
+
+#### 进程管理
+
+- 程序：用计算机语言编写的命令序列集合，用来实现特定的目标或解决的问题
+- 进程：正在运行中的程序叫进程，进程是有生命周期的，进程有自己的独立内存空间，每启动一个进程，系统就会为它分配内存空间并分配一个PID号，每一个进程都会对应一个父进程，而父进程就可以复制多个子进程，每种进程都有两种方式存在，前台与后台，一般进程都是以后台方式运行
+- 线程：线程也被称为轻量级进程，被包含在进程中，是进程的一个子集，是进程中的实际运作单位，一个进程中可以并发多个线程，每条线程并行执行不同的任务，每个线程都是独立的，线程之间共享进程的内存空间，在多线程的程序中，由于线程很**轻**，故线程的切换非常迅速且开销小（在同一进程中）
+
+#### 查看进程树
+
+- pstree以树状结构显示进程信息，包括进程之间的关系
+- 命令格式：pstree [选项...] [参数....]
+- 常用选项：
+  - -p  显示进程PID
+  - -a  显示完整的命令行
+  - -u  列出每个进程所属账号名称
+
+- ps aux：unix格式静态查看系统进程，查看系统所有进程信息
+  - a 显示当前终端所有进程
+  - u 以用户格式输出
+  - x 当前用户在所有终端下的进程
+
+- ps -ef：Linux格式静态查看系统进程，查看系统所有进程信息
+  - -e  显示系统所有进程
+  - -l  以长格式输出信息
+  - -f  显示最完整的进程信息
+
+```shell
+#以树状结构显示进程信息
+[root@Canvs ~]# pstree -p
+systemd(1)─┬─NetworkManager(1020)─┬─{NetworkManager}(1027)
+           │                      └─{NetworkManager}(1030)
+           ├─VGAuthService(949)
+           ├─agetty(1054)
+           ├─auditd(923)───{auditd}(924)
+           ├─crond(1047)
+           ├─dbus-daemon(947)───{dbus-daemon}(953)
+           ├─firewalld(976)───{firewalld}(1460)
+           ├─polkitd(951)─┬─{polkitd}(957)
+           │              ├─{polkitd}(958)
+           │              ├─{polkitd}(959)
+           │              ├─{polkitd}(960)
+           │              ├─{polkitd}(961)
+           │              ├─{polkitd}(962)
+           │              ├─{polkitd}(963)
+           │              └─{polkitd}(973)
+           ├─rhsmcertd(1038)
+           ├─rngd(945)───{rngd}(956)
+           ├─rsyslogd(1473)─┬─{rsyslogd}(1750)
+           │                └─{rsyslogd}(1752)
+           ├─sshd(1035)───sshd(1707)───sshd(1722)───bash(1723)───pstree(2296)
+           ├─sssd(946)─┬─sssd_be(968)
+           │           └─sssd_nss(972)
+           ├─systemd(1712)───(sd-pam)(1716)
+           ├─systemd-journal(774)
+           ├─systemd-logind(1003)
+           ├─systemd-udevd(807)
+           ├─tuned(1034)─┬─{tuned}(1295)
+           │             ├─{tuned}(1299)
+           │             └─{tuned}(1332)
+           └─vmtoolsd(950)───{vmtoolsd}(977)
+
+# 查看Linux进程信息
+[root@Canvs ~]# ps aux
+USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root          1  0.4  0.7 178376 13240 ?        Ss   14:47   0:00 /usr/lib/systemd/systemd --switc
+# 每个子段解释：
+user：进程属于那个用户
+PID：进程PID号
+%CPU：进程占用CPU资源百分比
+%MEM：进程占用物理内存百分比
+VSZ：进程使用掉的虚拟内存量（单位：kb）
+RSS：进程占用固定内存量（单位：kb）
+TTY：进程在那个终端运行，如果内核直接掉用则显示"?"，tty1-tty6表示本机终端登录的用户进程，，pts/0-255则表示原创终端登录用户的进程
+STAT：进程状态：R（Running）运行，S（Sleep）休眠，s包含子进程，T（stop）停止，Z（Zombie）僵尸，+后台进程
+START：进程启动时间
+TIME：占用CPU运算时间
+COMMAND：产生进程的命令
+
+#查看Linux进程信息
+[root@Canvs ~]# ps -ef
+UID         PID   PPID  C STIME TTY          TIME CMD
+root          1      0  0 15:30 ?        00:00:01 /usr/lib/systemd/systemd --switched-root --syste
+#PPID是当前进程的父进程
+```
+
+#### top查看系统健康状态
+
+- top命令用于查看系统运行性能及状态信息
+- 命令格式：top [选项...]
+- 常用选项：-d  指定刷新秒数，默认为3秒刷新一次
+- 交互界面显示指令：
+  - 键盘上下键翻行
+  - h  获取交互模式帮助
+  - P  按照CPU使用资源排序
+  - M 按照内存使用资源排序
+  - q 退出
+- 查找僵尸进程与其父进程
+  - 命令：ps -A -o stat,ppid,pid,cmd | grep "^Zz"
+  - 命令解释：
+    - -A 列出所有进程
+    - -o 自定义输出字段，设定显示字段为 stat（状态）、ppid（父进程id）、pid（进程id）、cmd（命令）这四个参数，因为状态为Z或者z的进程成为僵尸进程
+  - 杀死僵尸进程
+    - kill -9 + 父进程号
+
+```shell
+[root@Canvs ~]# top
+top - 15:30:32 up 13 min,  1 user,  load average: 0.11, 0.03, 0.01
+Tasks: 227 total,   3 running, 224 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   1806.1 total,   1355.3 free,    240.4 used,    210.3 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   1410.6 avail Mem 
+   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                    1 root      20   0   96452  13184   8528 S   0.0   0.7   0:00.86 systemd        
+
+#第一行top字段
+15:30:32：当前系统时间
+up 13 min,：系统运行时间（up 10 day，12:13 代表系统运行10天12小时13分钟）
+1 user：当前系统登录终端数量
+load average: 0.11, 0.03, 0.01：CPU 1分钟、5分钟、15分钟之前平均负载量，根据CPU核数判断系统CPU负载量1核CPU若高于1代表负载过高，2核CPU若高于2代表负载过高。
+#第二行Tasks字段
+227 total,：当前系统中进程的总数量
+3 running,：正在运行的进程数量
+224 sleeping,：正在睡眠的进程数量
+0 stopped，：正在停止的进程数量
+ 0 zombie：僵尸进程数量，僵尸进程是当自己吃比父进程先结束，而父进程又没有回收子进程，释放子进程占用的资源，此时子进程与其父进程成为一个僵尸进程。
+#第三行%CPU字段
+0.0 us,：用户占用的CPU百分比
+0.0 sy,：系统占用的CPU百分比
+0.0 ni,：改变通过优先级的用户进程占用的CPU百分比
+100.0 id,：空闲的CPU百分比
+0.0 wa,：等待输入/输出的进程的占用CPU百分比
+0.0 hi,：硬中断请求服务占用的CPU百分比
+0.0 si,：软中断请求服务占用的CPU百分比
+0.0 st：虚拟时间百分比，当有虚拟机时，虚拟CPU等待实际CPU的时间百分比
+#第四行kib MEM字段
+1806.1 total：物理内存总量单位KB
+1355.3 free,：空闲内存总量单位KB
+240.4 used：已使用的内存总量单位KB
+210.3 buff/cache：块设备与普通文件占用的缓存数量
+#第五行MiB Swap字段
+2048.0 total：交换空间总量单位KB
+2048.0 free：交换空间空闲总量单位KB
+0.0 used：已使用的交换空间总量单位KB
+1410.6 avail Mem ：可用于进程下一次分配的物理内存数量
+#第六行字段
+PID：进程PID号
+USER：进程所有者的用户名
+PR：进程优先级执行顺序，越小越优先被执行
+NI：负值表示高级优先级，正值表示低优先级，越小优先级越高
+VIRT：进程使用的虚拟内存总量，单位KB
+RES：进程使用的物理内存大小，单位KB
+SHR：共享内存大小，单位KB
+S：进程状态，D=不可中断的睡眠状态 R=运行 T=跟踪/停止 Z=僵尸进程
+%CPU：进程使用的CPU百分比
+%MEM：进程使用的物理内存百分比
+TIME+=：进程使用的CPU时间总计，单位1/100秒
+COMMAND：命令名/命令行
+```
+
+#### pgrep检索进程
+
+- pgrep通过匹配其程序名，找到匹配的进程
+- 命令格式：pgrep [选项...] [参数...]
+- 常用选项：
+  - -l  输出进程名与PID
+  - -U 检索指定用户进程
+  - -t  检索指定终端进程
+  - -x 精准匹配完整进程名
+
+```shell
+# 插看用户endless所有进程
+[root@Canvs ~]# pgrep -lU endless
+2377 systemd
+2382 (sd-pam)
+2388 sshd
+2389 bash
+2437 vim
+#查看vim所有进程id
+[root@Canvs ~]# pgrep -x vim
+2437
+```
+
+#### 进程的前后台调度
+
+- &   #将进程放入后台运行
+- jobs -l  #查看后台进程列表
+- fg 进程编号  # 将后台进程恢复至前台运行
+- ctrl + z   #刮起当前进程并放入后台
+- bg 进程编号   #激活后台被挂起进程
+
+```shell
+[root@Canvs ~]# sleep 3m &
+[1] 2923
+[root@Canvs ~]# jobs -l
+[1]+  2923 运行中               sleep 3m &
+[root@Canvs ~]# sleep 4m
+^Z
+[2]+  已停止               sleep 4m
+[root@Canvs ~]# bg 2
+[2]+ sleep 4m &
+[root@Canvs ~]# jobs -l
+[1]-  2923 运行中               sleep 3m &
+[2]+  2924 运行中               sleep 4m &
+```
+
+#### kill杀死进程
+
+- ctrl+c组合键结束前台运行的进程
+- kill [选项...] PID
+  - 常用选项：-l  列出可用进程信号
+  - 常用信号：-1重启进程，-9强制杀死进程，-15正常杀死进程（默认信号无需指定）
+- Killall -9 进程名：强制杀死进程
+- killall -9 -u 用户名：强制杀死该用户所有进程
+- pkill -9 进程名：强制杀死进程
+  - 常用选项：-t 终端号   踢出终端用户
+
+```shell
+[root@Canvs ~]# sleep 2m
+^C
+[root@Canvs ~]# kill -l
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+ 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+11) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+38) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+63) SIGRTMAX-1  64) SIGRTMAX
+[root@Canvs ~]# kill -15 2923
+[root@Canvs ~]# jobs -l
+[1]-  2923 已终止               sleep 3m
+[2]+  2924 运行中               sleep 4m &
+
+[root@Canvs ~]# jobs -l
+[1]   2935 已杀死               sleep 5m
+[2]-  2936 运行中               sleep 7m &
+[3]+  2937 运行中               sleep 9m &
+[root@Canvs ~]# killall -9 sleep
+[2]-  已杀死               sleep 7m
+[3]+  已杀死               sleep 9m
+[root@Canvs ~]# jobs -l
+[root@Canvs ~]# killall -9 -u endless
+```
+
+#### 用户登录分析
+
+- users who w  #查看以登录的用户信息（详细度不同）
+- last：显示登录成功的用户信息
+- lastb：显示登录失败的用户信息
+
+```shell
+[root@Canvs ~]# users
+endless root
+[root@Canvs ~]# who
+root     pts/0        2023-05-02 15:30 (192.168.49.1)
+endless  pts/1        2023-05-02 17:13 (192.168.49.1)
+#第一列：以登录系统的用户名
+#第二列：用户登录的终端编号
+#第三列：登录时间
+#第四列：远程登录地址
+[root@Canvs ~]# w
+ 17:13:28 up  1:43,  2 users,  load average: 0.07, 0.02, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    192.168.49.1     15:30    0.00s  0.01s  0.00s w
+endless  pts/1    192.168.49.1     17:13   12.00s  0.00s  0.00s -bash
+#第一行为top命令显示的第一行数据
+#第二行解释：
+USER：以登录的用户名
+TTY：用户登录终端编号
+FROM：登录地址
+LOGIN@：登录时间
+IDLE：用户空闲时间，这是个计时器，一旦用户执行任何操作，该计时器便会被重置
+JCPU：进程执行以后消耗的CPU时间
+WHAT：当前正在执行的任务
+# last -2查看最近2次登录系统成功的用户
+[root@Canvs ~]# last -2
+root     pts/0        192.168.49.1     Tue May  2 15:30   still logged in
+reboot   system boot  4.18.0-80.el8.x8 Tue May  2 15:30   still running
+#第一列：用户名
+#第二列：用户登录终端编号
+#第三列：登录地址
+#第四列：登录起始时间
+#第五列：登录结束时间
+#第六列：登录持续时间
+
+# 查看登录失败的用户
+[root@Canvs ~]# lastb
+root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
+root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
+root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
+```
+
+#### Linux软件包的分类
+
+- 源码包
+- 二进制包（RPM包）
+
+#### 源码包的特点
+
+- 源码包的缺点：安装过程麻烦，需要用户手动编译，需要手动解决软件包的依赖关系
+- 源码包的优点：软件源代码开放，允许用户二次开发，安装灵活，可以自定义安装路径与安装功能，卸载方便
+
+#### RPM包特点
+
+- RPM包缺点：所有功能用户无法定义，安装没有源码包灵活，不可以看到软件源代码
+- RPM包优点：由于已经提前被编译过，所以安装简单，安装速度快
+- RPM包命名规则如：vsftpd-3.0.2-25.el7.x86_64.rpm
+  - vsftpd  软件包名称
+  - 3.0.2  软件包版本，主版本.次版本.修改版本
+  - 25  布丁次数
+  - el7 适合的系统（el7表示RHEL7）
+  - x86_64  适合的CPU架构
+  - rpm  rpm包扩展名
+
+#### RPM管理软件包
+
+- RPM命令管理软件包需要手动解决软件包之间的依赖关系
+  - 树形依赖：a -- > b -->c--> d
+  - 环形依赖：a --> b --> c --> a
+  - 模块依赖：需要模块文件支持，模块查询地址：www.rpmfind.net
+- 命令格式：rpm 选项... 软件包全名
+- 常用选项：
+  - -q  仅查询软件是否安装
+  - -qa  列出所有已经安装在系统中的所有软件，可配合grep过滤指定的软件包
+  - -qi  列出软件包详细信息，包含版本与官网地址
+  - -qf  后面接文件名，查询配置文件由哪个软件包产生的
+  - -ql  列出与该软件包相关所有文件与目录的存放位置
+  - -ivh  i安装，v显示详细信息，h显示软件包安装进度
+  - -Uvh  升级安装软件包
+  - -e  卸载软件包
+  - --import  导入红帽签名
+
+```shell
+# 挂载iso镜像文件
+[root@localhost /]# mount /dev/cdrom /mnt/cdrom/
+mount: /mnt/cdrom: WARNING: device write-protected, mounted read-only.
+[root@RHCE AppStream]# ll /mnt/cdrom/
+总用量 48
+dr-xr-xr-x. 4 root root  2048 4月   4 2019 AppStream
+dr-xr-xr-x. 4 root root  2048 4月   4 2019 BaseOS
+dr-xr-xr-x. 3 root root  2048 4月   4 2019 EFI
+-r--r--r--. 1 root root  8266 3月   1 2019 EULA
+-r--r--r--. 1 root root  1455 4月   4 2019 extra_files.json
+-r--r--r--. 1 root root 18092 3月   1 2019 GPL
+dr-xr-xr-x. 3 root root  2048 4月   4 2019 images
+dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
+-r--r--r--. 1 root root   103 4月   4 2019 media.repo
+-r--r--r--. 1 root root  1669 3月   1 2019 RPM-GPG-KEY-redhat-beta
+-r--r--r--. 1 root root  5134 3月   1 2019 RPM-GPG-KEY-redhat-release
+-r--r--r--. 1 root root  1796 4月   4 2019 TRANS.TBL
+# 安装vsftpd
+[root@RHCE AppStream]# rpm -ivh Packages/vsftpd-3.0.3-28.el8.x86_64.rpm 
+警告：Packages/vsftpd-3.0.3-28.el8.x86_64.rpm: 头V3 RSA/SHA256 Signature, 密钥 ID fd431d51: NOKEY
+Verifying...                          ################################# [100%]
+准备中...                          ################################# [100%]
+正在升级/安装...
+   1:vsftpd-3.0.3-28.el8              ################################# [100%]
+# 查看软件包是否已安装
+[root@RHCE AppStream]# rpm -q vsftpd
+vsftpd-3.0.3-28.el8.x86_64
+# 查看软件包详细的信息
+[root@RHCE AppStream]# rpm -qi vsftpd
+Name        : vsftpd		#软件包名
+Version     : 3.0.3			#版本
+Release     : 28.el8		#适合安装的系统版本
+Architecture: x86_64		#适合安装的CPU架构
+Install Date: 2023年05月02日 星期二 23时20分17秒	#安装时间
+Group       : System Environment/Daemons
+Size        : 364629		#软件包大小
+License     : GPLv2 with exceptions
+Signature   : RSA/SHA256, 2018年12月15日 星期六 09时20分25秒, Key ID 199e2f91fd431d51
+Source RPM  : vsftpd-3.0.3-28.el8.src.rpm
+Build Date  : 2018年08月13日 星期一 02时49分50秒
+Build Host  : x86-vm-01.build.eng.bos.redhat.com
+Relocations : (not relocatable)
+Packager    : Red Hat, Inc. <http://bugzilla.redhat.com/bugzilla>
+Vendor      : Red Hat, Inc.
+URL         : https://security.appspot.com/vsftpd.html
+Summary     : Very Secure Ftp Daemon
+Description :		#描述信息
+vsftpd is a Very Secure FTP daemon. It was written completely from
+scratch.
+# 查看软件包自带的文件与目录安装路径
+[root@RHCE AppStream]# rpm -ql vsftpd
+/etc/logrotate.d/vsftpd
+/etc/pam.d/vsftpd
+/etc/vsftpd
+.....
+# 查询文件由哪个软件包生产
+vsftpd-3.0.3-28.el8.x86_64
+[root@RHCE AppStream]# which vim
+/usr/bin/vim
+[root@RHCE AppStream]# rpm -qf /usr/bin/vim
+vim-enhanced-8.0.1763-10.el8.x86_64
+# 卸载软件
+[root@RHCE AppStream]# rpm -e vsftpd
+[root@RHCE AppStream]# rpm -q vsftpd
+未安装软件包 vsftpd 
+```
+
+#### yum软件包管理
+
+- YUM(Yellowdog Updater Modified)：是一个基于RPM的软件包管理器，能够从指定服务器自动下载RPM包并且安装，可以处理软件之间的依赖关系，一次性安装所有依赖的软件包，无需一个个下载安装。
+- 命令格式：yum [options] [command] [package ...]
+- yum常用命令：
+  - yum repolist  列出仓库可用软件
+  - yum list 软件包名   查看系统中提供的软件包（包含未安装的软件包）
+  - yum list updates    查看系统中可供升级的软件包
+  - yum install 软件包名   #安装软件包，-y自动回答yes
+  - yum update 软件包名    #升级软件包版本
+  - yum remove 软件包名   #卸载软件包
+  - yum clean all     #清除仓库缓存
+  - yum provides 文件名   #查看文件由哪个软件包产生（主要用于查找程序文件）
+
+> yum remove卸载软件的同时会**卸载相关依赖**，导致其他程序不能正常运行；强烈建议使用rpm -e卸载软件
+
+##### 配置本地yum源
+
+- 1、挂载本地iso镜像
+
+```shell
+# 挂载iso镜像文件
+[root@localhost /]# mount /dev/cdrom /mnt/cdrom/
+mount: /mnt/cdrom: WARNING: device write-protected, mounted read-only.
+[root@RHCE AppStream]# ll /mnt/cdrom/
+总用量 48
+dr-xr-xr-x. 4 root root  2048 4月   4 2019 AppStream
+dr-xr-xr-x. 4 root root  2048 4月   4 2019 BaseOS
+dr-xr-xr-x. 3 root root  2048 4月   4 2019 EFI
+-r--r--r--. 1 root root  8266 3月   1 2019 EULA
+-r--r--r--. 1 root root  1455 4月   4 2019 extra_files.json
+-r--r--r--. 1 root root 18092 3月   1 2019 GPL
+dr-xr-xr-x. 3 root root  2048 4月   4 2019 images
+dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
+-r--r--r--. 1 root root   103 4月   4 2019 media.repo
+-r--r--r--. 1 root root  1669 3月   1 2019 RPM-GPG-KEY-redhat-beta
+-r--r--r--. 1 root root  5134 3月   1 2019 RPM-GPG-KEY-redhat-release
+-r--r--r--. 1 root root  1796 4月   4 2019 TRANS.TBL
+```
+
+
+
+- 2、创建配置repo文件
+
+~~~~shell
+[root@localhost /]# cat /etc/yum.repos.d/local.repo 
+[BaseOS]		#仓库名称，可自定义，单具有唯一性
+name=BaseOS  #仓库描述（类似于仓库解释），描述信息自定义，不具备唯一性
+baseurl=file:///cdrom/BaseOS #指定软件仓库地址，file://用于指定本地软件包存放位置
+gpgcheck=0  #软件仓库是否启动，1启动，0不启动
+enabled=1	#是否检测软件包签名，0不检测，1检测
+[AppStream]
+name=AppStream
+baseurl=file:///cdrom/AppStream
+gpgcheck=0
+enabled=1
+~~~~
+
+- 3、验证yum源
+
+~~~~shell
+[root@localhost /]# yum clean all			#清理缓存
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+12 文件已删除
+[root@localhost /]# yum repolist		#列出yum仓库
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+AppStream                                                                                                               327 MB/s | 5.3 MB     00:00    
+BaseOS                                                                                                                  297 MB/s | 2.2 MB     00:00    
+Redhat8.iso                                                                                                             0.0  B/s |   0  B     00:00    
+同步仓库 'iso' 缓存失败，忽略这个 repo。
+仓库标识                                                                 仓库名称                                                                  状态
+AppStream                                                                AppStream                                                                 4,672
+BaseOS                                                                   BaseOS                                                                    1,658
+~~~~
+
+- 4、安装软件
+
+~~~~shell
+[root@localhost /]# yum install -y net-tools
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+Redhat8.iso                                                                                                             0.0  B/s |   0  B     00:00    
+同步仓库 'iso' 缓存失败，忽略这个 repo。
+上次元数据过期检查：0:03:08 前，执行于 2023年04月25日 星期二 14时33分31秒。
+依赖关系解决。
+========================================================================================================================================================
+ 软件包                            架构                           版本                                             仓库                            大小
+========================================================================================================================================================
+Installing:
+ net-tools                         x86_64                         2.0-0.51.20160912git.el8                         BaseOS                         323 k
+
+事务概要
+========================================================================================================================================================
+安装  1 软件包
+
+总计：323 k
+安装大小：1.0 M
+下载软件包：
+运行事务检查
+事务检查成功。
+运行事务测试
+事务测试成功。
+运行事务
+  准备中      :                                                                                                                                     1/1 
+  Installing  : net-tools-2.0-0.51.20160912git.el8.x86_64                                                                                           1/1 
+  运行脚本    : net-tools-2.0-0.51.20160912git.el8.x86_64                                                                                           1/1 
+  验证        : net-tools-2.0-0.51.20160912git.el8.x86_64                                                                                           1/1 
+Installed products updated.
+
+已安装:
+  net-tools-2.0-0.51.20160912git.el8.x86_64                                                                                                             
+
+完毕！
+~~~~
+
+##### 配置阿里云yum源
+
+[**阿里软件仓库**](https://developer.aliyun.com/mirror/)
+
+[**清华大学软件仓库**](https://mirrors.tuna.tsinghua.edu.cn/centos/)
+
+> This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+>
+> 翻译为：该系统未注册到Red Hat Subscription Management。 您可以使用订阅管理器进行注册。
+>
+> 因为红帽的yum源是收费的，需要注册。就参照了一些办法，需要重新配置yum源，可以使用免费的CentOS 8的yum 源替代，实现了正常使用yum。
+
+- 1、删除redhat自带的yum包和查看系统的版本号
+
+~~~~shell
+[root@localhost yum.repos.d]# rpm -qa|grep yum|xargs rpm -e --nodeps	#删除自带的yum包
+[root@localhost yum.repos.d]# rpm -qa|grep yum
+[root@localhost yum.repos.d]# uname -a
+Linux localhost.localdomain 4.18.0-80.el8.x86_64 #1 SMP Wed Mar 13 12:02:46 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+[root@localhost yum.repos.d]# cat /etc/redhat-release 
+Red Hat Enterprise Linux release 8.0 (Ootpa)
+~~~~
+
+- 2、下载CentOS对应版本的yum包
+  - [yum-4.7.0-4.el8.noarch.rpm](https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-4.7.0-4.el8.noarch.rpm)
+  - [yum-utils-4.0.21-3.el8.noarch.rpm](https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-utils-4.0.21-3.el8.noarch.rpm)
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/mirrors_aliyun.png)
+
+~~~~shell
+[root@localhost yum.repos.d]# wget https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-4.7.0-4.el8.noarch.rpm
+[root@localhost yum.repos.d]# wget https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-utils-4.0.21-3.el8.noarch.rpm
+~~~~
+
+- 3、安装 centos yum包
+
+~~~~shell
+[root@localhost yum.repos.d]# rpm -ivh yum-4.7.0-4.el8.noarch.rpm yum-utils-4.0.21-3.el8.noarch.rpm --nodeps --force
+[root@localhost yum.repos.d]# rpm -qa |grep yum	  
+yum-utils-4.0.21-3.el8.noarch
+yum-4.7.0-4.el8.noarch
+~~~~
+
+- 4、下载安装相应版本的repo文件
+  - [epel-release-latest-8.noarch.rpm](https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm)
+
+![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/aliyun_epel.png)
+
+~~~~shell
+[root@localhost yum.repos.d]# wget https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm?spm=a2c6h.25603864.0.0.21fa59932YEBtT
+[root@localhost yum.repos.d]# rpm -ivh 'epel-release-latest-8.noarch.rpm?spm=a2c6h.25603864.0.0.21fa59932YEBtT' 
+[root@localhost yum.repos.d]# ls
+ epel-modular.repo                                                         epel.repo                   epel-testing.repo
+'epel-release-latest-8.noarch.rpm?spm=a2c6h.25603864.0.0.21fa59932YEBtT'   epel-testing-modular.repo   redhat.repo
+~~~~
+
+- 5、配置redhat.repo文件
+
+~~~shell
+[BaseOS]
+name=BaseOS
+baseurl=https://mirrors.aliyun.com/centos/$releasever/BaseOS/$basearch/os/
+gpgcheck=0
+enable=1
+[AppStream]
+name=AppStream
+baseurl=https://mirrors.aliyun.com/centos/$releasever/AppStream/$basearch/os/
+enable=1
+gpgcheck=0
+[epel]
+name=EPEL
+baseurl=https://mirrors.aliyun.com/epel/8/Everything/x86_64/
+gpgcheck=0
+~~~
+
+- 6、更新软件包缓存,生成yum仓库缓存提高软件包下载速度
+
+~~~~shell
+[root@localhost yum.repos.d]# yum makecache
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+Repository epel is listed more than once in the configuration
+Extra Packages for Enterprise Linux 8 - x86_64                                                                          173 kB/s |  14 MB     01:21    
+AppStream                                                                                                               252 kB/s | 8.4 MB     00:34    
+BaseOS                                                                                                                  210 kB/s | 4.6 MB     00:22    
+上次元数据过期检查：0:00:01 前，执行于 2023年04月25日 星期二 16时38分46秒。
+元数据缓存已建立。
+[root@localhost yum.repos.d]# yum repolist
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+Repository epel is listed more than once in the configuration
+上次元数据过期检查：0:00:19 前，执行于 2023年04月25日 星期二 16时38分46秒。
+仓库标识                                               仓库名称                                                                                    状态
+AppStream                                              AppStream                                                                                   5,596
+BaseOS                                                 BaseOS                                                                                      1,896
+*epel                                                  Extra Packages for Enterprise Linux 8 - x86_64                                              9,723
+~~~~
+
+##### 设置yum源优先级
+
+```shell
+#安装yum-priorities插件
+[root@localhost ~]# yum -y install yum-priorities
+#设置本地yum为最高优先级
+[root@localhost ~]# vim /etc/yum.repos.d/local.repo 
+[local]
+name=local_centos
+baseurl=file:///mnt
+enabled=1
+gpgcheck=0
+priority=1 #优先级为1-99之间，数字越小越优先
+```
+
+#### 源码包安装
+
+- 下载源码包
+- 安装解压包依赖
+- 解压源码包，进入源码包目录
+- 
+
+```shell
+[root@RHCE ~]# wget http://nginx.org/download/nginx-1.23.4.tar.gz
+[root@RHCE ~]# tar -xf nginx-1.23.4.tar.gz 
+[root@RHCE nginx-1.23.4]# ls
+auto  CHANGES  CHANGES.ru  conf  configure  contrib  html  LICENSE  man  README  src
+# 安装nginx依赖
+[root@RHCE nginx-1.23.4]# yum -y install gcc automake autoconf libtool make
+[root@RHCE nginx-1.23.4]# yum -y install gcc gcc-c++ pcre-devel openssl- devel zlib-devel
+#
+[root@RHCE nginx-1.23.4]# ./configure --with-ld-opt=parameters --add-dynamic-module=path
+checking for OS
+ + Linux 4.18.0-80.el8.x86_64 x86_64
+checking for C compiler ... found
+ + using GNU C compiler
+ + gcc version: 8.5.0 20210514 (Red Hat 8.5.0-4) (GCC) 
+checking for gcc -pipe switch ... found
+checking for --with-ld-opt="parameters" ... not found
+./configure: error: the invalid value in --with-ld-opt="parameters"
+[root@RHCE nginx-1.23.4]# ./configure
+checking for OS
+ + Linux 4.18.0-80.el8.x86_64 x86_64
+checking for C compiler ... found
+ + using GNU C compiler
+ .....
+ Configuration summary
+  + using system PCRE2 library
+  + OpenSSL library is not used
+  + using system zlib library
+
+  nginx path prefix: "/usr/local/nginx"
+  nginx binary file: "/usr/local/nginx/sbin/nginx"
+  nginx modules path: "/usr/local/nginx/modules"
+  nginx configuration prefix: "/usr/local/nginx/conf"
+  nginx configuration file: "/usr/local/nginx/conf/nginx.conf"
+  nginx pid file: "/usr/local/nginx/logs/nginx.pid"
+  nginx error log file: "/usr/local/nginx/logs/error.log"
+  nginx http access log file: "/usr/local/nginx/logs/access.log"
+  nginx http client request body temporary files: "client_body_temp"
+  nginx http proxy temporary files: "proxy_temp"
+  nginx http fastcgi temporary files: "fastcgi_temp"
+  nginx http uwsgi temporary files: "uwsgi_temp"
+  nginx http scgi temporary files: "scgi_temp"
+# 编译源代码  
+[root@RHCE nginx-1.23.4]# make
+.....
+sed -e "s|%%PREFIX%%|/usr/local/nginx|" \
+        -e "s|%%PID_PATH%%|/usr/local/nginx/logs/nginx.pid|" \
+        -e "s|%%CONF_PATH%%|/usr/local/nginx/conf/nginx.conf|" \
+        -e "s|%%ERROR_LOG_PATH%%|/usr/local/nginx/logs/error.log|" \
+        < man/nginx.8 > objs/nginx.8
+make[1]: 离开目录“/root/nginx-1.23.4”
+# 安装源码包
+[root@RHCE nginx-1.23.4]# make install
+make -f objs/Makefile install
+make[1]: 进入目录“/root/nginx-1.23.4”
+test -d '/usr/local/nginx' || mkdir -p '/usr/local/nginx'
+test -d '/usr/local/nginx/sbin' \
+        || mkdir -p '/usr/local/nginx/sbin'
+test ! -f '/usr/local/nginx/sbin/nginx' \
+        || mv '/usr/local/nginx/sbin/nginx' \
+                '/usr/local/nginx/sbin/nginx.old'
+cp objs/nginx '/usr/local/nginx/sbin/nginx'
+test -d '/usr/local/nginx/conf' \
+        || mkdir -p '/usr/local/nginx/conf'
+cp conf/koi-win '/usr/local/nginx/conf'
+cp conf/koi-utf '/usr/local/nginx/conf'
+cp conf/win-utf '/usr/local/nginx/conf'
+test -f '/usr/local/nginx/conf/mime.types' \
+        || cp conf/mime.types '/usr/local/nginx/conf'
+cp conf/mime.types '/usr/local/nginx/conf/mime.types.default'
+test -f '/usr/local/nginx/conf/fastcgi_params' \
+        || cp conf/fastcgi_params '/usr/local/nginx/conf'
+cp conf/fastcgi_params \
+        '/usr/local/nginx/conf/fastcgi_params.default'
+test -f '/usr/local/nginx/conf/fastcgi.conf' \
+        || cp conf/fastcgi.conf '/usr/local/nginx/conf'
+cp conf/fastcgi.conf '/usr/local/nginx/conf/fastcgi.conf.default'
+test -f '/usr/local/nginx/conf/uwsgi_params' \
+        || cp conf/uwsgi_params '/usr/local/nginx/conf'
+cp conf/uwsgi_params \
+        '/usr/local/nginx/conf/uwsgi_params.default'
+test -f '/usr/local/nginx/conf/scgi_params' \
+        || cp conf/scgi_params '/usr/local/nginx/conf'
+cp conf/scgi_params \
+        '/usr/local/nginx/conf/scgi_params.default'
+test -f '/usr/local/nginx/conf/nginx.conf' \
+        || cp conf/nginx.conf '/usr/local/nginx/conf/nginx.conf'
+cp conf/nginx.conf '/usr/local/nginx/conf/nginx.conf.default'
+test -d '/usr/local/nginx/logs' \
+        || mkdir -p '/usr/local/nginx/logs'
+test -d '/usr/local/nginx/logs' \
+        || mkdir -p '/usr/local/nginx/logs'
+test -d '/usr/local/nginx/html' \
+        || cp -R html '/usr/local/nginx'
+test -d '/usr/local/nginx/logs' \
+        || mkdir -p '/usr/local/nginx/logs'
+make[1]: 离开目录“/root/nginx-1.23.4”
+# 启动nginx服务
+[root@RHCE sbin]# ./nginx 
+# 查看nginx
+[root@RHCE sbin]# netstat -tunlp | grep nginx
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      20122/nginx: master 
+```
+
+#### netstat与ss命令
+
+- netstat命令用于显示网络状态和查看系统中启动的端口信息
+- 命令格式：
+  - netstat [-选项...]
+  - ss [-选项...]
+- 常用选项：
+  - -a 显示所有端口信息
+  - -n 以数字格式显示端口号
+  - -t 显示tcp连接的端口
+  - -u 显示udp连接的端口
+  - -l 显示服务正在监听的端口信息
+  - -p 显示监听端口的服务名
+
+```shell
+[root@RHCE sbin]# ss -anptul | grep nginx
+tcp   LISTEN  0       128                     0.0.0.0:80          0.0.0.0:*      users:(("nginx",pid=20123,fd=9),("nginx",pid=20122,fd=9))                      
+[root@RHCE sbin]# netstat -anptul | grep nginx
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      20122/nginx: master 
+```
+
+#### systemd管理服务
+
+systemd是内核加载的第一个进程（PID=1），systemd负责整个Linux系统的运行与服务控制，systemd为用户提供systemctl命令来管理RPM包的服务；如：启动服务、关闭服务、查看服务状态、服务开机启动
+
+服务的启动有两个方式，一是系统开机时随着系统的启动而启动，二是系统启动以后用户手动启动服务
+
+- 常用命令：
+  - systemctl start 服务名   #启动服务
+  - systemctl stop 服务名   #停止服务
+  - systemctl restart 服务名   #重启服务
+  - systemctl enable 服务名  #设置服务开机启动
+  - systemctl disable 服务名   #设置服务不开机启动
+  - systemctl is-enabled 服务名  #查看服务是否被设置开机启动
+  - systemctl status 服务名  #查看服务状态
+
+```shell
+[root@RHCE Packages]# systemctl start vsftpd
+[root@RHCE Packages]# systemctl status vsftpd
+● vsftpd.service - Vsftpd ftp daemon
+   Loaded: loaded (/usr/lib/systemd/system/vsftpd.service; disabled; vendor preset: disabled)
+   Active: active (running) since Wed 2023-05-03 00:50:20 CST; 9s ago
+  Process: 20331 ExecStart=/usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf (code=exited, status=0/SUCCESS)
+ Main PID: 20332 (vsftpd)
+    Tasks: 1 (limit: 11368)
+   Memory: 556.0K
+   CGroup: /system.slice/vsftpd.service
+           └─20332 /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf
+
+5月 03 00:50:20 RHCE systemd[1]: Starting Vsftpd ftp daemon...
+5月 03 00:50:20 RHCE systemd[1]: Started Vsftpd ftp daemon.
+[root@RHCE Packages]# systemctl stop vsftpd
+
+[root@RHCE Packages]# systemctl start vsftpd
+[root@RHCE Packages]# systemctl enable vsftpd
+Created symlink /etc/systemd/system/multi-user.target.wants/vsftpd.service → /usr/lib/systemd/system/vsftpd.service.
+[root@RHCE Packages]# systemctl is-enabled vsftpd
+enabled
+[root@RHCE ~]# systemctl disable vsftpd
+Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
+```
+
