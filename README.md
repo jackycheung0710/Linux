@@ -3510,9 +3510,8 @@ priority=1 #优先级为1-99之间，数字越小越优先
 #### 源码包安装
 
 - 下载源码包
-- 安装解压包依赖
-- 解压源码包，进入源码包目录
-- 
+- 安装软件包依赖
+- 解压源码包，进入源码包目录，编译源代码，安装
 
 ```shell
 [root@RHCE ~]# wget http://nginx.org/download/nginx-1.23.4.tar.gz
@@ -3657,8 +3656,8 @@ systemd是内核加载的第一个进程（PID=1），systemd负责整个Linux�
 ```shell
 [root@RHCE Packages]# systemctl start vsftpd
 [root@RHCE Packages]# systemctl status vsftpd
-● vsftpd.service - Vsftpd ftp daemon
-   Loaded: loaded (/usr/lib/systemd/system/vsftpd.service; disabled; vendor preset: disabled)
+vsftpd.service - Vsftpd ftp daemon
+ ●   Loaded: loaded (/usr/lib/systemd/system/vsftpd.service; disabled; vendor preset: disabled)
    Active: active (running) since Wed 2023-05-03 00:50:20 CST; 9s ago
   Process: 20331 ExecStart=/usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf (code=exited, status=0/SUCCESS)
  Main PID: 20332 (vsftpd)
