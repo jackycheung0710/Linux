@@ -109,6 +109,8 @@
 
 - ctrl + w：删除一个单词
 
+- ctrl + v+方向键：vim中选中特殊区域，配合x删除
+
 #### 命令一般格式
 
 - 命令  [-选项...] [参数...]
@@ -1126,7 +1128,6 @@ canvs
   - yy  复制当前行，配合数字可以同时复制多行
   - p    粘贴当前光标所在行下
   - /关键字  搜索文件内关键字，n从上向下快速定位关键字，N从下向上快速定位关键字
-
 - 末行模式：
   - :w	 保存
   - :q      退出
@@ -1137,6 +1138,7 @@ canvs
   - :set nonu  取消行号
   - :n       快速跳转到指定行号
   - :r       读入另一个文件的数据，文件内容添加到光标的下一行
+  - :%s    替换文件内容，末尾g表示全文替换；命令用**, / #**分隔符
 
 #### 修改网卡IP地址
 
@@ -3320,12 +3322,12 @@ dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
 [root@localhost /]# cat /etc/yum.repos.d/local.repo 
 [BaseOS]		#仓库名称，可自定义，单具有唯一性
 name=BaseOS  #仓库描述（类似于仓库解释），描述信息自定义，不具备唯一性
-baseurl=file:///cdrom/BaseOS #指定软件仓库地址，file://用于指定本地软件包存放位置
+baseurl=file:///mnt/cdrom/BaseOS #指定软件仓库地址，file://用于指定本地软件包存放位置
 gpgcheck=0  #软件仓库是否启动，1启动，0不启动
 enabled=1	#是否检测软件包签名，0不检测，1检测
 [AppStream]
 name=AppStream
-baseurl=file:///cdrom/AppStream
+baseurl=file:///mnt/cdrom/AppStream
 gpgcheck=0
 enabled=1
 ~~~~
@@ -3677,5 +3679,877 @@ Created symlink /etc/systemd/system/multi-user.target.wants/vsftpd.service → /
 enabled
 [root@RHCE ~]# systemctl disable vsftpd
 Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
+```
+
+#### Shell概述
+
+- Shell是一个程序，它连接了用户和linux内核，它可以解释用户输入的命令传递给内核，让用户可以方便的使用linux系统
+- Shell本身并不是内核的一部分，它是站在内核的基础上编写的一个应用程序
+- Shell具备编程的能力，shell也是一种解释型语言
+
+![Linux1-1Z41G31T3628](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Linux1-1Z41G31T3628.gif)
+
+> **交互式（Interactive）**：用户每输入一条命令就立即执行。
+>
+> **批处理（Batch）**：由用户事先编写好一个完整的Shell脚本，Shell会一次性执行脚本中诸多的命令。
+
+##### Shell脚本的执行方式
+
+- 赋予脚本执行权限，可以绝对路径或者相对路径
+  - ./
+- 调用解释器执行脚本文件
+  - sh
+  - tcsh
+  - csh
+
+```shell
+# 编写shell脚本
+[root@RHCE ~]# cat hello.sh 
+#!/bin/bash		#导入解释器
+echo shell !!!			
+# 给shell脚本添加执行权限
+[root@RHCE ~]# chmod u+x hello.sh 
+# ./运行脚本
+[root@RHCE ~]# ./hello.sh 
+hello shell !!!
+# 解释器允许脚本
+[root@RHCE ~]# sh hello.sh 
+hello shell !!!
+```
+
+##### 常用特殊符号
+
+- " "   # 双引号，引用整体
+- ' '    # 单引号，引用整体并取消所有特殊字符含义
+- $[]   # 四则运算（+、-、*、/、%）
+- $()   # 将命令的输出结果作为参数
+- \`  \`      # 将命令的输出结果作为参数
+
+```shell
+[root@RHCE ~]# n=1
+[root@RHCE ~]# echo '$[n+1]'
+$[n+1]
+[root@RHCE ~]# echo "$[n+1]"
+2
+[root
+[root@RHCE ~]# echo $[1+1]
+2
+[root@RHCE ~]# echo $[10%3]
+1
+# 创建一个当前时间命名的文件
+[root@RHCE ~]# touch $(date +%F)
+[root@RHCE ~]# ll 2023-05-03 
+-rw-r--r--. 1 root root 0 5月   3 15:54 2023-05-03
+```
+
+##### 变量
+
+- 定义变量：变量名 = 变量值，如name=canvs（=号两边不能有空格）
+- 取消变量：unset 变量名
+
+```shell
+[root@RHCE ~]# name=canvs
+[root@RHCE ~]# echo $name
+canvs
+[root@RHCE ~]# unset name
+
+[root@RHCE ~]# cat hello.sh 
+# !/bin/bash
+name=canvs
+age=24
+echo "姓名:$name"
+echo "年龄:$age"
+[root@RHCE ~]# chmod u+x hello.sh 
+[root@RHCE ~]# ./hello.sh 
+姓名:canvs
+年龄:24
+```
+
+##### read标准输入取值
+
+- read读取用户在键盘输入的内容
+- 命令格式：read -p "提示信息" 变量名
+
+```shell
+[root@RHCE ~]# cat hello.sh 
+# !/bin/bash
+read -p '请输入姓名：' name
+read -p '请输入年龄：' age
+echo "姓名:$name"
+echo "年龄:$age"
+[root@RHCE ~]# vim hello.sh 
+[root@RHCE ~]# ./hello.sh 
+请输入姓名：canvs
+请输入年龄：25
+姓名:canvs
+年龄:25
+```
+
+##### 变量种类
+
+- 常用命令：
+
+  - env 命令查看系统所有环境变量
+
+  - set 命令查看系统所有变量，包括用户名自定义变量
+
+- 环境变量：变量名一般都大写，用来设置用户/系统环境
+
+```shell
+[root@RHCE ~]# env
+LS_COLORS=rs=0:di=38;5;33:ln=38;5;51:mh=00:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=01;05;37;41:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;40:*.tar=38;5;9:*.tgz=38;5;9:*.arc=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lha=38;5;9:*.lz4=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.tzo=38;5;9:*.t7z=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lrz=38;5;9:*.lz=38;5;9:*.lzo=38;5;9:*.xz=38;5;9:*.zst=38;5;9:*.tzst=38;5;9:*.bz2=38;5;9:*.bz=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.war=38;5;9:*.ear=38;5;9:*.sar=38;5;9:*.rar=38;5;9:*.alz=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.cab=38;5;9:*.wim=38;5;9:*.swm=38;5;9:*.dwm=38;5;9:*.esd=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.mjpg=38;5;13:*.mjpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.webm=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.m4a=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.oga=38;5;45:*.opus=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:
+SSH_CONNECTION=192.168.49.1 53397 192.168.49.135 22
+LANG=zh_CN.UTF-8
+HISTCONTROL=ignoredups
+HOSTNAME=RHCE
+XDG_SESSION_ID=1
+USER=root
+SELINUX_ROLE_REQUESTED=
+PWD=/root
+HOME=/root
+SSH_CLIENT=192.168.49.1 53397 22
+SELINUX_LEVEL_REQUESTED=
+SSH_TTY=/dev/pts/0
+MAIL=/var/spool/mail/root
+TERM=xterm-256color
+SHELL=/bin/bash
+SELINUX_USE_CURRENT_RANGE=
+SHLVL=1
+LOGNAME=root
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/0/bus
+XDG_RUNTIME_DIR=/run/user/0
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+HISTSIZE=1000
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+_=/usr/bin/env
+
+[root@RHCE ~]# echo $USER
+root
+[root@RHCE ~]# su endless
+[endless@RHCE root]$ echo $USER
+endless
+[root@RHCE ~]# echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+```
+
+- 位置变量：bash内置，在执行脚本时提供命令参数
+  - $0   # 脚本名称
+  - $1   # 第一个参数
+  - $2   # 第三个参数
+  - $n   # 第n个参数
+
+```shell
+[root@RHCE ~]# vim test.sh 
+# !/bin/bash
+echo $0
+echo $1
+echo $2
+echo $3
+# 在执行脚本时需要给脚本位置变量赋值
+[root@RHCE ~]# ./test.sh canvs 20 男
+./t.sh
+canvs
+20
+男
+```
+
+- 预定义变量：bash内置，可直接调用的特殊值，不能直接修改
+  - $0   # 代表脚本本身
+  - $*   # 显示所有参数内容
+  - $#   # 显示有多少个参数
+  - $?    # 显示上一条命令执行的结果（0：正确；非0代表错误）
+  - $$   # 显示脚本进程号（PID）
+
+```shell
+[root@RHCE ~]# vim test.sh 
+# !/bin/bash
+echo $0
+echo $1
+echo $2
+echo $3
+echo $*
+echo $#
+echo $?
+echo $$
+[root@RHCE ~]# ./test.sh canvs 25
+./test.sh
+canvs
+25
+
+canvs 25
+2
+0
+1738
+```
+
+- 自定义变量：用户自定义
+
+##### 判断文件状态
+
+- -e       # 判断文件/目录是否存在
+- -d       # 判断目录是否存在
+- -f       # 判断文件是否存在
+- -r       # 可读为真
+- -w       #可写为真
+- -x       #可执行为真
+
+```shell
+[root@RHCE ~]# [ -e /etc ]
+# 查看上一条命令是否执行成功（0：成功，非0失败）
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# [ -f /root/hello.sh ]
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# [ -f /asjfanfs.sh ]
+[root@RHCE ~]# echo $?
+1
+[root@RHCE ~]# [ -x /root/hello.sh ]
+[root@RHCE ~]# echo $?
+0
+```
+
+##### 整数比较
+
+- gt        大于
+- -ge      大于等于
+- -eq      等于
+- -lt        小于
+- -le       小于等于
+
+```shell
+[root@RHCE ~]# [ 1 -gt 2 ]
+[root@RHCE ~]# echo $?
+1
+[root@RHCE ~]# [ 188 -ge 2 ]
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# [ 1 -eq 1 ]
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# [ 20 -lt 12 ]
+[root@RHCE ~]# echo $?
+1
+```
+
+##### 字符串对比
+
+- ==    等于
+- !=     不等于
+
+```shell
+[root@RHCE ~]# name=canvs
+[root@RHCE ~]# [ name == canvs ]
+[root@RHCE ~]# echo $?
+1
+[root@RHCE ~]# [ name != can ]
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# [ root == $USER ]
+[root@RHCE ~]# echo $?
+0
+```
+
+##### 常用数值运算方式
+
+- $[]        #四则运算（+、-、*、/、%）
+- $(())      #数值运算工具
+
+```shell
+[root@RHCE ~]# echo $((1+1))
+2
+[root@RHCE ~]# echo $((3*4))
+12
+[root@RHCE ~]# 
+[root@RHCE ~]# echo $((10/3))
+3
+[root@RHCE ~]# echo $((10%3))
+1
+[root@RHCE ~]
+```
+
+- expr     #数值运算工具
+
+```shell
+[root@RHCE ~]# expr 1 + 1
+2
+[root@RHCE ~]# expr 3 \* 4
+12
+[root@RHCE ~]# expr 10 / 3
+3
+[root@RHCE ~]# expr 10 % 3
+1
+```
+
+- let         #数值运算工具
+
+```shell
+[root@RHCE ~]# let a=1+1
+[root@RHCE ~]# echo $a
+2
+[root@RHCE ~]# let a+=3
+[root@RHCE ~]# echo $a
+5
+[root@RHCE ~]# let a-=2
+[root@RHCE ~]# echo $a
+3
+[root@RHCE ~]# let a/=3
+[root@RHCE ~]# echo $a
+1
+[root@RHCE ~]# echo $a
+10
+[root@RHCE ~]# let a%=3 && echo $a
+1
+```
+
+##### 字符串判断
+
+- -z         #字符串的值为空为真
+- -n         #字符串的值非空为真,和**[! -z]**一样
+
+```shell
+# 判断文件内容是否为空
+[root@RHCE ~]# [ -z /etc/passwd ]
+[root@RHCE ~]# echo $?
+1
+# 判断文件内容是否有内容
+[root@RHCE ~]# [ -n /etc/passwd ]
+[root@RHCE ~]# echo $?
+0
+# 判断文件内容是否有内容
+[root@RHCE ~]# [ ! -z /etc/passwd ]
+[root@RHCE ~]# echo $?
+0
+```
+
+##### 条件判断结构
+
+- 当条件满足时执行什么操作，当条件不满足执行什么操作
+- &&         #逻辑与
+  - A && B	#当A命令执行成功后才会执行B，如果A执行失败则B不执行
+
+```shell
+# 查询fstab文件是否有内容，有内容将fstab拷贝到/tmp下
+[root@RHCE ~]# [ -n /etc/fstab ] && cp /etc/fstab /tmp/
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# ll /tmp/fstab 
+-rw-r--r--. 1 root root 617 5月   3 21:01 /tmp/fstab
+# 查询/tmp/fstab文件是否为空，如果为空，就覆盖写入内容
+[root@RHCE ~]# [ -z /tmp/fstab ] && echo 'hello world!!!' > /tmp/fstab 
+[root@RHCE ~]# echo $?
+1
+```
+
+- ||          #逻辑或
+  - A || B	#当A命令执行失败后才会执行B，如果A执行成功则B不执行
+
+```shell
+# 前面执行失败，执行后面的命令
+[root@RHCE ~]# [ -z /tmp/fstab ] || echo 'hello world!!!' >> /tmp/fstab 
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# tail -1 /tmp/fstab 
+hello world!!!
+[root@RHCE ~]# [ -e /root/h.sh ] || touch h.sh
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# ll h.sh 
+-rw-r--r--. 1 root root 0 5月   3 21:10 h.sh
+[root@RHCE ~]# 
+```
+
+- ;             #条件之间没有逻辑关系
+  - A ; B		#执行A命令后执行B
+
+```shell
+[root@RHCE ~]# echo '你好世界！！' > /tmp/fstab ; echo 'hello!!!'  >> /tmp/fstab 
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# cat /tmp/fstab 
+你好世界！！
+hello!!!
+[root@RHCE ~]# touch h.sh ; rm -rf h.sh
+[root@RHCE ~]# echo $?
+0
+[root@RHCE ~]# ll h.sh
+ls: 无法访问'h.sh': 没有那个文件或目录
+```
+
+##### if条件判断结构
+
+- if 单分支语法，只能判断对，不能判断错
+
+```shell
+#第一种语法结构
+if [判断条件];then
+	 条件成立时，执行命令
+fi
+#第二种语法结构
+if [条件判断]
+	then
+		条件成立时
+fi
+```
+
+```shell
+[root@RHCE ~]# vim if1.sh 
+#!/bin/bash
+if [ -e /etc/passwd ];then
+        echo $?
+        echo 'yess'
+fi
+
+[root@RHCE ~]# ./if1.sh 
+0
+yess
+```
+
+- if 双分支语法
+
+```shell
+if [判断条件];then
+		条件成立
+	else
+		条件不成立
+fi
+```
+
+```shell
+[root@RHCE ~]# cat if3.sh 
+#!/bin/bash
+if [ `rpm -q vsftpd &> /dev/null ; echo $?` -eq 0 ];then
+        systemctl start vsftpd
+        echo "启动服务"
+else
+        yum -y install vsftpd
+        systemctl start vsftpd
+        echo "软件包安装完成，vsftpd服务已启动"
+fi
+
+[root@RHCE ~]# ./if3.sh 
+启动服务
+```
+
+- if多分支
+
+```shell
+if [条件1];then
+	条件1成立
+elif [条件2];then
+	条件2成立
+elif [条件3];then
+	条件3成立
+else
+	所有条件都不成立
+fi
+```
+
+```shell
+[root@RHCE ~]# vim if2.sh 
+#!/bin/bash
+read -p "请输入您的成绩：" score
+if [ $score -ge 90 ];then
+        echo "您的成绩为A"
+elif [ $score -ge 80 ];then
+        echo "您的成绩为B"
+elif [ $score -ge 60 ];then
+        echo "您的成绩为C"
+else
+        echo "您的成绩为D"
+fi
+[root@RHCE ~]# ./if2.sh
+请输入您的成绩：50
+您的成绩为D
+[root@RHCE ~]# ./if2.sh
+请输入您的成绩：68 
+您的成绩为C
+[root@RHCE ~]# ./if2.sh
+请输入您的成绩：77
+您的成绩为C
+[root@RHCE ~]# ./if2.sh
+请输入您的成绩：89
+您的成绩为B
+[root@RHCE ~]# ./if2.sh
+请输入您的成绩：99
+您的成绩为A
+```
+
+##### case条件判断结构
+
+- case从变量中取值，如果变量中的值与预设的值匹配，则执行对应的命令
+
+```shell
+#case语法结构
+case $变量名 in
+值1）
+		执行的命令;;
+值2）
+		执行的命令;;
+*）
+		之心的命令;;
+esac
+```
+
+```shell
+[root@RHCE ~]# vim case.sh 
+#!/bin/bash
+read -p "请选择你需要的老师：" teacher
+case $teacher in
+波多野结衣)
+        echo "波多野结衣...";;
+吉泽明步)
+        echo "吉泽明步...";;
+苍老师)
+        echo "苍老师...";;
+*)
+        echo "老师已上岸"
+esac
+[root@RHCE ~]# ./case.sh 
+请选择你需要的老师：苍老师    
+苍老师...
+[root@RHCE ~]# ./case.sh 
+请选择你需要的老师：波多野结衣
+波多野结衣...
+[root@RHCE ~]# ./case.sh 
+请选择你需要的老师：吉泽明步
+吉泽明步...
+[root@RHCE ~]# ./case.sh 
+请选择你需要的老师：嫖老师
+老师已上岸
+```
+
+##### for循环
+
+- for循环处理，根据变量的取值，重复执行xx命令
+
+```shell
+#for循环语法结构
+for 变量名 in 值1 值2 值3 值N...
+do
+		执行的命令
+done
+```
+
+```shell
+[root@RHCE ~]# vim for.sh 
+#!/bin/bash
+for user in zhangsan lisi wangwu
+do
+        useradd $user &> /dev/null
+        echo 1 |passwd --stdin $user &> /dev/null
+        echo "$user 创建成功，默认密码为1"
+done
+[root@RHCE ~]# chmod u+x for.sh 
+[root@RHCE ~]# ./for.sh 
+zhangsan 创建成功，默认密码为1
+lisi 创建成功，默认密码为1
+wangwu 创建成功，默认密码为1
+```
+
+```shell
+[root@RHCE ~]# cat superPing.sh 
+#!/bin/bash
+for i in $(seq 254)
+do
+        ping -c2 -i0.1 -w1 192.168.49.$i &> /dev/null
+        if [ $? -eq 0 ];then
+                echo "192.168.49.$i UP" >> /root/up.txt
+        else
+                echo "192.168.49.$i down" >> /root/down.txt
+        fi
+done
+[root@RHCE ~]# ll up.txt down.txt 
+-rw-r--r--. 1 root root 4916 5月   3 22:55 down.txt
+-rw-r--r--. 1 root root   50 5月   3 22:53 up.txt
+```
+
+##### while循环
+
+- 死循环，只要条件成立就重复执行命令
+
+```shell
+#while循环语法结构
+while 条件判断
+do
+```
+
+```shell
+[root@RHCE ~]# vim whileNUM.sh 
+#!/bin/bash
+num=$[RANDOM%10]
+while :
+do
+        read -p "猜数字：" n
+        if [ $num -eq $n ];then
+                echo "恭喜你猜对了！"
+                exit
+        else
+                echo "猜错了"
+        fi
+done
+[root@RHCE ~]# ./whileNUM.sh 
+猜数字：1
+猜错了
+猜数字：2
+猜错了
+猜数字：3
+恭喜你猜对了！
+```
+
+```shell
+# 监控网卡状态
+[root@RHCE ~]# cat network.sh 
+#!/bin/bash
+while :
+do
+        clear
+        ifconfig ens160 |head -2
+        ifconfig ens160 |grep 'RX p'
+        ifconfig ens160 |grep 'TX p'
+        sleep 0.2
+done
+[root@RHCE ~]# ./network.sh
+ens160: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.49.135  netmask 255.255.255.0  broadcast 192.168.49.255
+        RX packets 2744  bytes 276682 (270.1 KiB)
+        TX packets 2485  bytes 296112 (289.1 KiB)监控网卡流量
+```
+
+#### shell函数
+
+- 在shell环境中，讲一些需要重复使用的操作，定义为公共的语句块，即可称为函数
+- 函数可以使脚本中的代码更加简洁，增强易读性，提高脚本的执行效率
+
+```shell
+#定义函数格式1
+function 函数名{
+		执行命令
+		执行命令
+		执行命令
+		...
+}
+#定义函数格式2
+函数名(){
+		执行命令
+		执行命令
+		执行命令
+		...
+}
+```
+
+```shell
+[root@RHCE ~]# mystat(){
+> hostname
+> free -h
+> }
+[root@RHCE ~]# mystat
+RHCE
+              total        used        free      shared  buff/cache   available
+Mem:          1.8Gi       247Mi       1.2Gi       8.0Mi       283Mi       1.4Gi
+Swap:         2.0Gi          0B       2.0Gi
+```
+
+```shell
+[root@RHCE ~]# cat netstat.sh 
+#!/bin/bash
+stat(){
+hostname
+ifconfig
+free -h
+df -h
+}
+stat
+```
+
+##### 脚本中断及退出
+
+- break		#结束整个循环
+
+```shell
+[root@RHCE ~]# cat test.sh 
+#!/bin/bash
+for i in {1..5}
+do
+        if [ $i -eq 3 ];then
+                echo "break..."
+                break
+        fi
+        echo $i
+done
+[root@RHCE ~]# ./test.sh 
+1
+2
+break...
+```
+
+- continue   #跳过本次循环
+
+```shell
+[root@RHCE ~]# vim test.sh 
+#!/bin/bash
+for i in {1..5}
+do
+        if [ $i -eq 3 ];then
+                echo "continue..."
+                continue
+        fi
+        echo $i
+done
+[root@RHCE ~]# ./test.sh 
+1
+2
+continue...
+4
+5
+```
+
+- exit            #退出脚本
+
+```shell
+[root@RHCE ~]# cat test.sh 
+#!/bin/bash
+for i in {1..5}
+do
+        if [ $i -eq 3 ];then
+                echo "exit..."
+                exit
+        fi
+        echo $i
+done
+[root@RHCE ~]# ./test.sh 
+1
+2
+exit...
+```
+
+##### 字符串截取
+
+- 在使用shell脚本完成各种运维任务时，一旦涉及到判断、条件测试等相关操作时往往需要对相关的命令输出进行过滤，提取处符合要求的字符串
+- 字符串截取的常用方法：${变量名:起始位置:长度}
+- ${}截取字符串时，起始位置从0开始
+
+```shell
+[root@RHCE ~]# echo ${#phone}
+11
+[root@RHCE ~]# echo $phone
+13602114564
+[root@RHCE ~]# echo ${phone:4:3}
+211
+[root@RHCE ~]# echo ${phone:0:1}
+1
+```
+
+```shell
+# 通过随机和截取生成密码
+[root@RHCE ~]# vim  getpasswd.sh 
+#!/bin/bash
+passwd=qwertyuiopasdfghjklzxcvbnm1234567890SFNAJFNASYHABFAJ
+for i in {1..8}
+do
+n=$[RANDOM%52]
+p=${passwd:n:1}
+pass=$pass$p
+done
+echo $pass
+[root@RHCE ~]# ./getpasswd.sh 
+pj4Huwvg
+[root@RHCE ~]# ./getpasswd.sh 
+7c6lSrbo
+[root@RHCE ~]# ./getpasswd.sh 
+aYe02auw
+```
+
+##### 字符串替换
+
+- 只替换第一个匹配的结果：${变量名/xx/yy}
+- 替换全部匹配的结果：${变量名//xx/yy}
+
+```shell
+[root@RHCE ~]# touch {0..100}.doc
+[root@RHCE ~]# ls *.doc
+0.doc    16.doc  23.doc  30.doc  38.doc  45.doc  52.doc  5.doc   67.doc  74.doc  81.doc  89.doc  96.doc
+100.doc  17.doc  24.doc  31.doc  39.doc  46.doc  53.doc  60.doc  68.doc  75.doc  82.doc  8.doc   97.doc
+10.doc   18.doc  25.doc  32.doc  3.doc   47.doc  54.doc  61.doc  69.doc  76.doc  83.doc  90.doc  98.doc
+11.doc   19.doc  26.doc  33.doc  40.doc  48.doc  55.doc  62.doc  6.doc   77.doc  84.doc  91.doc  99.doc
+12.doc   1.doc   27.doc  34.doc  41.doc  49.doc  56.doc  63.doc  70.doc  78.doc  85.doc  92.doc  9.doc
+13.doc   20.doc  28.doc  35.doc  42.doc  4.doc   57.doc  64.doc  71.doc  79.doc  86.doc  93.doc
+14.doc   21.doc  29.doc  36.doc  43.doc  50.doc  58.doc  65.doc  72.doc  7.doc   87.doc  94.doc
+15.doc   22.doc  2.doc   37.doc  44.doc  51.doc  59.doc  66.doc  73.doc  80.doc  88.doc  95.doc
+
+[root@RHCE ~]# vim file.sh 
+#!/bin/bash
+for ls in $(ls *.doc)
+do
+        mv $ls ${ls/.doc/.txt}
+done
+[root@RHCE ~]# ./file.sh 
+[root@RHCE ~]# ls *.txt
+0.txt    16.txt  23.txt  30.txt  38.txt  45.txt  52.txt  5.txt   67.txt  74.txt  81.txt  89.txt  96.txt
+100.txt  17.txt  24.txt  31.txt  39.txt  46.txt  53.txt  60.txt  68.txt  75.txt  82.txt  8.txt   97.txt
+10.txt   18.txt  25.txt  32.txt  3.txt   47.txt  54.txt  61.txt  69.txt  76.txt  83.txt  90.txt  98.txt
+11.txt   19.txt  26.txt  33.txt  40.txt  48.txt  55.txt  62.txt  6.txt   77.txt  84.txt  91.txt  99.txt
+12.txt   1.txt   27.txt  34.txt  41.txt  49.txt  56.txt  63.txt  70.txt  78.txt  85.txt  92.txt  9.txt
+13.txt   20.txt  28.txt  35.txt  42.txt  4.txt   57.txt  64.txt  71.txt  79.txt  86.txt  93.txt  down.txt
+14.txt   21.txt  29.txt  36.txt  43.txt  50.txt  58.txt  65.txt  72.txt  7.txt   87.txt  94.txt  up.txt
+15.txt   22.txt  2.txt   37.txt  44.txt  51.txt  59.txt  66.txt  73.txt  80.txt  88.txt  95.txt
+```
+
+##### 字符串掐头去尾
+
+- 从左向右，最短匹配删除：${变量名#*关键词}
+- 从左向右，最长匹配删除：${变量名##*关键词}
+- 从右向左，最短匹配删除：${变量名%关键词*}
+- 从右向左，最长匹配删除：${变量名%%关键词*}
+
+```shell
+[root@RHCE ~]# cat file.sh 
+#!/bin/bash
+for ls in $(ls *.txt)
+do
+        mv $ls ${ls%txt*}.doc
+done
+[root@RHCE ~]# ./file.sh 
+[root@RHCE ~]# ls
+100..doc  18..doc  26..doc  34..doc  42..doc  50..doc  59..doc  67..doc  75..doc  83..doc  91..doc  9..doc
+10..doc   19..doc  27..doc  35..doc  43..doc  51..doc  5..doc   68..doc  76..doc  84..doc  92..doc  file.sh
+11..doc   1..doc   28..doc  36..doc  44..doc  52..doc  60..doc  69..doc  77..doc  85..doc  93..doc
+12..doc   20..doc  29..doc  37..doc  45..doc  53..doc  61..doc  6..doc   78..doc  86..doc  94..doc
+13..doc   21..doc  2..doc   38..doc  46..doc  54..doc  62..doc  70..doc  79..doc  87..doc  95..doc
+14..doc   22..doc  30..doc  39..doc  47..doc  55..doc  63..doc  71..doc  7..doc   88..doc  96..doc
+15..doc   23..doc  31..doc  3..doc   48..doc  56..doc  64..doc  72..doc  80..doc  89..doc  97..doc
+16..doc   24..doc  32..doc  40..doc  49..doc  57..doc  65..doc  73..doc  81..doc  8..doc   98..doc
+17..doc   25..doc  33..doc  41..doc  4..doc   58..doc  66..doc  74..doc  82..doc  90..doc  99..doc
+[root@RHCE ~]# 
+```
+
+##### shell数组
+
+```shell
+#定义数组方式一：数组名=(值1,值2,值3,....)
+#定义数组方式二：数组名[下标]=值
+```
+
+```shell
+[root@RHCE ~]# b[0]=aa
+[root@RHCE ~]# b[1]=bb
+[root@RHCE ~]# b[2]=123
+[root@RHCE ~]# echo $b
+aa
+[root@RHCE ~]# echo ${b[*]}
+aa bb 123
+[root@RHCE ~]# echo ${b[@]}
+aa bb 123
+[root@RHCE ~]# echo ${b[1]}
+bb
+[root@RHCE ~]# echo ${b[2]}
+123
+[root@RHCE ~]# c=(1 2 4 5 6 sas)
+[root@RHCE ~]# echo $c
+1
+[root@RHCE ~]# echo ${c[@]}
+1 2 4 5 6 sas
+[root@RHCE ~]# echo ${c[2]}
+4
 ```
 
