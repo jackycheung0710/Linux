@@ -339,8 +339,6 @@ anaconda-ks.cfg  hello.py  study
 - 常用选项：
   - -p 保留原文件属性不变（修改时间、归属关系、权限）
   - -r 复制目录（包含该目录下所有子目录和文件）
-- cp test /tmp/oo
-- cp test/tmp/oo
 
 ```shell
 # 将hello.py重命名复制到study/test1/下
@@ -4551,5 +4549,828 @@ bb
 1 2 4 5 6 sas
 [root@RHCE ~]# echo ${c[2]}
 4
+```
+
+#### 正则表达式（Regular Express）
+
+- 正则表达式使用一串符号描述有共同属性的数据
+
+| 基本正则符号 | 描述                                          |
+| :----------- | :-------------------------------------------- |
+| ^            | 匹配行首                                      |
+| $            | 匹配行尾                                      |
+| []           | 集合，匹配集合中的任意单个字符                |
+| [^]          | 对集合取反                                    |
+| .            | 匹配任意单个字符                              |
+| *            | 匹配前一个字符出现的任意次数[*不允许单独使用] |
+| \ {n,m \ }   | 匹配前一个字符出现n 到 m 次                   |
+| \ {n \ }     | 匹配前一个字符出现n 次                        |
+
+> [素材参考](https://www.cnblogs.com/clsn/p/7568248.html#auto-id-14)
+
+```shell
+[root@RHCE ~]# vim regular 
+I am clsn teacher!$
+I teach linux.
+
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+
+our site is http://www.etiantian.org
+
+my qq num is 49000448.
+
+not 4900000448.
+my god ,i am not oldbey,but clsn!
+```
+
+**^匹配以m开头的行**
+
+```shell
+[root@RHCE ~]# grep "^m" regular 
+my blog is http://clsn.blog.51cto.com$
+my qq num is 49000448.$
+my god ,i am not oldbey,but clsn!$
+```
+
+**$匹配以m结尾的行**
+
+```shell
+[root@RHCE ~]# grep "m$" regular 
+my blog is http://clsn.blog.51cto.com
+```
+
+**^$匹配空行**
+
+```shell
+[root@RHCE ~]# grep -n "^$" regular 
+3:
+6:
+8:
+10:
+```
+
+**.匹配任意单个字符**
+
+```shell
+[root@RHCE ~]# grep "li.e" regular 
+I like badminton ball ,billiard ball and chinese chess!
+#-o显示每一次匹配到的字符串
+[root@RHCE ~]# grep -o "li.e" regular 
+like
+#匹配以.结尾的行;\表示转义
+[root@RHCE ~]# grep "\.$" regular 
+I teach linux.
+my qq num is 49000448.
+not 4900000448.
+```
+
+***匹配内容连续出现了0次或1次以上**
+
+```shell
+[root@RHCE ~]# grep "0*" regular 
+I am clsn teacher!$
+I teach linux.
+
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+
+our site is http://www.etiantian.org
+
+my qq num is 49000448.
+
+not 4900000448.
+my god ,i am not oldbey,but clsn!
+[root@RHCE ~]# grep -o "0*" regular 
+000
+00000
+```
+
+**.*表示任意内容**
+
+```shell
+[root@RHCE ~]# grep -n ".*" regular 
+1:I am clsn teacher!$
+2:I teach linux.
+3:
+4:I like badminton ball ,billiard ball and chinese chess!
+5:my blog is http://clsn.blog.51cto.com
+6:
+7:our site is http://www.etiantian.org
+8:
+9:my qq num is 49000448.
+10:
+11:not 4900000448.
+12:my god ,i am not oldbey,but clsn!
+#连续出现会变现贪婪
+[root@RHCE ~]# grep "^.*m" regular 
+I am clsn teacher!$
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+my qq num is 49000448.
+my god ,i am not oldbey,but clsn!
+```
+
+**[abc]表示一个集合**
+
+```shell
+#匹配内容出现的a、b、c
+[root@RHCE ~]# grep  [abc] regular 
+I am clsn teacher!$
+I teach linux.
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+our site is http://www.etiantian.org
+my god ,i am not oldbey,but clsn!
+#匹配内容出现的0-9
+[root@RHCE ~]# grep [0-9] regular 
+my blog is http://clsn.blog.51cto.com
+my qq num is 49000448.
+not 4900000448.
+#匹配内容出现的a-c
+[root@RHCE ~]# grep [a-c] regular 
+I am clsn teacher!$
+I teach linux.
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+our site is http://www.etiantian.org
+my god ,i am not oldbey,but clsn!
+
+#匹配m或n或o开头并且以m或g结尾的行
+[root@RHCE ~]# grep "^[mno].*[mg]$" regular 
+my blog is http://clsn.blog.51cto.com
+our site is http://www.etiantian.org
+
+#排除abc字符或文字
+[root@RHCE ~]# grep "[^abc]" regular 
+I am clsn teacher!$
+I teach linux.
+I like badminton ball ,billiard ball and chinese chess!
+my blog is http://clsn.blog.51cto.com
+our site is http://www.etiantian.org
+my qq num is 49000448.
+not 4900000448.
+my god ,i am not oldbey,but clsn!
+#grep -v 排除行，排除匹配到[abc]的行
+[root@RHCE ~]# grep -v [abc] regular 
+
+
+
+my qq num is 49000448.
+
+not 4900000448.
+```
+
+**a \ { 2 \ }匹配a连续出现2次**
+
+```shell
+[root@RHCE ~]# vim reg.txt 
+aaaabbb
+a
+sajfna
+ffaaa
+[root@RHCE ~]# grep "a\{2\}" reg.txt 
+aaaabbb
+ffaaa
+```
+
+a \ {n,m \ }匹配字符a连续出现n-m次
+
+```shell
+[root@RHCE ~]# grep "a\{3,4\}" reg.txt 
+aaaabbb
+ffaaa
+```
+
+##### egrep过滤工具
+
+- 使用扩展正则时，需要使用egrep命令过滤
+- -c 选项可输出匹配行数，与wc -l效果相同
+
+| 扩展正则符号 | 描述                       |
+| ------------ | -------------------------- |
+| +            | 最少匹配一次               |
+| ？           | 最多匹配一次，匹配0次或1次 |
+| {n,m}        | 匹配 n 到 m 次             |
+| ()           | 组合位整体，保留（复制）   |
+| \|           | 或者                       |
+| \b           | 单词边界                   |
+
+```shell
+[root@RHCE ~]# egrep "root+" /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin
+```
+
+```shell
+[root@RHCE ~]# vim reg.txt 
+aaaabbb
+hello java
+你好 java
+hello python
+hello C++
+#输出包括hello的行
+[root@RHCE ~]# egrep "hello?" reg.txt 
+hello java
+hello python
+hello C++
+```
+
+```shell
+[root@RHCE ~]# vim test.txt 
+root
+roottt
+roo
+roott
+#输出roo、root、roott、...的行
+[root@RHCE ~]# egrep "root*" test.txt 
+root
+roottt
+roo
+roott
+#.*匹配所有内容
+[root@RHCE ~]# egrep ".*" test.txt 
+root
+roottt
+roo
+roott
+```
+
+```shell
+#以a开头nologin结尾的用户记录
+[root@RHCE ~]# egrep "^a.*nologin$" /etc/passwd
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+```
+
+```shell
+#输出包括“a”连续出现4次
+[root@RHCE ~]# egrep "a{4}" reg.txt 
+aaaabbb
+#输出包括“a”连续出现3-4次
+[root@RHCE ~]# egrep "a{3,4}" reg.txt 
+aaaabbb
+ffaaa
+```
+
+```shell
+[root@RHCE ~]# vim brace.txt
+ab def ghi abdr
+dedef abab ghighi
+abcab CD-ROM
+TARENA IT GROUP
+cdcd ababab
+Hello abababab World
+#输出“ab”连续出现3次
+[root@RHCE ~]# egrep "(ab){3}" brace.txt 
+cdcd ababab
+Hello abababab World
+#输出“ab”连续出现2-4次
+[root@RHCE ~]# egrep "(ab){2,4}" brace.txt 
+dedef abab ghighi
+cdcd ababab
+Hello abababab World
+#输出“ab”连续出现3次以上
+[root@RHCE ~]# egrep "(ab){3,}" brace.txt 
+cdcd ababab
+Hello abababab World
+```
+
+```shell
+[root@RHCE ~]# vim test2.txt 
+aaaabbb
+hello java
+你好 java
+hello python
+helloC++
+#输出hello单词边界匹配；单词边界相当于单词两边没有字符
+[root@RHCE ~]# egrep "hello\\b" test2.txt 
+hello java
+hello python
+```
+
+```shell
+#同时输出root、jack的用户信息
+[root@RHCE ~]# egrep "root|jack" /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin
+jack:x:1001:1001::/home/jack:/bin/bash
+```
+
+#### sed流式编辑器
+
+- sed是一个非交互式的文本编辑器，实现的功能和vim相同，主要是对文件内容进行输出、删除、替换、复制、剪切、导入、导出等功能
+- 命令格式：
+  - 前置命令 | sed [选项] '[指令]' 文件名
+  - sed [选项] '[指令]' 文件名
+- 常用选项：
+  - -n  #屏蔽默认输出，默认sed会将所有的输出结果输出到屏幕中，-n只把sed处理的行输出到屏幕
+  - -i   #直接修改文件内容，如果不加 -i 选项，并不会真正改变文件的内容
+  - -r  #使用扩展正则，若与其他选项连用应作为首个选项
+- 动作指令：
+  - p  #打印指定的行，如：2,4p  打印第2，3，4行，如：2p;4p 打印第2行与第4行
+  - d  #删除指定的行，如：2,4d 删除第2，3，4行
+  - s  #字符串替换，如：s/旧字符串/新字符串/；**任意特殊字符都可以作为分割符：/ , #**
+  - r  #导入文件内容，如：'4r 1.txt' 2.txt.    ：2.txt文件第4行内容导入到1.txt下
+  - w  #导出文件内容，如：'3w 1.txt' 2.txt  ：将2.txt第3行导出到1.txt
+
+```shell
+#打印文件第一行内容
+[root@RHCE ~]# sed -n "1p" /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+#打印文件第三行内容
+[root@RHCE ~]# sed -n '3p' /etc/passwd
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+#打印文件第3行到6行内容
+[root@RHCE ~]# sed -n "3,6p" /etc/passwd
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/s
+
+#利用正则表达式匹配以root开头的行（正则表达式放在//内）
+[root@RHCE ~]# sed -n "/^root/p" test 
+root:x:0:0:root:/root:/bin/bash
+
+#匹配以bash结尾的行
+[root@RHCE ~]# sed -n "/bash$/p" test 
+root:x:0:0:root:/root:/bin/bash
+jack:x:1001:1001::/home/jack:/bin/bash
+
+#打印行号打印文件最后一行
+[root@RHCE ~]# sed -n "$=" test 
+28
+[root@RHCE ~]# sed -n "1p" test |wc -l
+1
+
+#删除文件2到4行
+[root@RHCE ~]# sed "2,4d" test |wc -l 
+25
+
+#使用i选项直接修改原文件
+[root@RHCE ~]# cat a.txt 
+11111111
+22222222
+33333333
+44444444
+55555555
+[root@RHCE ~]# sed -i "2,4d" a.txt 
+[root@RHCE ~]# cat a.txt 
+11111111
+55555555
+
+#使用;分号分隔
+[root@RHCE ~]# sed -i "2d;4d" a.txt 
+[root@RHCE ~]# cat a.txt 
+11111111
+33333333
+55555555
+
+#以aaa的模糊匹配
+[root@RHCE ~]# cat b.txt 
+aaaabbbb
+ccccaaaa
+ddddaaaa
+eeeeaaa
+aa
+[root@RHCE ~]# sed -n "/aaa/p" b.txt 
+aaaabbbb
+ccccaaaa
+ddddaaaa
+eeeeaaa
+
+#取反删除
+[root@RHCE ~]# sed -i '/cccc/!d' b.txt 
+[root@RHCE ~]# cat b.txt 
+ccccaaaa
+
+#删除ccc开头的行
+[root@RHCE ~]# vim b.txt 
+aaaabbbb
+ccccaaaa
+ddddaaaa
+eeeeaaa
+aa
+[root@RHCE ~]# sed -i "/ccc/d" b.txt 
+[root@RHCE ~]# cat b.txt 
+aaaabbbb
+ddddaaaa
+eeeeaaa
+aa
+
+#删除空行
+[root@RHCE ~]# vim b.txt 
+aaaabbbb
+ccccaaaa
+
+ddddaaaa
+
+eeeeaaa
+
+aa
+[root@RHCE ~]# sed -i "/^$/d" b.txt 
+[root@RHCE ~]# cat b.txt 
+aaaabbbb
+ccccaaaa
+ddddaaaa
+eeeeaaa
+aa
+
+#替换文件内容匹配每一行第一个字符串
+[root@RHCE ~]# cat c.txt 
+2021 2020 2019 2018
+2021 2021 2020 2019
+2021 2022 2021 2020
+[root@RHCE ~]# sed "s/2021/xxxx/" c.txt 
+xxxx 2020 2019 2018
+xxxx 2021 2020 2019
+xxxx 2022 2021 2020
+
+#替换文件内容匹配每一行第二个字符串
+[root@RHCE ~]# sed "s/2021/ssss/2" c.txt 
+2021 2020 2019 2018
+2021 ssss 2020 2019
+2021 2022 ssss 2020
+
+#替换文件每一行匹配到的所有指定字符串
+[root@RHCE ~]# sed "s/2021/xxxx/g" c.txt 
+xxxx 2020 2019 2018
+xxxx xxxx 2020 2019
+xxxx 2022 xxxx 2020
+
+#将匹配到的每一行第一个字符串替换成空
+[root@RHCE ~]# sed "s/2021//" c.txt 
+ 2020 2019 2018
+ 2021 2020 2019
+ 2022 2021 2020
+
+#将匹配到每一行第2个字符串替换成空
+[root@RHCE ~]# sed "s/2021//2" c.txt 
+2021 2020 2019 2018
+2021  2020 2019
+2021 2022  2020
+
+#替换时屏蔽默认输出
+[root@RHCE ~]# sed -n "s/root/xxoo/gp" passwd 
+xxoo:x:0:0:xxoo:/xxoo:/bin/bash
+operator:x:11:0:operator:/xxoo:/sbin/nologin
+
+#替换符可以使用任意的特殊符号
+[root@RHCE ~]# sed -n "s,root,xxoo,gp" passwd 
+xxoo:x:0:0:xxoo:/xxoo:/bin/bash
+operator:x:11:0:operator:/xxoo:/sbin/nologin
+[root@RHCE ~]# sed -n "s:root:xxoo:gp" passwd 
+xxoo:x:0:0:xxoo:/xxoo:/bin/bash
+operator:x:11:0:operator:/xxoo:/sbin/nologin
+
+#将文件中/bin/bash替换成/bin/sh
+[root@RHCE ~]# sed -n "s/\/bin\/bash/\/bin\/sh/gp" passwd 
+root:x:0:0:root:/root:/bin/sh
+jack:x:1001:1001::/home/jack:/bin/sh
+
+#以 , 逗号分隔
+[root@RHCE ~]# sed -n "s,/bin/bash,/bin/sh,gp" passwd 
+root:x:0:0:root:/root:/bin/sh
+jack:x:1001:1001::/home/jack:/bin/sh
+
+#使用sed给文件1-3行批量添加注释
+[root@RHCE ~]# sed -i "1,3s/^/#/p" passwd 
+[root@RHCE ~]# sed -n "1,3p" passwd 
+#root:x:0:0:root:/root:/bin/bash
+#root:x:0:0:root:/root:/bin/bash
+#lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+
+#使用sed给文件1-3行取消注释
+[root@RHCE ~]# sed -i "1,3s/^#//p" passwd 
+[root@RHCE ~]# sed -n "1,3p" passwd 
+root:x:0:0:root:/root:/bin/bash
+root:x:0:0:root:/root:/bin/bash
+root:x:0:0:root:/root:/bin/bash
+
+#删除文件中所有字母
+[root@RHCE ~]# vim a.txt 
+aaaabbbb
+1232414
+eeeeaaa
+21414
+aa
+[root@RHCE ~]# vim a.txt 
+[root@RHCE ~]# sed -i "s/[a-Z]//g" a.txt 
+[root@RHCE ~]# cat a.txt 
+
+1232414
+
+21414
+
+#删除文件中所有数字
+[root@RHCE ~]# vim b.txt 
+aaaabbbb
+1232414
+eeeeaaa
+21414
+aa
+[root@RHCE ~]# sed -i "s/[0-9]//g" b.txt 
+[root@RHCE ~]# cat b.txt 
+aaaabbbb
+
+eeeeaaa
+
+aa
+
+#导入文件
+[root@RHCE ~]# vim d.txt 
+xxxxxxxx
+yyyyyyyy
+zzzzzzzz
+[root@RHCE ~]# vim a.txt 
+hello java
+hello C++
+hello python
+hello js
+#将a.txt导入到d.txt;默认读一行导一遍
+[root@RHCE ~]# sed -i 'r/root/a.txt' /root/d.txt 
+[root@RHCE ~]# cat d.txt 
+xxxxxxxx
+hello java
+hello C++
+hello python
+hello js
+yyyyyyyy
+hello java
+hello C++
+hello python
+hello js
+zzzzzzzz
+hello java
+hello C++
+hello python
+hello js
+#指定导入的行，将a.txt导入到d.txt第一行后
+[root@RHCE ~]# sed -i "1r/root/a.txt" /root/d.txt
+[root@RHCE ~]# cat d.txt 
+xxxxxxxx
+hello java
+hello C++
+hello python
+hello js
+yyyyyyyy
+zzzzzzzz
+#将a.txt导入到d.txt的1-3行都导入一遍
+[root@RHCE ~]# sed -i "1,3r a.txt" d.txt 
+[root@RHCE ~]# cat d.txt 
+xxxxxxxx
+hello java
+hello C++
+hello python
+hello js
+yyyyyyyy
+hello java
+hello C++
+hello python
+hello js
+zzzzzzzz
+hello java
+hello C++
+hello python
+hello js
+
+#将a.txt第一行导入到e.txt中
+[root@RHCE ~]# sed '1w e.txt' a.txt 
+hello java
+你好，Java
+hello C++
+hello python
+你好，Java
+hello js
+[root@RHCE ~]# cat e.txt 
+hello java
+```
+
+#### awk编程语言
+
+- awk编程语言/数据处理引擎
+- awk: Aho Weinberger Kernighan,
+- 基于模式匹配检查输入文本，逐行处理并输出，获取指定的数据
+- awk过滤数据时支持仅打印某一列，如：第一列、第四列....
+- awk命令格式：
+  - awk [选项] '条件1{指令} 条件2{指令}' 文件名
+  - 前置命令｜awk [选项] '条件{指令}'
+- 常用指令：print 打印指令
+- 常用选项： -F #指定分隔符，如不指定分隔符，默认以空格或tab键为默认分隔符，可通过[]集合匹配多种单个字符
+- awk内置变量：$1第一列，$2第二列，$3第三列，依次类推，NR文件当前行号，NF文件当列数
+
+```shell
+[root@RHCE ~]# vim test.txt
+how are you
+very well thanks
+#打印文件第一列和第二列
+[root@RHCE ~]# awk '{print $1,$3}' test.txt 
+how you
+very thanks
+
+#手动指定以:分隔符分隔打印第一列和第七列
+[root@RHCE ~]# awk -F[:/] '{print $1,$7}' passwd 
+root root
+bin bin
+daemon sbin
+adm var
+....
+
+#通过集合匹配多种单个字符作为分隔符，打印用户名和解释器字段
+[root@RHCE ~]# awk -F[:/] '{print $1,$10}' passwd 
+root bash
+bin nologin
+daemon nologin
+adm sbin
+....
+
+#通过正则表达式过滤以root开头的行打印第1列和第7列
+[root@RHCE ~]# awk -F: '/^root/ {print $1,$7}' passwd 
+root /bin/bash
+
+#打印文件每一行和每一行的列数
+[root@RHCE ~]# awk -F: '{print NR,NF}' passwd 
+1 7
+2 7
+3 7
+4 7
+5 7
+....
+
+#打印文件以root开头的最后一列
+[root@RHCE ~]# awk -F: '/^root/{print $NF}' passwd 
+/bin/bash
+
+#通过常量打印执行的列
+[root@RHCE ~]# awk -F: '{print "用户名：" $1,"解释器："$7}' passwd 
+用户名：root 解释器：/bin/bash
+用户名：bin 解释器：/sbin/nologin
+用户名：daemon 解释器：/sbin/nologin
+用户名：adm 解释器：/sbin/nologin
+
+#匹配第一列包含root的行
+[root@RHCE ~]# awk -F: '$1~/root/' passwd 
+root:x:0:0:root:/root:/bin/bash
+
+#排除第七列nologin的行，打印第一列与第七列
+[root@RHCE ~]# awk -F: '$7!~/nologin/ {print $1,$7}' passwd 
+root /bin/bash
+sync /bin/sync
+shutdown /sbin/shutdown
+halt /sbin/halt
+
+#利用扩展正则过滤，以root或者adm开头的行，打印第一列与第七列
+[root@RHCE ~]# awk -F: '/^(root|adm)/ {print $1,$7}' passwd 
+root /bin/bash
+adm /sbin/nologin
+```
+
+- awk使用数值/字符串比较设置条件
+  - 等于： ==
+  - 不等于： !=
+  - 大于： >
+  - 大于等于： >=
+  - 小于： <
+  - 小于等于： <=
+
+```shell
+#打印行号等于3
+[root@RHCE ~]# awk 'NR==3 {print $1,$3,$7}' passwd 
+daemon:x:2:2:daemon:/sbin:/sbin/nologin  
+
+#打印文件中第3列大于等于1000，打印第1列，3列，7列
+[root@RHCE ~]# awk -F: '$3>=1000 {print $1,$3,$7}' passwd 
+nobody 65534 /sbin/nologin
+
+#打印文件中第三列小于1000，打印第1列，3列，7列
+[root@RHCE ~]# awk -F: '$3<1000 {print $1,$3,$7}' passwd 
+root 0 /bin/bash
+bin 1 /sbin/nologin[root@RHCE ~]# awk -F: '$3>500 && $3<1000 {print $1,$3,$7}' passwd 
+systemd-coredump 999 /sbin/nologin
+polkitd 998 /sbin/nologin
+unbound 997 /sbin/nologin
+sssd 996 /sbin/nologin
+daemon 2 /sbin/nologin
+adm 3 /sbin/nologin
+....
+#打印文件中第三列大于500并且小于1000，打印第1列，3列，7列
+[root@RHCE ~]# awk -F: '$3>500 && $3<1000 {print $1,$3,$7}' passwd 
+systemd-coredump 999 /sbin/nologin
+polkitd 998 /sbin/nologin
+unbound 997 /sbin/nologin
+sssd 996 /sbin/nologin
+
+#打印第一列不等于root的行
+[root@RHCE ~]# awk -F: '$1!="root" {print}' passwd 
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+....
+```
+
+- awk过滤时机：awk 'BEGIN{指令} {指令}END{指令}' 文件名
+  - BEGIN{指令}  #读取文件内容之前执行的指令，指令执行一次，行前执行
+  - {指令}   #读取文件过程中执行，指令逐行执行，读一次，执行一次
+  - END{指令}   #读取文件内容结束后执行指令，指令执行一次，行后执行
+
+```shell
+#定义变量
+[root@RHCE ~]# awk 'BEGIN{a=1;print a+10}'
+11
+#四则运算
+[root@RHCE ~]# awk 'BEGIN{a=1;print a+10}'
+11
+[root@RHCE ~]# awk 'BEGIN{a=10;print a/5}'
+2
+[root@RHCE ~]# awk 'BEGIN{a=10;print a*5}'
+50
+[root@RHCE ~]# awk 'BEGIN{a=10;print a%5}'
+0
+[root@RHCE ~]# awk 'BEGIN{a=10;print a-5}'
+5
+
+#通过awk统计系统里使用bash解释器的用户有多少个
+[root@RHCE ~]# awk 'BEGIN{count=0}/bash$/{count++}END{print count}' /etc/passwd
+3
+```
+
+- awk分支结构
+  - if单分支格式：if(条件){指令}
+  - if双分支格式：if(条件){指令}else{指令}
+
+```shell
+#if单分支统计passwd文件中uid大于或等于1000的用户个数
+[root@RHCE ~]# awk -F: '{if($3>=1000){count++}}END{print count}' /etc/passwd
+3
+#if双分支统计passwd文件中uid大于等于1000的用户，和小于1000的用户个数
+[root@RHCE ~]# awk -F: '{if($3>=1000){a++}else{b++}}END{print a,b}' /etc/passwd
+3 21
+```
+
+- awk数组
+  - 定义数组格式1：数组名[下标]=值
+  - 定义数组格式2:   数组名[下标]
+  - 数组的用法：for (变量名 in 数组名){print 数组名[变量]}
+
+```shell
+[root@RHCE ~]# awk 'BEGIN{x[0]=10;x[1]=20;x[2]=30;print x[0],x[1],x[2]}'
+10 20 30
+[root@RHCE ~]# awk 'BEGIN{x[0]++;print x[0]}'
+1
+```
+
+- awk循环结构
+  - 命令格式：for (变量名 in 数组名){print 数组名[变量]}
+
+```shell
+[root@RHCE ~]# awk 'BEGIN{x[0]=11;x[1]=22;x[2]=33; for(i in x){print i,x[i]}}'
+0 11
+1 22
+2 33
+```
+
+- awk命令格式2:前置命令｜awk [选项] '条件{指令}'
+
+```shell
+#通过awk打印剩余内存容量
+[root@RHCE ~]# free -h |awk '/^Mem/{print $4}'
+1.2Gi
+
+#通过awk监控网卡实时流量
+[root@RHCE ~]# vim net_while.sh 
+#!/bin/bash
+while :
+do
+        clear
+        ifconfig ens160 |awk '/inet /{print "IP:"$2}'
+        ifconfig ens160 |awk '/RX p/{print "RX:"$5}'
+        ifconfig ens160 |awk '/TX p/{print "TX:"$5}'
+        sleep 0.4
+done
+IP:192.168.49.135
+RX:1396200
+TX:1012851
+
+#使用awk过滤系统根分区使用情况
+[root@RHCE ~]# df -h / |awk '/\// {print $4}'|awk -FG '{print $1}'
+25
+
+#过滤根分区剩余空间与物理内存空间
+[root@RHCE ~]# vim df_free.sh 
+#!/bin/bash
+df -h / |awk '/\// {print "根分区剩余空间:"$4}'
+free -h |awk '/^Mem/{print "物理内存剩余空间:"$4}'
+[root@RHCE ~]# ./df_free.sh 
+根分区剩余空间:25G
+物理内存剩余空间:1.2Gi
+
+#通过awk统计用户登录系统的次数
+[root@RHCE ~]# who | awk '{ip[$1]++}END{for(i in ip){print i,ip[i]}}'
+tom 1
+root 3
 ```
 
