@@ -1141,7 +1141,7 @@ canvs
 #### 修改网卡IP地址
 
 - 网卡配置文件：/etc/sysconfig/network-scripts/网卡名
-- systemctl restart network  #重启网络
+- systemctl restart network  #重启网络,Redhat8以上不支持
 - ifup 网卡名     #启动该网卡设备
 - ifdown 网卡名   #禁用网卡名
 - 使用**nmcli**命令修改网卡IP地址
@@ -1151,9 +1151,11 @@ canvs
     - manual：自动配置
     - ipv4.addresses 192.168.49.200/24 ：ipv4地址/子网掩码
     - connection.autoconnect yes ：开机自动连接
+- nmcli常用命令
   - nmcli connection up ens160：激活网卡
   - nmcli connection down ens160：关闭网卡
   - nmcli connection reload ens160：重载网卡
+
 
 #### host命令
 
@@ -5373,4 +5375,616 @@ free -h |awk '/^Mem/{print "物理内存剩余空间:"$4}'
 tom 1
 root 3
 ```
+
+#### cron周期性计划任务
+
+- cron周期性计划任务用来定期执行程序，目前最主要的用途是定期备份数据
+- 软件包名：cronie、crontabs
+- 日志文件：/var/log/cron
+- 服务名：crond
+- 常用命令：
+  - crontab：用于管理计划任务
+  - crontab -e -u 用户名 #编写计划任务
+  - crontab -l -u 用户名 #查看计划任务
+  - crontab -r -u 用户名 #清除所有计划任务
+
+```shell
+#cron定义时间格式
+*  *  *  *  *  执行命令
+分 时 日  月 周
+
+分钟：从0-59之间的整数
+小时：从0-12之间的整数
+日期：从1-31之间的整数
+月份：从1-12之间的整数
+星期：从0-6之间的整数，0代表周日
+
+* #每分，没时，每天，每月，每周
+, #分隔多个不连续的时间
+- #指定连续时间范围
+/ #指定执行任务的时间间隔
+
+#每周五早上8点执行一个任务
+00 8 * * 5
+#每天晚上23:30执行一个任务
+30 23 * * *
+#每月1号23：30执行一个任务
+30 23 1 * *
+#每月1、3、5号23:30执行一个任务
+30 23 1,3,5 * *
+#每周1、3、5号3:00执行一个任务
+00 3 * * 1,3,5
+#每月2-5号3:30分执行一个任务
+30 3 2-5 * *
+#没两个小时执行一个任务
+00 */2 * * *
+#没两分钟执行一个任务
+*/2 * * * * 
+
+#启动crond服务
+[root@RHCE ~]# systemctl start crond
+#停止crond服务
+[root@RHCE ~]# systemctl stop crond
+#查看crond状态
+[root@RHCE ~]# systemctl status crond
+# 每分钟执行date 将输出追加到/root/date.txt
+[root@RHCE ~]# crontab -l
+*/1 * * * * date >> /root/date.txt
+[root@RHCE ~]# cat /root/date.txt 
+2023年 05月 06日 星期六 17:03:01 CST
+#清空所有定时任务
+[root@RHCE ~]# crontab -r
+[root@RHCE ~]# crontab -l
+no crontab for root
+#没周六17:13分备份/var/log/日志文件
+[root@RHCE ~]# crontab -l
+13 17 * * 6 tar -czf `date +%F`-log.tar.gz /var/log/*.log
+```
+
+#### SELinux系统内核安全机
+
+- Security-Enhanced Linux美国NSA国家安全局主导开发，一套增强Linux系统安全的强制访问控制体系
+- 集成了L inux内核（2.6及以上）针对用户、进程、目录和问津啊提供预设的保护策略，以及管理工具
+- SELinux运行模式
+  - enforcing #强制模式
+  - permissive #宽松模式
+  - disabled #禁用模式
+- SELinux运行模式切换
+  - 查看当前运行模式：getenforce
+  - 临时切换运行模式：setenforce 1｜0 #1强制模式，0宽松模式
+
+```shell
+#查看当前运行模式
+[root@RHCE crontabs]# getenforce
+Enforcing
+#修改当前运行模式
+[root@RHCE crontabs]# setenforce 0
+[root@RHCE crontabs]# getenforce
+Permissive
+```
+
+- SELinux配置文件：/etc/selinux/config
+
+```shell
+#永久修改
+[root@RHCE crontabs]# cat /etc/selinux/config 
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+# SELINUXTYPE= can take one of these three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected. 
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+```
+
+#### 常见协议及端口
+
+**/etc/services文件记录了所有协议及其端口**
+
+- http：超文本传输协议；默认端口80
+- https：安全的超文本传输协议；默认端口443
+- ftp：文件传输协议；默认端口数据传输端口：20，口令端口：21
+- tftp：简单文件传输协议；默认端口69
+- DNS：域名解析协议；默认端口53
+- telnet：远程管理协议；默认端口23
+- smtp：用户发邮件协议；默认端口25
+- Pop3：用户收邮件协议；默认端口110
+- ssh：远程连接协议；默认端口22
+
+#### 安全防护firewalld防火墙
+
+- 防火墙分为硬件防火墙和软件防火墙
+- 防火墙：匹配及停止；防火墙过滤入站请求
+
+- 系统服务：firewalld，CentOS7默认使用的防火墙，CentOS6默认使用防火墙iptables
+- 防火墙预设安全区域
+  - public：仅允许访问本机的sshd、dhcp、ping等少量服务
+  - trusted：允许任何访问
+  - block：阻塞任何来访请求 
+  - drop：丢弃任何来访的数据包
+- 常用命令
+  - systemctl start firewalld  #开启防火墙
+  - systemctl status firewalld #查看防火墙状态
+  - systemctl stop firewalld  #关闭防火墙
+
+```shell
+#开启防火墙
+[root@RHCE crontabs]# systemctl start firewalld
+#查看防火期状态
+[root@RHCE crontabs]# systemctl status firewalld
+#关闭防火墙
+[root@RHCE crontabs]# systemctl stop firewalld
+```
+
+- 管理工具：firewall-cmd
+  - 常用命令：
+    - firewall-cmd --get-default-zone  #查看防火墙默认区域
+    - firewall-cmd --set-default-zone=区域名  #设置默认区域
+    - firewall-cmd --zone=区域名 --list-all  #查看区域名的所有规则
+    - firewall-cmd --zone=区域名 --add-规则名=服务名  #为区域添加服务
+    - firewall-cmd --reload  #重新加载防火墙配置
+    - firewall-cmd --zone=区域名  --remove-规则名=规则   #删除规则
+  - 选项：
+    - --permanent    #永久配置规则如：firewall-cmd --permanent --zone=区域名 --add-service=服务名
+
+```shell
+#查看防火墙默认区域
+[root@RHCE crontabs]# firewall-cmd --get-default-zone
+public
+#将防火墙默认区域设置为block
+[root@RHCE ~]# firewall-cmd --set-default-zone=block
+success
+[root@RHCE ~]# firewall-cmd --get-default-zone
+block
+#查看public所有规则
+[root@RHCE ~]# firewall-cmd --zone=public --list-all
+public
+  target: default	#默认区域
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 	#没写就是所有ip
+  services: cockpit dhcpv6-client ssh	#允许访问的服务
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+  
+#为public添加http规则
+[root@RHCE ~]# firewall-cmd --permanent --zone=public --add-service=http
+success
+#拥挤配置防火墙规则需要重载防火墙配置
+[root@RHCE ~]# firewall-cmd --reload
+success
+[root@RHCE ~]# firewall-cmd --zone=public --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: ens160
+  sources: 
+  services: cockpit dhcpv6-client http ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+#为public删除http规则
+[root@RHCE ~]# firewall-cmd --zone=public --remove-service=http
+success
+#为public永久删除http规则
+[root@RHCE ~]# firewall-cmd --permanent --zone=public --remove-service=http
+success
+
+#单独拒绝某一个ip
+[root@RHCE ~]# firewall-cmd --zone=block --add-source=192.168.49.134
+success
+[root@RHCE ~]# firewall-cmd --zone=block --list-all
+block (active)
+  target: %%REJECT%%
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 192.168.49.134
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+#现在192.168.49.134 ping 不通49.135
+[root@localhost ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+From 192.168.49.135 icmp_seq=1 Packet filtered
+From 192.168.49.135 icmp_seq=2 Packet filtered
+#删除拒绝192.168.49.134的访问
+[root@RHCE ~]# firewall-cmd --zone=block --remove-source=192.168.49.134
+success
+[root@localhost ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+64 bytes from 192.168.49.135: icmp_seq=1 ttl=64 time=0.496 ms
+64 bytes from 192.168.49.135: icmp_seq=2 ttl=64 time=0.252 ms
+```
+
+- 防火墙端口映射
+  - 本地应用端口重定向（端口1 > 端口2）从客户机访问端口1的请求，自动映射到本机端口2
+
+```shell
+[root@RHCE ~]# firewall-cmd --zone=public --add-forward-port=port=5432:proto=tcp:toport=80
+success
+#命令解释
+--add--forward  #添加转发端口
+port=port=5432	#指定转发端口
+proto=tcp				#指定tcp协议
+toport=80				#指定目标端口80端口
+[root@RHCE ~]# firewall-cmd --zone=public --list-all
+public
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: port=5432:proto=tcp:toport=80:toaddr=
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+```
+
+#### iptables防火墙
+
+- netfilter/iptables：工作在主机或网络的边缘，对于进出本主机或网络的报文根据先定义号的检查做匹配检测，对于能够被规则所匹配到的报文做处相应的处理
+
+#### iptables框架
+
+- **iptables的4表**
+  - filter：数据过滤表
+    - 包含三个链：INPUT，UOTPUT，FORWARD
+  - nat：地址转换表，不能过滤数据包，仅仅修改数据包中的ip和端口
+    - 包含四个链：PREROUTING，POSTROUTING，OUTPUT，INPUT
+  - raw：状态跟踪表，决定是否跟踪数据包
+    - 包含两个链：OUTPUT，PREROUTING
+  - mangle：包标记录，不能过滤也不能修改数据包
+    - 包含五个链：PREROUTING，FORWARD，POSTROUTING，INPUT，OUTPUT
+- **iptables的5链**
+  - PREROUTING链：路由前规则，防火墙在刚刚接收到数据包，对数据包进行路径选择之前所需要的链
+  - FORWARD链：转发规则，将数据包从一个网络转发到另外一个网络所需要的链
+  - POSTROUTING链：路由后规则，对数据包进行路径选择后，并在防火墙即将把数据包转发出去之前，所需要的链
+  - INPUT链：入站规则，限制客户端数据包目的地址是防火墙主机的上层应用所需要的链
+  - OUTPUT链：出战规则，限制防火墙主机上层应用产生的数据包是否可以出战需要的链
+- **目标操作：**
+  - ACCEPT：允许通过/放行
+  - DROP：直接丢弃，不给出任何回应
+  - REJECT：拒绝通过
+  - LOG：记录日志，然后传给下一条规则
+
+#### iptables命令格式
+
+- 命令格式：iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
+- 添加规则：
+  - -A   #追加一条防火墙规则至链的末尾
+  - -I    #大写的i插入一条防火墙规则至链的开头
+- 查看规则：
+  - -L    #查看iptables所有规则
+  - -n    #以数字形式显示地址、端口等信息；-n选项必须在最左边
+  - --line-numbers  #查看规则时，显示规则的行号
+- 删除规则：
+  - -D  #删除链内指定的序号（或内容）的一条规则
+  - -F   #清空所有规则
+- 默认规则：
+  - -P   #为指定的链设置默认规则
+
+#### iptables防火墙规则的条件
+
+- 通用匹配：
+  - 协议匹配：-p   #协议名称
+  - 地址匹配：-s 源地址、-d 目标地址
+  - 接口匹配：-i 接受数据的网卡、-o 发送数据的网卡
+  - 端口匹配：--sport 源端口号、--dport 目标端口号
+  - ICMP类别匹配：--icmp-type ICMP 类型
+- 创建规则注意事项
+  - 可以不指定表，默认为filter表
+  - 如果没有找到匹配条件，执行防火墙默认规则
+  - 选项/链名/目标操作用大写字母，其余都小写
+
+```shell
+#安装iptables
+[root@service135 ~]# yum install iptables-services -y
+#启动iptables服务
+[root@service135 ~]# systemctl start iptables
+```
+
+#### 主机型防火墙规则配置
+
+```shell
+#查看filter表规则
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination   
+#查看nat表规则
+[root@service135 ~]# iptables -t nat -nL
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination  
+#查看raw表规则
+[root@service135 ~]# iptables -t raw -nL
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination  
+#查看mangle表规则
+[root@service135 ~]# iptables -t mangle -nL
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination     
+
+#拒绝外来icmp数据包，添加其他ip拒绝ping；REJECT有回应
+[root@service135 ~]# iptables -t filter -I INPUT -p icmp -j REJECT
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     icmp --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination  
+# 客户端ping不通过
+[root@client134 ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+From 192.168.49.135 icmp_seq=1 Destination Port Unreachable
+From 192.168.49.135 icmp_seq=2 Destination Port Unreachable
+
+#丢弃外来的icmp数据包；将icmp服务设置DROP
+[root@service135 ~]# iptables -t filter -I INPUT -p icmp -j DROP
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+DROP       icmp --  0.0.0.0/0            0.0.0.0/0           
+REJECT     icmp --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination  
+#客户端没有回应
+[root@client134 ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+
+#允许外来的icmp数据包；将icmp服务设置ACCEPT
+[root@service135 ~]# iptables -t filter -I INPUT -p icmp -j ACCEPT
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+DROP       icmp --  0.0.0.0/0            0.0.0.0/0           
+REJECT     icmp --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+#客户端能ping通
+[root@client134 ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+64 bytes from 192.168.49.135: icmp_seq=1 ttl=64 time=0.500 ms
+64 bytes from 192.168.49.135: icmp_seq=2 ttl=64 time=0.291 ms
+
+#以行号显示规则
+[root@service135 ~]# iptables -t filter -nL --line-numbers
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source               destination         
+1    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+2    DROP       icmp --  0.0.0.0/0            0.0.0.0/0           
+3    REJECT     icmp --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+4    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+5    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+6    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+7    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+8    REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+num  target     prot opt source               destination         
+1    REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination     
+
+#以行号删除filter的input链的第8条规则
+[root@service135 ~]# iptables -t filter -D INPUT 8
+[root@service135 ~]# iptables -t filter -nL --line-numbers
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source               destination         
+1    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+2    DROP       icmp --  0.0.0.0/0            0.0.0.0/0           
+3    REJECT     icmp --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-port-unreachable
+4    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+5    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+6    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+7    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+
+Chain FORWARD (policy ACCEPT)
+num  target     prot opt source               destination         
+1    REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination   
+
+#清空filter的INPUT链
+[root@service135 ~]# iptables -t filter -F INPUT
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+#清空filter表里面的所有规则
+[root@service135 ~]# iptables -t filter -F
+[root@service135 ~]# iptables -t filter -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination   
+
+#为filter表INPUT链添加规则，允许任何人使用TCP协议访问本机
+[root@service135 ~]# iptables -t filter -I INPUT -p tcp -j ACCEPT
+#为filter表INPUT链添加规则，允许任何人使用UDP协议访问本机
+[root@service135 ~]# iptables -t filter -I INPUT -p udp -j ACCEPT
+#查看指定INPUT链的规则 
+[root@service135 ~]# iptables -t filter -nL INPUT
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           
+```
+
+#### 设置防火墙默认规则
+
+```shell
+#查看filter表
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination     
+#允许22号端口被访问
+[root@service135 ~]# iptables -t filter -I INPUT -p tcp --dport 22 -j ACCEPT
+[root@service135 ~]# iptables -t filter -nL INPUT
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:22
+#将filter表INPUT链默认规则修改为DROP
+[root@service135 ~]# iptables -t filter -P INPUT DROP
+
+#清空防火墙规则
+[root@service135 ~]# iptables -t filter -F
+#设置防火墙拒绝所有80端口的访问
+[root@service135 ~]# iptables -t filter -I INPUT -p tcp --dport 80 -j REJECT
+[root@service135 ~]# iptables -t filter -nL INPUT
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 reject-with icmp-port-un
+#客户端被拒绝
+[root@client134 ~]#  curl 192.168.49.135
+curl: (7) Failed to connect to 192.168.49.135 port 80: 拒绝连接
+
+#单独拒绝某一个ip访问
+[root@service135 ~]# iptables -t filter -F
+[root@service135 ~]# iptables -t filter -I INPUT -s 192.168.49.134 -j REJECT
+#客户端1拒绝访问
+[root@client134 ~]# curl http://192.168.49.135
+curl: (7) Failed to connect to 192.168.49.135 port 80: 拒绝连接
+[root@client1 ~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+From 192.168.49.135 icmp_seq=1 Destination Port Unreachable
+#客户端2正常访问
+[root@client139~]# ping 192.168.49.135
+PING 192.168.49.135 (192.168.49.135) 56(84) bytes of data.
+64 bytes from 192.168.49.135: icmp_seq=1 ttl=64 time=0.427 ms
+
+#清空防火墙规则
+[root@service135 ~]# iptables -t filter -F
+#设置防火墙网卡拒绝所有80端口的访问
+[root@service135 ~]# iptables -t filter -I INPUT -p  tcp -i ens160 --dport 80 -j REJECT
+[root@service135 ~]# iptables -t filter -nL INPUT
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 reject-with icmp-port-unreachable
+#客户端访问被拒绝
+[root@client134 ~]# curl http://192.168.49.135
+curl: (7) Failed to connect to 192.168.49.135 port 80: 拒绝连接
+
+#设置防火墙拒绝某个网断
+[root@service135 ~]# iptables -t filter -F
+[root@service135 ~]# iptables -t filter -I INPUT -s 192.168.49.0/24 -j REJECT
+[root@service135 /]# iptables -t filter -nL INPUT
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  192.168.49.0/24      0.0.0.0/0            reject-with icmp-port-unreachable
+```
+
+#### 网络型防火墙规则配置
+
+- 通过路由转发配置网络型防火墙
+
+| 主机名 | 网卡、IP地址、网关设置                                       |
+| ------ | ------------------------------------------------------------ |
+| client | ens160：192.168.49.134 ，网关指向防火墙外网IP：192.168.1.135 |
+| proxy  | ens224内网ip：192.168.0.26，ens160外网IP：192.168.1.135      |
+| web    | ens160:  192.168.0.27，网关指向防火墙内网ip：192.168.0.26    |
 
