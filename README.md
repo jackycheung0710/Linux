@@ -1834,6 +1834,8 @@ touch: cannot touch 'jack.txt': Permission denied
 
 #### grep文件内容过滤
 
+![grepcomic](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/grepcomic.jpeg)
+
 - grep 用于查找文件中符合条件的字符串，它能利用正则表达式搜索文件中的字符串，并把匹配到的字符串的行打印出来
 - 命令格式：grep [-选项]  "查找条件" 目标文件
 - 常用选项：
@@ -4861,6 +4863,8 @@ jack:x:1001:1001::/home/jack:/bin/bash
 
 #### sed流式编辑器
 
+![[[sedcomic]()](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/sedcomic.jpeg)
+
 - sed是一个非交互式的文本编辑器，实现的功能和vim相同，主要是对文件内容进行输出、删除、替换、复制、剪切、导入、导出等功能
 - 命令格式：
   - 前置命令 | sed [选项] '[指令]' 文件名
@@ -5151,6 +5155,8 @@ hello java
 ```
 
 #### awk编程语言
+
+![DeLcVfSWAAAw6OZ](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/DeLcVfSWAAAw6OZ.jpeg)
 
 - awk编程语言/数据处理引擎
 - awk: Aho Weinberger Kernighan,
@@ -5683,6 +5689,7 @@ public
   - -F   #清空所有规则
 - 默认规则：
   - -P   #为指定的链设置默认规则
+- service iptables save 永久保存规则
 
 #### iptables防火墙规则的条件
 
@@ -5988,3 +5995,495 @@ REJECT     all  --  192.168.49.0/24      0.0.0.0/0            reject-with icmp-p
 | proxy  | ens224内网ip：192.168.0.26，ens160外网IP：192.168.1.135      |
 | web    | ens160:  192.168.0.27，网关指向防火墙内网ip：192.168.0.26    |
 
+![linux](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linux.png)
+
+##### 防火墙主机添加网卡转发功能；IP：192.168.0.26/24 192.168.1.135/24
+
+```shell
+#开启路由转发功能
+[root@proxy ~]# echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf 
+#加载配置立即生效
+[root@proxy ~]# sysctl -p
+net.ipv4.ip_forward = 1 
+#查看路由转发
+[root@proxy ~]# cat /proc/sys/net/ipv4/ip_forward
+1
+```
+
+##### web服务器IP：192.168.0.27 将网关指向防火墙内网IP 192.168.0.26
+
+```shell
+#开启web服务
+[root@client ~]# systemctl start httpd
+```
+
+##### client客户端服务器IP：192.168.49.134,将网关指向防火墙主机第二块网卡：192.168.0.26
+
+- 访问测试：curl http://192.168.0.27
+
+```shell
+#防火墙没有开发路由转发功能；访问不了
+[root@client ~]# curl http://192.168.0.27
+curl: (7) Failed to connect to 192.168.0.27 port 80: 没有到主机的路由
+#防火墙主机开启了路由转发功能，正常访问
+[root@client ~]# curl http://192.168.0.27
+welcome to my homepage
+```
+
+- 防火墙主机配置规则：拒绝192.168.49.134访问web服务器80端口
+
+```shell
+#拒绝客户端访问web服务器80端口
+[root@proxy ~]# iptables -t filter -I FORWARD -s 192.168.49.134 -p tcp --dport 80 -j REJECT 
+[root@proxy ~]# iptables -t filter -nL FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     tcp  --  192.168.49.134       0.0.0.0/0            tcp dpt:80 reject-with icmp-port-unreachable
+#客户端服务器不能访问web服务
+[root@client ~]# curl http://192.168.0.27
+curl: (7) Failed to connect to 192.168.0.27 port 80: 拒绝连接
+#防火墙主机可以访问web服务
+[root@proxy ~]# curl http://192.168.0.27
+welcome to my homepage
+```
+
+- 拒绝外网访问3306端口
+
+```shell
+[root@proxy ~]# iptables -t filter -F
+[root@proxy ~]# iptables -t filter -I FORWARD -p tcp --dport 3306 -j REJECT
+[root@proxy ~]# iptables -t filter -nL FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:3306 reject-with icmp-port-unreachable
+```
+
+- 防火墙主机禁止192.168.49.134访问web服务；修改client客户端ip位49.141
+
+```shell
+[root@client ~]# vim /etc/sysconfig/network-scripts/ifcfg-ens160 
+[root@client ~]# nmcli connection reload ens160
+[root@client ~]# nmcli connection up ens160
+#客户端也能访问
+[root@client ~]# curl http://192.168.0.27
+welcome to my homepage
+```
+
+#### 防火墙扩展模块
+
+- 命令格式：iptables 选项 链名 -m 扩展模块 --具体扩展条件 -j 动作
+
+```shell
+#根据MAC地址封锁主机
+#安装nmap工具
+[root@proxy Packages]# yum -y install nmap
+#扫描对方主机的mac地址
+[root@proxy Packages]# nmap -sn 192.168.49.134
+Starting Nmap 7.70 ( https://nmap.org ) at 2023-05-07 15:10 CST
+Nmap scan report for 192.168.49.134
+Host is up (-0.20s latency).
+MAC Address: 00:0C:29:41:04:22 (VMware)
+Nmap done: 1 IP address (1 host up) scanned in 13.22 seconds
+
+#拒绝指定mac地址访问内网80端口
+[root@proxy ~]# iptables -t filter -I FORWARD -p tcp --dport 80 -m mac --mac-source 00:0C:29:41:04:22 -j REJECT 
+[root@proxy ~]# iptables -t filter -nL FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 MAC 00:0C:29:41:04:22 reject-with icmp-port-unreachable
+REJECT     tcp  --  192.168.49.134       0.0.0.0/0            tcp dpt:80 reject-with icmp-port-unreachabl
+
+#客户端不能访问
+[root@client ~]# curl http://192.168.0.27
+curl: (7) Failed to connect to 192.168.0.27 port 80: 拒绝连接
+```
+
+#### 基于多端口设置过滤规则
+
+- multiport：多端口模块
+- iprange：ip范围模块
+  - --src-range：源IP
+  - --dst-range：目标IP
+
+```shell
+[root@proxy ~]# iptables -t filter -I FORWARD -p tcp -m multiport --dports 20,21,80,22,443 -j ACCEPT
+[root@proxy ~]# iptables -t filter -nL FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            multiport dports 20,21,80,22,443
+
+#拒绝ip段范围访问
+[root@proxy ~]# iptables -t filter -I FORWARD -m iprange --src-range 192.168.49.10-192.168.49.20 -j REJECT
+[root@proxy ~]# iptables -t filter -nL FORWARD
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            source IP range 192.168.49.10-192.168.49.20 reject-with icmp-port-unreachable
+```
+
+#### 配置SNAT实现共享上网
+
+- 通过防火墙规则，允许局域网中的主机访问外网
+
+| 主机名          | 网卡、IP地址、网关设置                                  |
+| --------------- | ------------------------------------------------------- |
+| 内部主机client  | ens160：192.168.49.141 ，网关：192.168.1.135            |
+| 内部防火墙proxy | ens224外网ip：192.168.0.26，ens160内网IP：192.168.1.135 |
+| 外部主机web     | ens160:  192.168.0.27，网关：192.168.0.26               |
+
+![zvzvzxvzsd](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/zvzvzxvzsd.png)
+
+```shell
+#实现192.168.49.0/24 转换为 192.168.0.26
+[root@proxy ~]# iptables -t nat -I POSTROUTING -s 192.168.49.0/24 -p tcp --dport 80 -j SNAT --to-source 192.168.0.26
+
+#POSTROUTING：路由后链
+#-s：指定源地址为192.168.49.0/24 网段地址
+#-p：通过tcp协议
+#--dport：访问目标的80端口时
+#-j SNAT：SNAT转换
+#--to-source：转换源地址为192.168.0.26
+
+[root@proxy ~]# iptables -t nat -nL POSTROUTING
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       tcp  --  192.168.49.0/24      0.0.0.0/0            tcp dpt:80 to:192.168.0.26
+
+#客户端访问web服务
+[root@client ~]# curl http://192.168.0.27
+welcome to my homepage
+[root@client ~]# curl http://192.168.0.27
+welcome to my homepage
+
+#web服务器查看访问日志
+[root@web ~]# tail -f /var/log/httpd/access_log 
+192.168.0.26 - - [07/May/2023:15:52:40 +0800] "GET / HTTP/1.1" 200 23 "-" "curl/7.61.1"
+192.168.0.26 - - [07/May/2023:15:52:46 +0800] "GET / HTTP/1.1" 200 23 "-" "curl/7.61.1"
+```
+
+#### sudo用户提权
+
+- 管理员提前为用户设置执行权限许可
+- 被授权用户有权知晓授权的命令
+- 配置文件：/etc/sudoers
+  - visudo #保存没有命令校验
+  - vim /etc/sudoers #保存没有命令校验
+- 命令格式：sudo 特权命令
+
+```shell
+#修改/etc/sudoers文件，为tom用户授予安装软件的功能和启动服务的功能
+[root@RHCE ~]# which yum
+/usr/bin/yum
+[root@RHCE ~]# which systemctl
+/usr/bin/systemctl
+[root@RHCE ~]# visudo
+100 root    ALL=(ALL)       ALL
+101 tom    ALL=(root)      /usr/bin/yum -i /usr/bin/systemctl start /usr/bin/systemctl status
+
+
+#tom上查看root授权的功能
+[tom@RHCE ~]$ sudo -l
+.....
+用户 tom 可以在 RHCE 上运行以下命令：
+    (root) /usr/bin/yum -i /usr/bin/systemctl start /usr/bin/systemctl status
+#tom上使用yum安装vsftpd
+[tom@RHCE ~]$ sudo yum -y install vsftpd
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+#为tom添加systemctl授权
+[root@RHCE ~]# visudo
+root    ALL=(ALL)       ALL
+tom     ALL=(root)      /usr/bin/yum,/usr/bin/systemctl 
+[tom@RHCE ~]$ sudo systemctl start httpd
+
+#为sudo机制启动日志记录功能，以便跟踪sudo执行操作
+[root@RHCE ~]# visudo
+root    ALL=(ALL)       ALL
+tom     ALL=(root)      /usr/bin/yum,/usr/bin/systemctl
+Defaults logfile="/var/log/sudo.log"
+[root@RHCE ~]# cat /var/log/sudo.log 
+May  7 17:59:15 : tom : TTY=pts/1 ; PWD=/var/log ; USER=root ;
+    COMMAND=/bin/systemctl status httpd
+```
+
+#### OpenSSH
+
+- OpenSSH开源免费提供ssh远程登录的程序
+- ssh协议端口：22/tcp
+- 服务名：sshd
+- ssh提供密钥认证登录方式
+- ssh-copy-id #用于拷贝私钥
+
+```shell
+#生成公私钥
+[root@RHCE ~]# ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): 
+Created directory '/root/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:KtdYZcKkCqwqIQzAcRo+/9wTVTJqylYkoh+0esgKo1U root@RHCE
+The key's randomart image is:
++---[RSA 2048]----+
+|oo.+ . ..o .     |
+|oo* o o+. +      |
+|.=ooE .+o.o      |
+|+.*oo.+ .+       |
+|*=.+.+ .S        |
+|*+. + .=.        |
+|=   .o+o.        |
+|.    o  .        |
+|                 |
++----[SHA256]-----+
+
+[root@RHCE ~]# ls .ssh/
+id_rsa  id_rsa.pub  known_hosts
+
+#将公钥拷贝到服务器
+[root@RHCE ~]# ssh-copy-id -i .ssh/id_rsa.pub root@192.168.49.141
+```
+
+#### scp远程复制工具
+
+- scp可以实现跨主机文件拷贝
+
+```shell
+#将本地文件拷贝至远程主机
+[root@RHCE ~]# scp /root/2023-05-06-log.tar.gz root@192.168.49.141:/root/
+2023-05-06-log.tar.gz                                                       100%  131KB  30.7MB/s   00:00
+[root@localhost ~]# ls
+2023-05-06-log.tar.gz
+
+#将远程主机文件拉取到本地
+[root@RHCE ~]# scp root@192.168.49.141:/root/141.txt /root/
+141.txt                                                                     100%    0     0.0KB/s   00:00    
+[root@RHCE ~]# ls 141.txt 
+141.txt
+```
+
+#### 提高ssh服务安全性
+
+- 配置文件：/etc/ssh/sshd_config
+
+```shell
+[root@RHCE ~]# cat /etc/ssh/sshd_config
+#Port 22 		#ssh默认监听端口
+#PermitRootLogin yes #是否允许root用户通过shh登录，yes允许，no不允许
+#PermitEmptyPasswords no	 #不允许空密码登录
+PasswordAuthentication yes	#允许用密码登录
+AllowUsers 用户1 用户2 用户3		#定义账号白名单
+#DenyUsers 用户1 用户2 用户3		#定义账号黑名单
+```
+
+#### 文件共享服务FTP
+
+![Raysync_FTP_Server](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Raysync_FTP_Server.png)
+
+- FTP（File Transfet Protocol）：文件传输协议
+- FTP是一种在互联网中基于TCP协议端到端的数据传输协议
+- 基于C/S架构，默认使用20、21端口
+  - 端口20（数据端口）用于数据传输
+  - 端口21（命令端口）用于接收客户端发出的相关FTP命令
+
+#### FTP工作模式
+
+- 主动模式：FTP客户端从本机的非特殊端口（>1023）连接FTP服务器的命令端口21，服务端通过本机的20号端口主动向客户端的随机端口发起连接请求，开始传输数据
+- 被动模式：FTP客户端通过向FTP服务器发送PASFV命令进入被动模式，FTP服务器会另外开一个随机端口，客户端主动连接到服务器随机端口后，开始传输数据
+- 可以实现ftp功能的软件
+  - WU-ftpd
+  - proftpd：专业的ftp软件
+  - pureftp：存粹的ftp软件
+  - vsftpd：非常安全的ftp服务器
+  - ServU：windows里的ftp软件
+- 客户端访问ftp服务器工具：
+  - ftp
+  - lftp、lftpget
+  - wget
+  - curl
+  - FileZilla：windows客户端工具，可从商店直接下载
+
+#### vsftpd介绍
+
+- vsftpd（very secure ftp daemon）非常安全的FTP守护进程；是一款运行在Linux操作系统上开源且免费FTP程序，不仅完全开源而且免费，还为我们提供了一个快速的、稳定的并且安全的服务
+
+#### vsftpd用户模式
+
+- 本地用户
+- 虚拟用户
+- 匿名用户
+
+#### vsftpd服务相关参数
+
+- /var/ftp #匿名用户共享目录
+- /etc/vsftpd #配置文件所在目录
+- /etc/vsftpd/vsftpd.conf #主配置文件
+- /usr/sbin/vsftpd #主程序文件
+- /etc/vsftpd/ftpusers #黑名单
+- /etc/vsftpd/user_list #控制名单（配置文件控制黑名单与白名单）
+- /var/log/xferlog #日志目录
+
+#### vsftpd配置文件
+
+```shell
+# 设置是否允许匿名用户登录
+anonymous_enable=NO
+# 匿名用户登录目录
+anon_root=/home/dgut/download2020
+
+# 用户只读配置
+# 设置 NO 表示用户可以浏览 FTP 目录和下载文件
+#anon_world_readable_only=NO
+
+#
+# 设置是否允许本地用户登录
+local_enable=YES
+
+# 设置本地用户目录（因为是映射到另一个用户配置目录，所以这里暂时不需要指定目录）
+#local_root=/home/dgut/robotlab2020
+
+# NO 不允许下载
+#download_enable=NO
+
+# 不同用户不同权限，将不同用户不同权限的配置映射到其他目录下的文件去配置
+user_config_dir=/etc/vsftpd_user_conf
+
+#
+# 是否允许本地用户对FTP服务器文件具有写权限，默认设置为YES允许
+# 因为具体的是否有此权限调整到/etc/vsftpd_user_conf配置了，所以这里注释掉，不打开
+#write_enable=YES
+#
+
+# 掩码，本地用户掩码默认为777，也可直接设置为缺省的022
+local_umask=022
+#
+
+# 匿名用户是否允许上传，须将全局的write_enable=YES。默认为YES
+anon_upload_enable=NO
+
+# 是否允许匿名用户创建新文件夹
+#anon_mkdir_write_enable=YES
+
+###
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+#chown_uploads=YES
+#chown_username=whoever
+#xferlog_file=/var/log/xferlog
+xferlog_std_format=YES
+#idle_session_timeout=600
+#data_connection_timeout=120
+#nopriv_user=ftpsecure
+#async_abor_enable=YES
+###
+
+# 是否以ASCII方式传输数据。默认情况下，服务器会忽略ASCII方式的请求。
+# 启用此选项将允许服务器以ASCII方式传输数据
+#ascii_upload_enable=YES
+#ascii_download_enable=YES
+
+###
+#ftpd_banner=Welcome to blah FTP service.
+#deny_email_enable=YES
+#banned_email_file=/etc/vsftpd/banned_emails
+###
+
+# 用于指定用户列表文件中的用户是否允许切换到上级目录。默认值为 NO。
+chroot_local_user=YES
+
+# 设置是否启用 chroot_list_file 配置项指定的用户列表文件。默认值为 NO。
+chroot_list_enable=NO
+
+# 用于指定用户列表文件，该文件用于控制哪些用户 可以 切换到用户家目录的 上级目录。
+#chroot_list_file=/etc/vsftpd/chroot_list
+
+###########################
+# 注：
+#（1）当chroot_local_user=YES，chroot_list_enable=YES 时，在 /etc/vsftpd.chroot_list 文件中
+#列出的用户，可以切换到其他目录；未在文件中列出的用户，不能切换到其他目录。
+#（2）当 chroot_local_user=NO，chroot_list_enable=YES 时，在 /etc/vsftpd.chroot_list 文件中
+#列出的用户，不能切换到其他目录；未在文件中列出的用户，可以切换到其他目录。
+# ！！（3）当 chroot_local_user=YES, chroot_list_enable=NO 时，所有的用户均不能切换到其他目录。
+#（4）当 chroot_local_user=NO, chroot_list_enable=NO 时，所有的用户均可以切换到其他目录。
+###########################
+
+#ls_recurse_enable=YES
+
+# 是否允许监听。
+# 如果设置为YES，则vsftpd将以独立模式运行，由vsftpd自己监听和处理IPv4端口的连接请求
+listen=YES
+
+# 设定是否支持IPV6。如要同时监听IPv4和IPv6端口，
+# 则必须运行两套vsftpd，采用两套配置文件
+# 同时确保其中有一个监听选项是被注释掉的
+#listen_ipv6=YES
+
+# 虚拟用户使用 PAM 认证方式
+pam_service_name=vsftpd
+
+###
+#控制用户访问 FTP 的文件，里面写着用户名称。一个用户名称一行。（用 userlist 来限制用户访问）
+userlist_enable=YES
+
+# 名单中的人不允许访问
+# userlist_deny=no 
+
+# 限制名单文件放置的路径
+# userlist_file=/etc/vsftpd/userlist_deny.chroot
+###
+
+tcp_wrappers=YES
+
+# 若设置为 YES，则使用 PASV 工作模式（被动模式）；若设置为 NO，则使用 PORT 模式。默认值为 YES，即使用 PASV 工作模式。
+pasv_enable=YES
+# 设置 FTP 服务器在指定的 IP 地址上侦听用户的 FTP 请求。
+pasv_address=<ip地址>
+# 在 PASV 工作模式下，数据连接可以使用的端口范围的最小端口和最大端口，0表示任意端口。默认值为 0。
+pasv_min_port=<最小端口号>
+pasv_max_port=<最大端口号>
+
+#500 OOPS: vsftpd: refusing to run with writable root inside chroot ()错误时添加
+# 从 2.3.5 之后，vsftpd 增强了安全检查，如果用户被限定在了其主目录下，则该用户的主目录不能再具有写权限了！
+# 如果检查发现还有写权限，就会报该错误。
+# 要修复这个错误，可以用命令 chmod a-w /home/dgut 去除用户主目录的写权限，注意把目录替换成你自己的;
+# 或者可以在 vsftpd 的配置文件中增加下列项,将值设置为 YES
+allow_writeable_chroot=YES
+
+```
+
+#### NFS网络文件系统
+
+![nfs-server-jagolinux.com_-768x377](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/nfs-server-jagolinux.com_-768x377.png)
+
+- NFS（Network File System）网络文件系统，是一种基于TCP/UDP传输协议的文件共享服务
+- NFS基于C/S架构，服务端启用协议将文件共享到网络上，然后允许本地NFS客户端通过网络挂载服务端共享的文件
+- NFS基于RPC远程过程调用机制，支持在异构系统之间数据的传送，RPC提供了一组与机器、操作系统以及底层传送协议无关的存取远程文件的操作
+- NFS协议：端口号 2049
+- 软件包：nfs-utils；服务名：nfs
+- 配置文件：/etc/exports
+- RPC协议：端口号 111
+- 软件包：rpcbind ；服务名：rpcbind
+
+#### httpd介绍
+
+httpd是Apache基金会下一个开源且免费的web服务器软件，高度模块化设计基于B/S（Browser/Server）模式：服务端提供页面，浏览器显示并下载页面基于TCP/HTTP协议传输
+
+- 安装httpd服务
+  - 软件包：httpd
+  - 系统服务：httpd
+- 服务相关参数
+  - 主配置文件：/etc/httpd/conf/httpd.conf
+  - 默认网页根目录：/var/www/html
+  - 默认网页文件名：index.html
+- 提供的默认配置
+  - Listen：监听地址：端口（80）
+  - ServerName：注册的DNS域名
+  - DocumentRoot：网页根目录（/var/www/html）
+  - DirectoryIndex：默认首页文件名（index.html）
+- httpd虚拟web主机：/etc/httpd/conf.d/*.conf
+  - 基于域名
+  - 基于端口
+  - 基于ip地址
