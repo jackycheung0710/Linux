@@ -4863,7 +4863,7 @@ jack:x:1001:1001::/home/jack:/bin/bash
 
 #### sed流式编辑器
 
-![[[sedcomic]()](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/sedcomic.jpeg)
+![sedcomic](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/sedcomic.jpeg)
 
 - sed是一个非交互式的文本编辑器，实现的功能和vim相同，主要是对文件内容进行输出、删除、替换、复制、剪切、导入、导出等功能
 - 命令格式：
