@@ -3118,6 +3118,8 @@ COMMAND：命令名/命令行
 [3]+  已杀死               sleep 9m
 [root@Canvs ~]# jobs -l
 [root@Canvs ~]# killall -9 -u endless
+#踢出指定终端
+[root@docker conf.d]# pkill -9 -t pts/7
 ```
 
 #### 用户登录分析
@@ -5651,7 +5653,7 @@ public
 
 - netfilter/iptables：工作在主机或网络的边缘，对于进出本主机或网络的报文根据先定义号的检查做匹配检测，对于能够被规则所匹配到的报文做处相应的处理
 
-#### iptables框架
+#### iptables
 
 - **iptables的4表**
   - filter：数据过滤表
