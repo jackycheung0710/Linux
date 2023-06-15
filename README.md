@@ -3,7 +3,7 @@
 <img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
 
 - [UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
-- Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由 **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) ** 等人于1970 年代在贝尔实验室研究中心开始开发。
+- Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) **  等人于1970 年代在贝尔实验室研究中心开始开发。
 - 1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
 
 #### Linux系统
@@ -14,7 +14,7 @@
 - GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
 - 1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
 
-![](imgs/asa2023-05-02 18.39.03.png)
+![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
 
 > Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
 
@@ -1148,7 +1148,7 @@ www.baidu.com   canonical name = www.a.shifen.com.
 
 - alias命令用于设置命令别名，用户可以使用alias自定义命令别名来简化命令的复杂度，不能与系统命令重名
 - 命令格式：alias  [别名]=[命令]     
-  - 注意事项：等号前后不能有空格，前后命令中有空格需要用**" "或' '** 区分
+  - 注意事项：等号前后不能有空格，前后命令中有空格需要用 **" "或' '**  区分
 
 - unalias 别名    取消别名
 
@@ -3965,7 +3965,7 @@ canvs 25
 ##### 字符串判断
 
 - -z         #字符串的值为空为真
-- -n         #字符串的值非空为真,和**[! -z]**一样
+- -n         #字符串的值非空为真,和 **[! -z]** 一样
 
 ```shell
 # 判断文件内容是否为空
