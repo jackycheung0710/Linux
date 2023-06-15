@@ -1,46 +1,6 @@
-#### 什么是云计算：
-
-云计算的历史最远可追溯到 1965 年，Christopher Strachey 发表了一篇论文，论文中正式提出了「虚拟化」的概念。而虚拟化正是云计算基础架构的核心，是云计算发展的基础。
-
-在 2006 年 8 月 9 日，Google首席执行官埃里克·施密特（Eric Schmidt）在搜索引擎大会（SESSanJose2006）首次提出「云计算」（Cloud Computing）的概念。而亚马逊正是那年推出了 IaaS 服务平台 AWS。
-
-但彼时的甲骨文掌门人 Larry Ellison 没少在社交软件上吐槽云：“这种白痴行为什么时候会停止？这不过是一时兴起的时尚潮流，是疯狂的事情。”而四年之后，这位“硅谷最老的花花公子”也不得不宣布向云战略进军了。
-
-- 深圳IT领袖峰会
-- 阿里云博士：王坚，坚持8年时间，2008年阿里云成立
-- 全球三大云厂商：
-  - 亚马逊AWS
-  - 微软Azure
-  - 阿里云，全国14地区建立200多个数据中心 
-
-#### 云计算的类型
-
-- 公有云：公有云是作为第三方云厂商所拥有和运营的，他们通过Internet提供计算资源，在公有云中，所		有的硬件、软件和其他一些基础性的结构均由云提供商拥有和运营。
-- 私有云：私有云一般都是企业或者组织来使用的，可以位于企业数据中心之上，在私有云中，有专门的网络维护功能和基础结构。
-- 混合云：即同时使用公有云和私有云。从而允许公司将敏感数据保留私有云中（安全性），同时使用公有云来运行应用程序（低成本）。
-
-#### 云计算的服务模式
-
-![saas-paas-iaas-01-1024x1024](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/saas-paas-iaas-01-1024x1024.png)
-
-- IaaS（Infrastructure as a Service）：基础设施即服务
-- PaaS（Platform as a Service ）：平台即服务
-- SaaS（Software as a Service）：软件即服务
-
-#### 虚拟化
-
-- VMware虚拟机软件
-- 企业级虚拟化：KVM虚拟化，在Linux系统管理虚拟机的
-
-#### 常见服务器种类
-
-- 塔式服务器
-- 刀片服务器
-- 机架式服务器
-
 #### UNIX系统
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-29-12-20230501151203836.png" style='float:left;' />
+<img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
 
 - [UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
 - Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由 **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) ** 等人于1970 年代在贝尔实验室研究中心开始开发。
@@ -48,19 +8,19 @@
 
 #### Linux系统
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
+<img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
 
 - [Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
 - GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
 - 1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/%E6%88%AA%E5%B1%8F2023-05-02%2018.39.03.png" alt="截屏2023-05-02 18.39.03" style="zoom:120%;" />
+![](imgs/asa2023-05-02 18.39.03.png)
 
 > Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
 
 #### Linux发行版本
 
-![2132px-Unix_history-simple.svg](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/2132px-Unix_history-simple.svg.png)
+![2132px-Unix_history-simple.svg](imgs/2132px-Unix_history-simple.svg.png)
 
 #### Linux基本概念
 
@@ -197,7 +157,7 @@ drwxr-xr-x.  79 root root 8192 4月  25 21:06 etc
 drwxr-xr-x. 19 root root 3080 4月  25 21:06  
 ~~~
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/list_content.webp" style="zoom:150%;" />
+<img src="imgs/list_content.webp" style="zoom:150%;" />
 
 **r w - r-- r-- :所有者、所属组、其他人**
 
@@ -830,7 +790,7 @@ multi-user.target
 
 #### Linux系统目录介绍
 
-<img src="https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linux_file_structure.webp" />
+<img src="imgs/linux_file_structure.webp" />
 
 - /（根）：系统所有数据都存放在根目录下
 - /bin：存放用户和管理员必备的可执行的二进制程序文件
@@ -995,8 +955,6 @@ total：				交换分区内存总量
 used：					正在使用的交换分区内存
 free：					空闲交换分区内存
 ```
-
-
 
 #### 查看网卡信息
 
@@ -1834,7 +1792,7 @@ touch: cannot touch 'jack.txt': Permission denied
 
 #### grep文件内容过滤
 
-![grepcomic](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/grepcomic.jpeg)
+![grepcomic](imgs/grepcomic.jpeg)
 
 - grep 用于查找文件中符合条件的字符串，它能利用正则表达式搜索文件中的字符串，并把匹配到的字符串的行打印出来
 - 命令格式：grep [-选项]  "查找条件" 目标文件
@@ -2487,7 +2445,7 @@ nvme0n3p2 259:8    0  10G  0 part
 - 逻辑卷可以实现将底层的物理分区整合成一个大的虚拟硬盘
 - 逻辑卷技术是通过Linux系统内核dm（device mapper）设备映射组件
 
-![lvm](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/lvm.png)
+![lvm](imgs/lvm.png)
 
 #### LVM逻辑卷相关概念
 
@@ -2816,14 +2774,14 @@ data blocks changed from 4455424 to 6814720
 - RAID0
   - RAID0是一种非常简单的方式，它将多块磁盘组合在一起形成一个大容量的存储。当我们要写数据的时候，会将数据分为N份，以独立的方式实现N块磁盘的读写，那么这N份数据会同时并发的写到磁盘中，因此执行性能非常的高。RAID0 的读写性能理论上是单块磁盘的N倍（仅限理论，因为实际中磁盘的寻址时间也是性能占用的大头）
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-0-1.jpeg)
+![](imgs/linuxRAID-0-1.jpeg)
 
 
 
 - RAID1
   - RAID1 是磁盘阵列中单位成本最高的一种方式。因为它的原理是在往磁盘写数据的时候，将同一份数据无差别的写两份到磁盘，分别写到工作磁盘和镜像磁盘，那么它的实际空间使用率只有50%了，两块磁盘当做一块用，这是一种比较昂贵的方案。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-1-1.jpeg)
+![](imgs/linuxRAID-1-1.jpeg)
 
 - RAID3
 
@@ -2838,7 +2796,7 @@ data blocks changed from 4455424 to 6814720
   - RAID5校验位算法原理：P = D1 xor D2 xor D3 … xor Dn （D1,D2,D3 … Dn为数据块，P为校验，xor为异或运算）
   - RAID5的方式，最少需要三块磁盘来组建磁盘阵列，允许最多同时坏一块磁盘。如果有两块磁盘同时损坏了，那数据就无法恢复了。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-5-1.jpeg)
+![](imgs/linuxRAID-5-1.jpeg)
 
 
 
@@ -2849,7 +2807,7 @@ data blocks changed from 4455424 to 6814720
   - RAID10其实就是RAID1与RAID0的一个合体。
   - RAID10兼备了RAID1和RAID0的有优点。首先基于RAID1模式将磁盘分为2份，当要写入数据的时候，将所有的数据在两份磁盘上同时写入，相当于写了双份数据，起到了数据保障的作用。且在每一份磁盘上又会基于RAID0技术讲数据分为N份并发的读写，这样也保障了数据的效率。
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linuxRAID-10-2.jpeg)
+![](imgs/linuxRAID-10-2.jpeg)
 
 
 
@@ -3318,8 +3276,6 @@ dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
 -r--r--r--. 1 root root  1796 4月   4 2019 TRANS.TBL
 ```
 
-
-
 - 2、创建配置repo文件
 
 ~~~~shell
@@ -3425,7 +3381,7 @@ Red Hat Enterprise Linux release 8.0 (Ootpa)
   - [yum-4.7.0-4.el8.noarch.rpm](https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-4.7.0-4.el8.noarch.rpm)
   - [yum-utils-4.0.21-3.el8.noarch.rpm](https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-utils-4.0.21-3.el8.noarch.rpm)
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/mirrors_aliyun.png)
+![](imgs/mirrors_aliyun.png)
 
 ~~~~shell
 [root@localhost yum.repos.d]# wget https://mirrors.aliyun.com/centos/8/BaseOS/x86_64/os/Packages/yum-4.7.0-4.el8.noarch.rpm
@@ -3444,7 +3400,7 @@ yum-4.7.0-4.el8.noarch
 - 4、下载安装相应版本的repo文件
   - [epel-release-latest-8.noarch.rpm](https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm)
 
-![](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/aliyun_epel.png)
+![](imgs/aliyun_epel.png)
 
 ~~~~shell
 [root@localhost yum.repos.d]# wget https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm?spm=a2c6h.25603864.0.0.21fa59932YEBtT
@@ -3691,7 +3647,7 @@ Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
 - Shell本身并不是内核的一部分，它是站在内核的基础上编写的一个应用程序
 - Shell具备编程的能力，shell也是一种解释型语言
 
-![Linux1-1Z41G31T3628](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Linux1-1Z41G31T3628.gif)
+![Linux1-1Z41G31T3628](imgs/Linux1-1Z41G31T3628.gif)
 
 > **交互式（Interactive）**：用户每输入一条命令就立即执行。
 >
@@ -4865,7 +4821,7 @@ jack:x:1001:1001::/home/jack:/bin/bash
 
 #### sed流式编辑器
 
-![sedcomic](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/sedcomic.jpeg)
+![sedcomic](imgs/sedcomic.jpeg)
 
 - sed是一个非交互式的文本编辑器，实现的功能和vim相同，主要是对文件内容进行输出、删除、替换、复制、剪切、导入、导出等功能
 - 命令格式：
@@ -5158,7 +5114,7 @@ hello java
 
 #### awk编程语言
 
-![DeLcVfSWAAAw6OZ](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/DeLcVfSWAAAw6OZ.jpeg)
+![DeLcVfSWAAAw6OZ](imgs/DeLcVfSWAAAw6OZ.jpeg)
 
 - awk编程语言/数据处理引擎
 - awk: Aho Weinberger Kernighan,
@@ -5997,7 +5953,7 @@ REJECT     all  --  192.168.49.0/24      0.0.0.0/0            reject-with icmp-p
 | proxy  | ens224内网ip：192.168.0.26，ens160外网IP：192.168.1.135      |
 | web    | ens160:  192.168.0.27，网关指向防火墙内网ip：192.168.0.26    |
 
-![linux](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/linux.png)
+![linux](imgs/netasubas.png)
 
 ##### 防火墙主机添加网卡转发功能；IP：192.168.0.26/24 192.168.1.135/24
 
@@ -6132,7 +6088,7 @@ REJECT     all  --  0.0.0.0/0            0.0.0.0/0            source IP range 19
 | 内部防火墙proxy | ens224外网ip：192.168.0.26，ens160内网IP：192.168.1.135 |
 | 外部主机web     | ens160:  192.168.0.27，网关：192.168.0.26               |
 
-![zvzvzxvzsd](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/zvzvzxvzsd.png)
+![zvzvzxvzsd](imgs/zvzvzxvzsd.png)
 
 ```shell
 #实现192.168.49.0/24 转换为 192.168.0.26
@@ -6282,7 +6238,7 @@ AllowUsers 用户1 用户2 用户3		#定义账号白名单
 
 #### 文件共享服务FTP
 
-![Raysync_FTP_Server](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/Raysync_FTP_Server.png)
+![Raysync_FTP_Server](imgs/Raysync_FTP_Server.png)
 
 - FTP（File Transfet Protocol）：文件传输协议
 - FTP是一种在互联网中基于TCP协议端到端的数据传输协议
@@ -6458,7 +6414,7 @@ allow_writeable_chroot=YES
 
 #### NFS网络文件系统
 
-![nfs-server-jagolinux.com_-768x377](https://canvs.oss-cn-chengdu.aliyuncs.com/canvs_typora/nfs-server-jagolinux.com_-768x377.png)
+![nfs-server-jagolinux.com_-768x377](imgs/nfs-server-jagolinux.com_-768x377.png)
 
 - NFS（Network File System）网络文件系统，是一种基于TCP/UDP传输协议的文件共享服务
 - NFS基于C/S架构，服务端启用协议将文件共享到网络上，然后允许本地NFS客户端通过网络挂载服务端共享的文件
