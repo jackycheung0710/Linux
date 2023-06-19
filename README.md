@@ -1,4 +1,4 @@
-#### UNIX系统
+### UNIX系统
 
 <img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
 
@@ -6,7 +6,7 @@
 - Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie) **  等人于1970 年代在贝尔实验室研究中心开始开发。
 - 1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
 
-#### Linux系统
+### Linux系统
 
 <img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
 
@@ -18,11 +18,11 @@
 
 > Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
 
-#### Linux发行版本
+### Linux发行版本
 
 ![2132px-Unix_history-simple.svg](imgs/2132px-Unix_history-simple.svg.png)
 
-#### Linux基本概念
+### Linux基本概念
 
 - 多用户的系统：允许同时有很多个用户登陆系统，使用系统资源
 - 多任务的系统：允许同时执行多个任务
@@ -37,7 +37,7 @@
   - .rpm：软件包
   - .tar：压缩包
 
-#### Linux系统分辨目录与文件的方法
+### Linux系统分辨目录与文件的方法
 
 - 蓝色表示目录
 - 白色表示文件
@@ -47,13 +47,13 @@
 - 黄色表示设备文件（硬盘、鼠标、cpu、网卡）
 - 红色闪动文件表示链接文件不可用
 
-#### 命令终端
+### 命令终端
 
 - ～：表示用户的家目录，其他用户不能随便访问
 - /root：root超级管理员的家目录
 - /home/用户名：普通用户的家目录
 
-#### 快捷键
+### 快捷键
 
 - ctrl + l：清屏
 
@@ -71,7 +71,7 @@
 
 - ctrl + v+方向键：vim中选中特殊区域，配合x删除
 
-#### 命令一般格式
+### 命令一般格式
 
 - 命令  [-选项...] [参数...]
   - 选项：
@@ -80,7 +80,7 @@
   - 参数：命令的执行对象，文件/目录/程序等
   - 可以同时有多个选项和参数
 
-#### Linux系统文件类型
+### Linux系统文件类型
 
 - -普通文件
 
@@ -96,13 +96,13 @@
 
 - s 套接字
 
-#### Linux系统归属关系
+### Linux系统归属关系
 
 - u 所有者：文件或目录的拥有者，拥有者的权限通常最大
 - g 所有组：文件或目录的属于哪一个组，所属组的权限略微比所有者小
 - o 其他人：既不是文件所有者，也不属于文件或目录组内成员，其他人的权限通常最小的权限
 
-#### ls命令
+### ls命令
 
 - ls命令（英文：list）：用于查看目录下内容及目录文件详细属性信息
 - 命令格式：l s [-选项...] [-参数...]
@@ -175,7 +175,7 @@ drwxr-xr-x.   2 root root    6 8月  12 2018 home
 lrwxrwxrwx.   1 root root    7 8月  12 2018 lib -> usr/lib
 ~~~~
 
-#### stat命令
+### stat命令
 
 - stat [option] ... file
 - 常用选项
@@ -201,7 +201,7 @@ lrwxrwxrwx.   1 root root    7 8月  12 2018 lib -> usr/lib
 Inodes: 总计：8910848    空闲：8875802
 ~~~
 
-#### mkdir命令
+### mkdir命令
 
 - mkdir (make directory) 用于创建新的目录
 - 命令格式：mkdir [-选项] 目录名
@@ -233,7 +233,7 @@ study/test1/t1:
 总用量 0
 ```
 
-#### cd命令
+### cd命令
 
 - cd（change directory）切换目录
 - 命令格式：cd [-选项] [目录名]
@@ -262,12 +262,12 @@ study/test1/t1:
 /root/study/test1
 ```
 
-#### pwd命令
+### pwd命令
 
 - pwd（print work directory）打印当前所在的绝对目录
 - 命令格式：pwd [-选项]
 
-#### rmdir命令
+### rmdir命令
 
 - rmdir（remove directory）删除空目录，只能一层一层删除目录
 - 命令格式：rmdir [-选项] 目录名
@@ -280,7 +280,7 @@ study/test1/t1:
 rmdir: 删除 'study/' 失败: 目录非空
 ```
 
-#### touch命令
+### touch命令
 
 - touch命令用于创建新的空白文件，有同名文件不会覆盖
 - 命令格式：touch [-选项] 文件名
@@ -292,7 +292,7 @@ rmdir: 删除 'study/' 失败: 目录非空
 anaconda-ks.cfg  hello.py  study
 ```
 
-#### cp命令
+### cp命令
 
 - cp（copy file）用于复制文件或目录，cp命令在复制时也可以修改文件或目录的名字
 - 命令格式：cp [-选项] 原文件或目标 目标目录
@@ -320,7 +320,7 @@ test1
 study  test1
 ```
 
-#### mv命令
+### mv命令
 
 - mv（move file）移动文件或目录到其他位置，也可以修改文件或目录用户名
 - 命令格式：mv [-选项] 源文件.... 目标路径
@@ -335,7 +335,7 @@ drwxr-xr-x. 3 root root 19 4月  27 00:21 study_t
 anaconda-ks.cfg  hello.py  study3
 ```
 
-#### cat命令
+### cat命令
 
 - cat（concatenate）用于查看文本文件内容
 - 命令格式：cat [- 选项] 文件名
@@ -367,7 +367,7 @@ anaconda-ks.cfg  hello.py  study3
     21  sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
 ```
 
-#### less命令
+### less命令
 
 - less命令是对文件的输出进行分页显示的工具，常用于查看内容量较大的文件
 - 命令格式：less [-选项] 文件
@@ -384,7 +384,7 @@ anaconda-ks.cfg  hello.py  study3
   - gg：直接跳转到文件行首
   - q：退出 
 
-#### head与tail命令
+### head与tail命令
 
 - head：用于显示文件开头部分内容，默认显示文件开头10行内容
   - 命令格式：head [- 选项] 参数
@@ -435,7 +435,7 @@ helloworldls!
 你好，世界！
 ```
 
-#### rm命令
+### rm命令
 
 - rm（remove）用于删除文件或目录
 - 命令格式：rm [- 选项...] 文件或目录...
@@ -468,7 +468,7 @@ anaconda-ks.cfg  t1  t2  t24  t4  ttst3
 anaconda-ks.cfg
 ```
 
-#### 软连接和硬连接
+### 软连接和硬连接
 
 - Linux中的连接文件类似于Windows的快捷方式
 - 注意：创建链接时一定要写目录或文件的绝对路径，哪怕是在当前路径下，也要写绝对路径；使用链接文件可以实现同步更新
@@ -532,7 +532,7 @@ drwxr-xr-x. 2 root root   22 4月  27 15:48 study
 drwxr-xr-x. 2 root root    6 4月  27 15:59 test
 ```
 
-#### fdisk命令
+### fdisk命令
 
 - Linux fdisk 是一个创建和维护分区表的程序，它兼容 DOS 类型的分区表、BSD 或者 SUN 类型的磁盘列表
 
@@ -599,7 +599,7 @@ I/O 大小(最小/最佳)：512 字节 / 512 字节
 
 ```
 
-#### 内部命令与外部命令
+### 内部命令与外部命令
 
 - 什么是命令：用来实现某一种功能的指令和程序
 - 命令的执行依赖于解释器（例如：/bin/bash）；**/etc/shells**文件存放系统可以用的shell
@@ -621,7 +621,7 @@ alias ls='ls --color=auto'
         /usr/bin/ls
 ```
 
-#### hash命令
+### hash命令
 
 在Linux系统存在一个hash表，系统初始时hash表为空，当外部命令执行时，默认会从PATH路径下寻找该命令，找到后会将这条命令的路径记录到hash表中，当再次使用该命令时，shell解释器首先会查看hash表，存在将执行，如果不存在，将会去**PATH**路径下寻找，利用hash缓存表可大大提高命令的调用速率。
 
@@ -646,7 +646,7 @@ alias ls='ls --color=auto'
 hash: 哈希表为空
 ```
 
-#### help命令帮助手册
+### help命令帮助手册
 
 - help命令用于查看**shell**内部命令的相关信息，包括使用方法、选项等...
 - 命令格式：help [-选项] 命令
@@ -710,7 +710,7 @@ GNU coreutils 在线帮助：<https://www.gnu.org/software/coreutils/>
 或者在本地使用：info '(coreutils) cat invocation'
 ```
 
-#### man获取命令帮助手册
+### man获取命令帮助手册
 
 - man命令用于查看系统命令的帮助信息，包括使用方法、选项、列子...，对比help，man的输出信息更加详细
 - 命令格式：man [- 选项] 命令
@@ -724,7 +724,7 @@ GNU coreutils 在线帮助：<https://www.gnu.org/software/coreutils/>
     - N：向上查询
   - q 退出
 
-#### info获取命令的帮助信息
+### info获取命令的帮助信息
 
 - 命令格式：info [- 选项] 命令
 - 按键操作：
@@ -738,7 +738,7 @@ GNU coreutils 在线帮助：<https://www.gnu.org/software/coreutils/>
   - /：在info page种就行搜索
   - q：退出info page
 
-#### Linux系统的运行级别
+### Linux系统的运行级别
 
 Linux系统有7种运行级别，不同的运行级别运行的程序和功能都不一样，而Linux系统默认是运行在一个标准的级别上，**系统运行级别文件/etc/inittab**文件
 
@@ -775,7 +775,7 @@ N 3
 multi-user.target
 ```
 
-#### 关机与重启
+### 关机与重启
 
 - Linux下常用的关机命令有
   - init 0 立刻关机
@@ -788,7 +788,7 @@ multi-user.target
   - shutdown -r now 立刻重启
   - shutdown -r 10 10分钟后重启
 
-#### Linux系统目录介绍
+### Linux系统目录介绍
 
 <img src="imgs/linux_file_structure.webp" />
 
@@ -822,7 +822,7 @@ multi-user.target
   - /usr/share：放置只读架构的杂项数据文件
   - /usr/src：一般软件源代码建议存放该目录下
 
-#### 查看内核信息
+### 查看内核信息
 
 - uname命令用于显示系统内核信息
 - 命令格式：uname [-选项...]
@@ -830,7 +830,7 @@ multi-user.target
   - -s：显示内核名称
   - -r：显示内核版本
 
-#### 查看CPU信息
+### 查看CPU信息
 
 - /proc/cpuinfo文件用于存放系统CPU信息
 - lscpu用于显示CPU架构信息
@@ -889,7 +889,7 @@ power management:
 # power management ：对能源管理的支持
 ```
 
-#### 查看系统内存信息
+### 查看系统内存信息
 
 - /proc/meminfo文件用于存放系统内存信息
 - free用于查看内存使用情况
@@ -956,7 +956,7 @@ used：					正在使用的交换分区内存
 free：					空闲交换分区内存
 ```
 
-#### 查看网卡信息
+### 查看网卡信息
 
 - 网卡配置文件：/etc/sysconfig/network-scripts/ifcfg-ens160
 - ifconfig用于显示和设置网卡的参数
@@ -1039,7 +1039,7 @@ ens160: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-#### 查看主机名修改主机名
+### 查看主机名修改主机名
 
 - /etc/hostname文件用于存放主机名
 - hostname命令用于显示和设置主机名
@@ -1057,7 +1057,7 @@ Last login: Thu Apr 27 23:17:39 2023 from 192.168.49.1
 canvs
 ```
 
-#### vi/vim文本编辑器
+### vi/vim文本编辑器
 
 - vim是从vi发展出来的一个文本编辑器，vim具有程序编辑的能力，可以主动的以字体颜色辨别语法的正确性
 - vi/vim共分为三种模式：命令模式、输入模式、末行模式
@@ -1096,7 +1096,7 @@ canvs
   - :r       读入另一个文件的数据，文件内容添加到光标的下一行
   - :%s    替换文件内容，末尾g表示全文替换；命令用**, / #**分隔符
 
-#### 修改网卡IP地址
+### 修改网卡IP地址
 
 - 网卡配置文件：/etc/sysconfig/network-scripts/网卡名
 - systemctl restart network  #重启网络,Redhat8以上不支持
@@ -1115,7 +1115,7 @@ canvs
   - nmcli connection reload ens160：重载网卡
 
 
-#### host命令
+### host命令
 
 - host用于将一个域名解析到一个IP地址
 
@@ -1127,7 +1127,7 @@ www.baidu.com is an alias for www.a.shifen.com.
 www.baidu.com is an alias for www.a.shifen.com.
 ```
 
-#### nslookup命令
+### nslookup命令
 
 - nslookup用于查询域名解析是否正常，在网络故障时用来诊断网络问题
 
@@ -1144,7 +1144,7 @@ Address: 39.156.66.18
 www.baidu.com   canonical name = www.a.shifen.com.
 ```
 
-#### alias别名管理
+### alias别名管理
 
 - alias命令用于设置命令别名，用户可以使用alias自定义命令别名来简化命令的复杂度，不能与系统命令重名
 - 命令格式：alias  [别名]=[命令]     
@@ -1172,7 +1172,7 @@ alias zfgrep='zfgrep --color=auto'
 alias zgrep='zgrep --color=auto'
 ```
 
-#### history管理历史命令
+### history管理历史命令
 
 - history命令用于显示历史记录和执行过的命令，登录shell时会读取 **~./bash_history** 历史文件中记录下的命令，当退出或登出shell时，会自动保存到历史命令文件，该命令单独使用时，仅显示历史命令
 
@@ -1186,7 +1186,7 @@ alias zgrep='zgrep --color=auto'
   - !string  调用历史命令中以string开头的命令
   - !!  重复执行上一条命令
 
-#### date和clock命令
+### date和clock命令
 
 - date用于显示或设置系统日期与时间
 - 命令格式：date [-选项] [+格式符]    查看系统日期时间
@@ -1223,7 +1223,7 @@ alias zgrep='zgrep --color=auto'
 30                  
 ```
 
-#### 管道符
+### 管道符
 
 - 管道符 **'|'** :将命令的输出结果交给另外一条命令作为参数继续处理 
 
@@ -1237,7 +1237,7 @@ alias zgrep='zgrep --color=auto'
     10  cdrom
 ```
 
-#### wc命令
+### wc命令
 
 - wc用于统计文件的字节数、行数，并将统计结果输出到屏幕
 - 命令格式：wc [-选项] 文件名
@@ -1251,7 +1251,7 @@ alias zgrep='zgrep --color=auto'
   行数 单词 字节
 ```
 
-#### 重定向操作
+### 重定向操作
 
 - 将前面命令的输出结果，写入到其他的文本文件中
 - 表示符号:
@@ -1262,7 +1262,7 @@ alias zgrep='zgrep --color=auto'
   - 2>:  只收集错误的输出结果
   - &> : 正确错误都收集
 
-#### echo命令
+### echo命令
 
 - echo是一种最常用的与广泛使用的内置于Linux的bash和C shell的命令，通常用在脚本语言和批处理文件中来在标准输出或者文件中显示一行文本或者字符串。
 - 命令格式：echo [-选项] [参数]
@@ -1280,7 +1280,7 @@ helloworld
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
 ```
 
-#### sleep命令
+### sleep命令
 
 - sleep命令用于将目前动作延迟一段时间
 - 命令格式：sleep 时间
@@ -1294,12 +1294,12 @@ helloworld
 [root@Canvs ~]# sleep 3s
 ```
 
-#### 用户账号管理
+### 用户账号管理
 
 - 用户账号可用于登录系统，可以实现访问控制
 - 用户模版目录：/etc/skel/
 
-#### useradd创建用户
+### useradd创建用户
 
 - useradd 命令用于创建新的用户
 - 命令格式：useradd [-选项] 用户名
@@ -1317,7 +1317,7 @@ helloworld
 [root@Canvs ~]# useradd -s /sbin/nologin user2
 ```
 
-#### id命令
+### id命令
 
 - id命令用于查看系统用户和用户所在组的信息
 - 命令格式：id [-选项] [用户名]
@@ -1327,7 +1327,7 @@ helloworld
 uid=1000(user1) gid=1000(user1) 组=1000(user1)
 ```
 
-#### /etc/passwd用户信息文件
+### /etc/passwd用户信息文件
 
 用于存放用户的基本信息文件
 
@@ -1346,7 +1346,7 @@ bin:x:1:1:bin:/bin:/sbin/nologin
 user1:x:1000:1000::/home/user1:/bin/bash
 ```
 
-#### /etc/default/useradd文件
+### /etc/default/useradd文件
 
 - 用于存放用户默认值信息
 
@@ -1362,7 +1362,7 @@ SKEL=/etc/skel	#模版目录
 CREATE_MAIL_SPOOL=yes	#是否建立邮箱
 ```
 
-#### /var/spool/mail/ 用户邮件目录
+### /var/spool/mail/ 用户邮件目录
 
 ```shell
 [root@Canvs ~]# ll /var/spool/mail/
@@ -1370,7 +1370,7 @@ CREATE_MAIL_SPOOL=yes	#是否建立邮箱
 -rw-rw----. 1 user1 mail 0 4月  29 14:44 user1
 ```
 
-#### passwd设置用户密码
+### passwd设置用户密码
 
 - passwd命令用于设置用户密码
 - 命令格式：passwd [-选项]  [用户名]
@@ -1384,7 +1384,7 @@ CREATE_MAIL_SPOOL=yes	#是否建立邮箱
     - 非交互设置用户密码
     - 命令格式：echo "密码" ｜ passwd --stdin 用户名
 
-#### /etc/shadow用户密码文件
+### /etc/shadow用户密码文件
 
 - 用户的密码信息存放在/etc/shadow文件中，该文件默认任何人都没有任何权限（不包括root）
 
@@ -1406,7 +1406,7 @@ user2:!!:19476:0:99999:7:::
 #第九字段：保留
 ```
 
-#### su命令
+### su命令
 
 - su命令用于切换当前用户身份到其他身份
 - 命令格式：su [-选项] [用户名]
@@ -1419,7 +1419,7 @@ Password:
 [user3@Canvs root]$ 
 ```
 
-#### usermod修改用户属性
+### usermod修改用户属性
 
 - usermod命令用于修改已存在用户的基本信息
 - 命令格式：usermod [-选项] 用户名
@@ -1437,7 +1437,7 @@ Password:
 uid=1580(user3) gid=1000(user1) 组=1000(user1),1001(user2)
 ```
 
-#### userdel删除用户
+### userdel删除用户
 
 - userdel用于删除给定的用户以及与用户相关的文件，该命令不加选项仅删除用户账号，不删除用户相关文件
 - 命令格式：userdel [-选项] 用户名
@@ -1448,7 +1448,7 @@ uid=1580(user3) gid=1000(user1) 组=1000(user1),1001(user2)
 [root@Canvs ~]# userdel -r user1
 ```
 
-#### groupadd添加新组
+### groupadd添加新组
 
 - groupadd用于创建一个新的工作组，新组的信息将被添加到/etc/group文件中
 - 命令格式：groupadd [- 选项] 组名
@@ -1459,7 +1459,7 @@ uid=1580(user3) gid=1000(user1) 组=1000(user1),1001(user2)
 [root@Canvs ~]# groupadd study
 ```
 
-#### /etc/group组信息文件
+### /etc/group组信息文件
 
 - 组信息存放在/etc/group文件中
 
@@ -1472,7 +1472,7 @@ user2:x:1001:
 # 组名：组密码占位符：GID：组内附加用户
 ```
 
-#### /etc/gshadow组密码文件
+### /etc/gshadow组密码文件
 
 - 组密码信息存放在/etc/gshadow文件中
 
@@ -1485,7 +1485,7 @@ user2:!::
 # 组名：组密码：组内管理员：组内附加用户
 ```
 
-#### groupmod修改组属性
+### groupmod修改组属性
 
 - groupmod用于修改指定工作组属性
 - 命令格式：groupmod [-选项] 组名
@@ -1493,7 +1493,7 @@ user2:!::
   - -g GID     #修改组的GID
   - -n 新组名   #修改组名
 
-#### gpasswd组内管理员命令
+### gpasswd组内管理员命令
 
 - gpasswd是Linux工作组文件/etc/group和/etc/gshadow管理工具，用于将用户添加到组或从组内删除
 - 命令格式：gpasswd [-选项] 用户名 组名
@@ -1514,7 +1514,7 @@ study:x:1003:tom,jack,lisa
 正在将用户“tom”从“study”组中删除
 ```
 
-#### groupdel删除组
+### groupdel删除组
 
 - groupdel 用于删除指定工作组
 - 命令格式：groupdel 组名
@@ -1523,7 +1523,7 @@ study:x:1003:tom,jack,lisa
 [root@Canvs ~]# groupdel study
 ```
 
-#### chmod权限管理
+### chmod权限管理
 
 - chmod（change mode）设置用户对文件的权限
 - 常用命令：chmod [-选项] 归属关系+-=权限类别文件...
@@ -1562,7 +1562,7 @@ dr-xr-x---. 2 root root 167 4月  29 20:15 .
 ----------. 1 root root    0 4月  29 20:15 hello.py
 ```
 
-#### umask预设权限
+### umask预设权限
 
 - umask用于显示或设置创建文件的权限掩码
 - 命令格式：umask [-p] [-S] [模式]
@@ -1571,7 +1571,7 @@ dr-xr-x---. 2 root root 167 4月  29 20:15 .
   - -S         以符号形式输出，否则以八进制数格式输出
 
 
-#### chown归属关系管理
+### chown归属关系管理
 
 - chown（change owner）用于设置文件的所有者和所属组关系
 - 命令格式：
@@ -1596,7 +1596,7 @@ total 4
 你好世界！
 ```
 
-#### SetUID特殊权限
+### SetUID特殊权限
 
 - SetUID（SUID）：对于一个可执行的文件用了SUID权限后，普通用户在执行该文件后，临时拥有了所有者的身份，该权限只在程序执行过程中有效，程序执行完毕后用户恢复原油身份
 - SetUID权限会附加在所有者的x权限位上，所有者的x权限标识会变成s，如果该文件没有x权限那么权限位会变成S
@@ -1617,7 +1617,7 @@ total 4
 -rwxr-xr-x. 1 root root 51856 1月  11 2019 /usr/bin/cat
 ```
 
-#### SetGID特殊权限
+### SetGID特殊权限
 
 - SetGID（SGID）：当对一个可执行的二进制文件设置了SGID后，普通用户在执行该文件时临时拥有其所属组的权限，该权限只在程序执行过程中有效，程序执行完毕后用户恢复原有组身份
 - 当对一个目录设置了SGID权限后，普通用户在该目录下创建的文件的所属组，均与该目录所属组相同
@@ -1634,7 +1634,7 @@ total 4
 -rwx--s--x. 1 root slocate 48552 May 11  2019 /usr/bin/locate
 ```
 
-#### Sticky BIT特殊权限
+### Sticky BIT特殊权限
 
 - Sticky BIT（SBIT）：该权限只针对于目录有效，当普通用户对一个目录拥有w和x权限时，普通用户可以在此目录下拥有增删改的权限，因为普通用户对目录拥有w权限时，是可以删除此目录下的所有文件
 - 如果对一个目录设置了SBIT权限，除root可以删除所有文件以外，普通用户就算对该目录拥有w权限，也只能删除自己建立的文件，不能删除其他用户建立的文件
@@ -1677,7 +1677,7 @@ endless.txt  jack.txt
 rm: cannot remove 'endless.txt': Operation not permitted
 ```
 
-#### FACL访问控制列表
+### FACL访问控制列表
 
 - FACL（Filesystemctl Access Control List）文件访问控制列表：利用文件扩展属性保存额外的访问控制权限，单独为每一个用户量身定制一个权限
 - 命令格式：setfacl 选项 u:用户名:权限 文件
@@ -1759,7 +1759,7 @@ touch: cannot touch 'jack.txt': Permission denied
 -bash: cd: /dev_test/: 权限不够
 ```
 
-#### 常用特殊符号的使用
+### 常用特殊符号的使用
 
 - Linux系统下通配符起了很大的作用，对于不正确的文件名称可以使用一下特殊字符表示
 - \* 通常的特殊符号，在文件名上，用来代表任意多个字符
@@ -1790,7 +1790,7 @@ touch: cannot touch 'jack.txt': Permission denied
 /dev/tty1  /dev/tty15  /dev/tty2  /dev/tty20  /dev/tty8
 ```
 
-#### grep文件内容过滤
+### grep文件内容过滤
 
 ![grepcomic](imgs/grepcomic.jpeg)
 
@@ -1840,7 +1840,7 @@ touch: cannot touch 'jack.txt': Permission denied
 26:ENCRYPT_METHOD SHA512
 ```
 
-#### find文件/目录查找命令
+### find文件/目录查找命令
 
 - find命令根据预设的条件递归查找文件或目录所在位置
 - 命令格式：find 查找路径 查找条件1 查找条件2 .. [-exec处理命令{}\;]
@@ -1898,7 +1898,7 @@ find: ‘/proc/1764/fdinfo/6’: 没有那个文件或目录
 [root@Canvs ~]# find /var/log/ -mtime +3 -type f -exec cp {} /tmp/test/ \;
 ```
 
-#### 压缩与解压缩
+### 压缩与解压缩
 
 - Linux独有压缩格式及命令工具：
   - gzip  .gz
@@ -1938,7 +1938,7 @@ find: ‘/proc/1764/fdinfo/6’: 没有那个文件或目录
 [root@Canvs ~]# xzcat services.xz 
 ```
 
-#### tar打包工具
+### tar打包工具
 
 - tar命令用于在Linux下对文件/目录打包，使用tar程序打出来的包称为tar包，tar包文件通常都以.tar结尾
 - tar命令格式：tar 选项 压缩包名 被压缩文件
@@ -1989,14 +1989,14 @@ home/jack/.bashrc
 home/jack/.bash_history
 ```
 
-#### 磁盘类型介绍
+### 磁盘类型介绍
 
 - IDE接口类型：主要用于个人家用计算机
 - SCSI接口类型： 主要用于服务器，数据传输速度快，支持热插拔
 - STAT接口类型：主要用于个人计算机
 - NVME接口类型：固态硬盘接口
 
-#### Linux常用分区格式
+### Linux常用分区格式
 
 - MBR分区格式：比较古老的分区格式，分为主分区与扩展分区，最大支持2.2T以内磁盘容量
 - GPT分区格式：可划分128个主分区，最大支持18EB磁盘容量（1EB=1024PB，1PB=1024TB）
@@ -2006,7 +2006,7 @@ home/jack/.bash_history
 | MBR      | 32   | 64         | 主分区4个（3个主分区+1个扩展分区) | 2.2TB            |
 | GPT      | 64   | 128        | 128个主分区                       | 18EB             |
 
-#### 文件系统类型详解
+### 文件系统类型详解
 
 - 文件管理系统，赋予分区文件系统分区才可以正常使用
 
@@ -2020,14 +2020,14 @@ home/jack/.bash_history
   - 单个文件每秒读写数据的速度可以达到4G
 - swap文件系统：交换分区，硬盘空间充当内存使用
 
-#### 挂载
+### 挂载
 
 - 在Linux系统中用户无法直接使用硬件设备，硬件设备在系统中都是以只读的方式存在的，必须挂载
 - 挂载就是给我门用户提供一个可以使用设备的一个接口
 - 挂载注意事项：
   - 挂载点必须是一个目录，理论上还得是一个空目录
 
-#### lsblk命令
+### lsblk命令
 
 - 用于列出所有可用块设备的信息，而且还能显示他们之间的依赖关系，但是它不会列出RAM盘的信息
 - 命令格式：lsblk [-选项...] [设备名]
@@ -2063,7 +2063,7 @@ nvme0n1
   └─rhel-swap swap                               85c063b0-cedb-413e-a2fd-5c066c8075ed   [SWAP]
 ```
 
-#### df查看分区使用情况
+### df查看分区使用情况
 
 - df命令用于查看文件系统使用情况
 - 命令格式：df [选项...] [参数...]
@@ -2083,7 +2083,7 @@ tmpfs                 tmpfs     904M     0  904M    0% /sys/fs/cgroup
 tmpfs                 tmpfs     181M     0  181M    0% /run/user/0
 ```
 
-#### du统计文件/目录大小
+### du统计文件/目录大小
 
 - du命令用于统计磁盘下目录或文件大小
 - 命令格式：du [选项...] [参数...]
@@ -2104,7 +2104,7 @@ tmpfs                 tmpfs     181M     0  181M    0% /run/user/0
 792K    /root
 ```
 
-#### /dev/目录下文件
+### /dev/目录下文件
 
 ```shell
 [root@Canvs ~]# ls /dev/
@@ -2124,7 +2124,7 @@ urandom:随机数设备
 port:存取I/O端口
 ```
 
-#### blkid查看设备属性
+### blkid查看设备属性
 
 - blkid命令显示块设备属性信息（设备名称、设备UUID、文件系统类型）
 - 命令格式：blkid [选项...] [参数...]
@@ -2139,13 +2139,13 @@ port:存取I/O端口
 /dev/mapper/rhel-swap: UUID="85c063b0-cedb-413e-a2fd-5c066c8075ed" TYPE="swap"
 ```
 
-#### 分区过程
+### 分区过程
 
 添加新硬盘-分区-格式化文件系统-挂载使用
 
 扇区是磁盘存储数据的最小单元，默认一个扇区可以存储512字节的数据
 
-#### MBR分区格式
+### MBR分区格式
 
 - fdisk命令用于查看磁盘使用情况和磁盘分区（MBR分区格式）
 - 命令格式：fdisk [选项...] [设备路径]
@@ -2220,7 +2220,7 @@ nvme0n2       259:3    0   25G  0 disk
 └─nvme0n2p1   259:5    0   10G  0 part 
 ```
 
-#### mkfs格式化文件系统
+### mkfs格式化文件系统
 
 - mkfs命令用于在分区上建立文件系统
 - 常用文件系统类型
@@ -2244,7 +2244,7 @@ log      =internal log           bsize=4096   blocks=2560, version=2
 realtime =none                   extsz=4096   blocks=0, rtextents=0
 ```
 
-#### mount挂载
+### mount挂载
 
 - mount文件系统挂载命令
 - 命令格式：mount 设备路径   挂载点目录
@@ -2268,7 +2268,7 @@ tmpfs                 tmpfs     181M     0  181M    0% /run/user/0
 /dev/nvme0n2p1        xfs        10G  104M  9.9G    2% /test
 ```
 
-#### umount卸载
+### umount卸载
 
 - umonut命令用于卸载文件系统
 - 命令格式：umount 挂载点目录
@@ -2286,7 +2286,7 @@ tmpfs                 tmpfs     904M     0  904M    0% /sys/fs/cgroup
 tmpfs                 tmpfs     181M     0  181M    0% /run/user/0
 ```
 
-#### /etc/fstab开机自动挂载
+### /etc/fstab开机自动挂载
 
 - /etc/fstab用于存放文件系统信息，当系统启动时，系统会自动读取文件内容将指定的文件系统挂载到指定的目录
 - 文件内容详解
@@ -2334,7 +2334,7 @@ tmpfs                 tmpfs     904M     0  904M    0% /sys/fs/cgroup
 tmpfs                 tmpfs     181M     0  181M    0% /run/user/0
 ```
 
-#### GPT分区格式
+### GPT分区格式
 
 - gdisk命令用于查看磁盘使用情况和磁盘分区（GPT分区格式）
 - 命令格式：gdisk [选项...] [设备路径]
@@ -2438,7 +2438,7 @@ nvme0n3p1 259:7    0  10G  0 part
 nvme0n3p2 259:8    0  10G  0 part 
 ```
 
-#### LVM逻辑卷
+### LVM逻辑卷
 
 - 逻辑卷：LVM（Logical Volume Manager）逻辑卷管理系统
 - LVM是建立在硬盘和分区之上的一个逻辑层，来提高磁盘分区管理的灵活性
@@ -2447,7 +2447,7 @@ nvme0n3p2 259:8    0  10G  0 part
 
 ![lvm](imgs/lvm.png)
 
-#### LVM逻辑卷相关概念
+### LVM逻辑卷相关概念
 
 - 物理卷 Physical Volume(PV) 将实际的磁盘分区（partition）系统识别码（system ID）修改为8e后，再通过pvcreate指令转化为LVM最底层的物理卷，作为后续空间管理的基础
 - 卷组 Volume Group(VG）将数个PV进行整合，即变成VG，在32位的操作系统中，LV的大小与PE的大小有关；在64位操作系统中，LV几乎没有容量限制
@@ -2462,7 +2462,7 @@ nvme0n3p2 259:8    0  10G  0 part
 | remove 删除  |             pvremove              |           vgremove            |             lvremove             |
 | extend 扩展  |                                   |           vgextend            |             lvextend             |
 
-#### LVM的优缺点
+### LVM的优缺点
 
 - 优点：
   - 可以在系统运行的状态下动态扩展文件系统的大小
@@ -2473,7 +2473,7 @@ nvme0n3p2 259:8    0  10G  0 part
   - 当卷组中有一个磁盘损坏了，整个卷组都会受到影响（由于一份数据看你会同时存储在不同的磁盘中）
   - 在磁盘创建过程中增加了额外的步骤，所以数据存贮性能会受到影响
 
-#### vgcreate创建卷组
+### vgcreate创建卷组
 
 - 创建卷组思路：将创建好的物理卷组成卷组（或者直接创建卷组）
 - 命令格式：vgcreate 卷组名 设备路径1 设备路径2....
@@ -2512,7 +2512,7 @@ nvme0n3p2 259:8    0  10G  0 part
   dataVG   2   0   0 wz--n- 19.99g 19.99g
 ```
 
-#### lvcreate创建逻辑卷
+### lvcreate创建逻辑卷
 
 - 命令格式：lvcreate [-选项...] 卷组
 - 常用选项：
@@ -2536,7 +2536,7 @@ NAME          MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
 dataVG-dataLV 253:2    0  19G  0 lvm  
 ```
 
-#### LVM格式化文件系统
+### LVM格式化文件系统
 
 - mkfs.xfs 设备路径
 - mkfs.ext4 设备路径
@@ -2557,7 +2557,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 /dev/dataVG/dataLV: UUID="d40cc212-2ebe-4e72-a544-0b0f1e9b4949" TYPE="xfs"
 ```
 
-#### LVM挂载
+### LVM挂载
 
 - mount 设备路径
 - /etc/fstab 添加设备
@@ -2569,7 +2569,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 /dev/mapper/dataVG-dataLV xfs    19G  168M   19G    1% /data
 ```
 
-#### vgextend扩展卷组
+### vgextend扩展卷组
 
 - 卷组的空间来源于物理分区，当卷组没有足够空间提供给逻辑卷时，须扩容卷组
 
@@ -2586,7 +2586,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
   rhel     1   2   0 wz--n- <19.00g      0 
 ```
 
-#### lvextend扩展逻辑卷
+### lvextend扩展逻辑卷
 
 - 命令格式：lvextend  [-选项...] 逻辑卷路径
 - 常用参数：
@@ -2604,7 +2604,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
   swap   rhel   -wi-ao----   2.00g        
 ```
 
-#### xfs_growfs扩展文件系统
+### xfs_growfs扩展文件系统
 
 - 当逻辑卷扩大以后，也需要多逻辑卷的文件系统进行扩展，刷新文件系统容量
 
@@ -2638,7 +2638,7 @@ tmpfs                     tmpfs     181M     0  181M    0% /run/user/0
 /dev/mapper/dataVG-dataLV xfs        29G  240M   29G    1% /data
 ```
 
-#### lvremove删除逻辑卷组
+### lvremove删除逻辑卷组
 
 - 逻辑卷的删除不允许联机操作，需要先卸载，在执行删除
 - 在执行删除操作时，首先删除LV逻辑卷，在删除VG卷组，最后删除PV物理卷
@@ -2698,7 +2698,7 @@ nvme0n3p1 259:7    0   10G  0 part
 nvme0n3p2 259:8    0   10G  0 part 
 ```
 
-#### 根分区扩容
+### 根分区扩容
 
 - 1、查看/分区卷组和逻辑卷信息
 
@@ -2757,19 +2757,19 @@ data blocks changed from 4455424 to 6814720
 /dev/mapper/rhel-root xfs    26G  1.6G   25G    7% /
 ```
 
-#### lvreduce逻辑卷的缩减
+### lvreduce逻辑卷的缩减
 
 - 命令lvreduce
 - 不允许联机缩减
 - 先缩减文件系统空间，在缩减逻辑卷的空间
 
-#### RAID磁盘阵列
+### RAID磁盘阵列
 
 - RAID独立磁盘冗余阵列，简称为【磁盘阵列】
 - RAID可通过技术（软件/硬件）将多个独立的磁盘整合成一个巨大容量大逻辑磁盘使用
 - RAID可以提高数据I/O（读写）速度，和冗余数据的功能
 
-#### RAID常见方案：
+### RAID常见方案：
 
 - RAID0
   - RAID0是一种非常简单的方式，它将多块磁盘组合在一起形成一个大容量的存储。当我们要写数据的时候，会将数据分为N份，以独立的方式实现N块磁盘的读写，那么这N份数据会同时并发的写到磁盘中，因此执行性能非常的高。RAID0 的读写性能理论上是单块磁盘的N倍（仅限理论，因为实际中磁盘的寻址时间也是性能占用的大头）
@@ -2822,7 +2822,7 @@ data blocks changed from 4455424 to 6814720
 |    利用率    |    100%    |         50%          |       67% - 94%        |                      50% - 88%                       |                50%                 |
 |   典型应用   | 高端工作站 | 操作系统，事务数据库 | 数据仓库，网络服务归档 | 数据归档、备份到磁盘、高可用性解决方案、大容量服务器 | 快速数据库，文件服务器，应用服务器 |
 
-#### 实现RAID方式
+### 实现RAID方式
 
 - 软RAID，通过软件技术实现RAID功能
 - 硬RAID，通过RAID磁盘阵列卡
@@ -2831,13 +2831,13 @@ data blocks changed from 4455424 to 6814720
 
 > [**华为2288H-V5服务器做raid的详细步骤**](https://blog.csdn.net/qq_50263172/article/details/114539789)
 
-#### 进程管理
+### 进程管理
 
 - 程序：用计算机语言编写的命令序列集合，用来实现特定的目标或解决的问题
 - 进程：正在运行中的程序叫进程，进程是有生命周期的，进程有自己的独立内存空间，每启动一个进程，系统就会为它分配内存空间并分配一个PID号，每一个进程都会对应一个父进程，而父进程就可以复制多个子进程，每种进程都有两种方式存在，前台与后台，一般进程都是以后台方式运行
 - 线程：线程也被称为轻量级进程，被包含在进程中，是进程的一个子集，是进程中的实际运作单位，一个进程中可以并发多个线程，每条线程并行执行不同的任务，每个线程都是独立的，线程之间共享进程的内存空间，在多线程的程序中，由于线程很**轻**，故线程的切换非常迅速且开销小（在同一进程中）
 
-#### 查看进程树
+### 查看进程树
 
 - pstree以树状结构显示进程信息，包括进程之间的关系
 - 命令格式：pstree [选项...] [参数....]
@@ -2915,7 +2915,7 @@ root          1      0  0 15:30 ?        00:00:01 /usr/lib/systemd/systemd --swi
 #PPID是当前进程的父进程
 ```
 
-#### top查看系统健康状态
+### top查看系统健康状态
 
 - top命令用于查看系统运行性能及状态信息
 - 命令格式：top [选项...]
@@ -2988,7 +2988,7 @@ TIME+=：进程使用的CPU时间总计，单位1/100秒
 COMMAND：命令名/命令行
 ```
 
-#### pgrep检索进程
+### pgrep检索进程
 
 - pgrep通过匹配其程序名，找到匹配的进程
 - 命令格式：pgrep [选项...] [参数...]
@@ -3011,7 +3011,7 @@ COMMAND：命令名/命令行
 2437
 ```
 
-#### 进程的前后台调度
+### 进程的前后台调度
 
 - &   #将进程放入后台运行
 - jobs -l  #查看后台进程列表
@@ -3034,7 +3034,7 @@ COMMAND：命令名/命令行
 [2]+  2924 运行中               sleep 4m &
 ```
 
-#### kill杀死进程
+### kill杀死进程
 
 - ctrl+c组合键结束前台运行的进程
 - kill [选项...] PID
@@ -3080,7 +3080,7 @@ COMMAND：命令名/命令行
 [root@docker conf.d]# pkill -9 -t pts/7
 ```
 
-#### 用户登录分析
+### 用户登录分析
 
 - users who w  #查看以登录的用户信息（详细度不同）
 - last：显示登录成功的用户信息
@@ -3128,17 +3128,17 @@ root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
 root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
 ```
 
-#### Linux软件包的分类
+### Linux软件包的分类
 
 - 源码包
 - 二进制包（RPM包）
 
-#### 源码包的特点
+### 源码包的特点
 
 - 源码包的缺点：安装过程麻烦，需要用户手动编译，需要手动解决软件包的依赖关系
 - 源码包的优点：软件源代码开放，允许用户二次开发，安装灵活，可以自定义安装路径与安装功能，卸载方便
 
-#### RPM包特点
+### RPM包特点
 
 - RPM包缺点：所有功能用户无法定义，安装没有源码包灵活，不可以看到软件源代码
 - RPM包优点：由于已经提前被编译过，所以安装简单，安装速度快
@@ -3150,7 +3150,7 @@ root     ssh:notty    192.168.49.1     Tue May  2 17:14 - 17:14  (00:00)
   - x86_64  适合的CPU架构
   - rpm  rpm包扩展名
 
-#### RPM管理软件包
+### RPM管理软件包
 
 - RPM命令管理软件包需要手动解决软件包之间的依赖关系
   - 树形依赖：a -- > b -->c--> d
@@ -3236,7 +3236,7 @@ vim-enhanced-8.0.1763-10.el8.x86_64
 未安装软件包 vsftpd 
 ```
 
-#### yum软件包管理
+### yum软件包管理
 
 - YUM(Yellowdog Updater Modified)：是一个基于RPM的软件包管理器，能够从指定服务器自动下载RPM包并且安装，可以处理软件之间的依赖关系，一次性安装所有依赖的软件包，无需一个个下载安装。
 - 命令格式：yum [options] [command] [package ...]
@@ -3252,7 +3252,7 @@ vim-enhanced-8.0.1763-10.el8.x86_64
 
 > yum remove卸载软件的同时会**卸载相关依赖**，导致其他程序不能正常运行；强烈建议使用rpm -e卸载软件
 
-##### 配置本地yum源
+#### 配置本地yum源
 
 - 1、挂载本地iso镜像
 
@@ -3354,7 +3354,7 @@ Installed products updated.
 完毕！
 ~~~~
 
-##### 配置阿里云yum源
+#### 配置阿里云yum源
 
 [**阿里软件仓库**](https://developer.aliyun.com/mirror/)
 
@@ -3454,7 +3454,7 @@ BaseOS                                                 BaseOS                   
 *epel                                                  Extra Packages for Enterprise Linux 8 - x86_64                                              9,723
 ~~~~
 
-##### 设置yum源优先级
+#### 设置yum源优先级
 
 ```shell
 #安装yum-priorities插件
@@ -3469,7 +3469,7 @@ gpgcheck=0
 priority=1 #优先级为1-99之间，数字越小越优先
 ```
 
-#### 源码包安装
+### 源码包安装
 
 - 下载源码包
 - 安装软件包依赖
@@ -3579,7 +3579,7 @@ make[1]: 离开目录“/root/nginx-1.23.4”
 tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      20122/nginx: master 
 ```
 
-#### netstat与ss命令
+### netstat与ss命令
 
 - netstat命令用于显示网络状态和查看系统中启动的端口信息
 - 命令格式：
@@ -3600,7 +3600,7 @@ tcp   LISTEN  0       128                     0.0.0.0:80          0.0.0.0:*     
 tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      20122/nginx: master 
 ```
 
-#### systemd管理服务
+### systemd管理服务
 
 systemd是内核加载的第一个进程（PID=1），systemd负责整个Linux系统的运行与服务控制，systemd为用户提供systemctl命令来管理RPM包的服务；如：启动服务、关闭服务、查看服务状态、服务开机启动
 
@@ -3641,7 +3641,7 @@ enabled
 Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
 ```
 
-#### Shell概述
+### Shell概述
 
 - Shell是一个程序，它连接了用户和linux内核，它可以解释用户输入的命令传递给内核，让用户可以方便的使用linux系统
 - Shell本身并不是内核的一部分，它是站在内核的基础上编写的一个应用程序
@@ -3653,7 +3653,7 @@ Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
 >
 > **批处理（Batch）**：由用户事先编写好一个完整的Shell脚本，Shell会一次性执行脚本中诸多的命令。
 
-##### Shell脚本的执行方式
+#### Shell脚本的执行方式
 
 - 赋予脚本执行权限，可以绝对路径或者相对路径
   - ./
@@ -3677,7 +3677,7 @@ hello shell !!!
 hello shell !!!
 ```
 
-##### 常用特殊符号
+#### 常用特殊符号
 
 - " "   # 双引号，引用整体
 - ' '    # 单引号，引用整体并取消所有特殊字符含义
@@ -3702,7 +3702,7 @@ $[n+1]
 -rw-r--r--. 1 root root 0 5月   3 15:54 2023-05-03
 ```
 
-##### 变量
+#### 变量
 
 - 定义变量：变量名 = 变量值，如name=canvs（=号两边不能有空格）
 - 取消变量：unset 变量名
@@ -3725,7 +3725,7 @@ echo "年龄:$age"
 年龄:24
 ```
 
-##### read标准输入取值
+#### read标准输入取值
 
 - read读取用户在键盘输入的内容
 - 命令格式：read -p "提示信息" 变量名
@@ -3745,7 +3745,7 @@ echo "年龄:$age"
 年龄:25
 ```
 
-##### 变量种类
+#### 变量种类
 
 - 常用命令：
 
@@ -3844,7 +3844,7 @@ canvs 25
 
 - 自定义变量：用户自定义
 
-##### 判断文件状态
+#### 判断文件状态
 
 - -e       # 判断文件/目录是否存在
 - -d       # 判断目录是否存在
@@ -3869,7 +3869,7 @@ canvs 25
 0
 ```
 
-##### 整数比较
+#### 整数比较
 
 - gt        大于
 - -ge      大于等于
@@ -3892,7 +3892,7 @@ canvs 25
 1
 ```
 
-##### 字符串对比
+#### 字符串对比
 
 - ==    等于
 - !=     不等于
@@ -3910,7 +3910,7 @@ canvs 25
 0
 ```
 
-##### 常用数值运算方式
+#### 常用数值运算方式
 
 - $[]        #四则运算（+、-、*、/、%）
 - $(())      #数值运算工具
@@ -3962,7 +3962,7 @@ canvs 25
 1
 ```
 
-##### 字符串判断
+#### 字符串判断
 
 - -z         #字符串的值为空为真
 - -n         #字符串的值非空为真,和 **[! -z]** 一样
@@ -3982,7 +3982,7 @@ canvs 25
 0
 ```
 
-##### 条件判断结构
+#### 条件判断结构
 
 - 当条件满足时执行什么操作，当条件不满足执行什么操作
 - &&         #逻辑与
@@ -4036,7 +4036,7 @@ hello!!!
 ls: 无法访问'h.sh': 没有那个文件或目录
 ```
 
-##### if条件判断结构
+#### if条件判断结构
 
 - if 单分支语法，只能判断对，不能判断错
 
@@ -4135,7 +4135,7 @@ fi
 您的成绩为A
 ```
 
-##### case条件判断结构
+#### case条件判断结构
 
 - case从变量中取值，如果变量中的值与预设的值匹配，则执行对应的命令
 
@@ -4179,7 +4179,7 @@ esac
 老师已上岸
 ```
 
-##### for循环
+#### for循环
 
 - for循环处理，根据变量的取值，重复执行xx命令
 
@@ -4224,7 +4224,7 @@ done
 -rw-r--r--. 1 root root   50 5月   3 22:53 up.txt
 ```
 
-##### while循环
+#### while循环
 
 - 死循环，只要条件成立就重复执行命令
 
@@ -4276,7 +4276,7 @@ ens160: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         TX packets 2485  bytes 296112 (289.1 KiB)监控网卡流量
 ```
 
-#### shell函数
+### shell函数
 
 - 在shell环境中，讲一些需要重复使用的操作，定义为公共的语句块，即可称为函数
 - 函数可以使脚本中的代码更加简洁，增强易读性，提高脚本的执行效率
@@ -4322,7 +4322,7 @@ df -h
 stat
 ```
 
-##### 脚本中断及退出
+#### 脚本中断及退出
 
 - break		#结束整个循环
 
@@ -4383,7 +4383,7 @@ done
 exit...
 ```
 
-##### 字符串截取
+#### 字符串截取
 
 - 在使用shell脚本完成各种运维任务时，一旦涉及到判断、条件测试等相关操作时往往需要对相关的命令输出进行过滤，提取处符合要求的字符串
 - 字符串截取的常用方法：${变量名:起始位置:长度}
@@ -4420,7 +4420,7 @@ pj4Huwvg
 aYe02auw
 ```
 
-##### 字符串替换
+#### 字符串替换
 
 - 只替换第一个匹配的结果：${变量名/xx/yy}
 - 替换全部匹配的结果：${变量名//xx/yy}
@@ -4455,7 +4455,7 @@ done
 15.txt   22.txt  2.txt   37.txt  44.txt  51.txt  59.txt  66.txt  73.txt  80.txt  88.txt  95.txt
 ```
 
-##### 字符串掐头去尾
+#### 字符串掐头去尾
 
 - 从左向右，最短匹配删除：${变量名#*关键词}
 - 从左向右，最长匹配删除：${变量名##*关键词}
@@ -4483,7 +4483,7 @@ done
 [root@RHCE ~]# 
 ```
 
-##### shell数组
+#### shell数组
 
 ```shell
 #定义数组方式一：数组名=(值1,值2,值3,....)
@@ -4513,7 +4513,7 @@ bb
 4
 ```
 
-#### 正则表达式（Regular Express）
+### 正则表达式（Regular Express）
 
 - 正则表达式使用一串符号描述有共同属性的数据
 
@@ -4696,7 +4696,7 @@ aaaabbb
 ffaaa
 ```
 
-a \ {n,m \ }匹配字符a连续出现n-m次
+**a \ {n,m \ }匹配字符a连续出现n-m次**
 
 ```shell
 [root@RHCE ~]# grep "a\{3,4\}" reg.txt 
@@ -4704,7 +4704,7 @@ aaaabbb
 ffaaa
 ```
 
-##### egrep过滤工具
+#### egrep过滤工具
 
 - 使用扩展正则时，需要使用egrep命令过滤
 - -c 选项可输出匹配行数，与wc -l效果相同
@@ -4819,7 +4819,7 @@ operator:x:11:0:operator:/root:/sbin/nologin
 jack:x:1001:1001::/home/jack:/bin/bash
 ```
 
-#### sed流式编辑器
+### sed流式编辑器
 
 ![sedcomic](imgs/sedcomic.jpeg)
 
@@ -5112,7 +5112,7 @@ hello js
 hello java
 ```
 
-#### awk编程语言
+### awk编程语言
 
 ![DeLcVfSWAAAw6OZ](imgs/DeLcVfSWAAAw6OZ.jpeg)
 
@@ -5340,7 +5340,7 @@ tom 1
 root 3
 ```
 
-#### cron周期性计划任务
+### cron周期性计划任务
 
 - cron周期性计划任务用来定期执行程序，目前最主要的用途是定期备份数据
 - 软件包名：cronie、crontabs
@@ -5405,7 +5405,7 @@ no crontab for root
 13 17 * * 6 tar -czf `date +%F`-log.tar.gz /var/log/*.log
 ```
 
-#### SELinux系统内核安全机
+### SELinux系统内核安全机
 
 - Security-Enhanced Linux美国NSA国家安全局主导开发，一套增强Linux系统安全的强制访问控制体系
 - 集成了L inux内核（2.6及以上）针对用户、进程、目录和问津啊提供预设的保护策略，以及管理工具
@@ -5445,7 +5445,7 @@ SELINUX=enforcing
 SELINUXTYPE=targeted
 ```
 
-#### 常见协议及端口
+### 常见协议及端口
 
 **/etc/services文件记录了所有协议及其端口**
 
@@ -5459,7 +5459,7 @@ SELINUXTYPE=targeted
 - Pop3：用户收邮件协议；默认端口110
 - ssh：远程连接协议；默认端口22
 
-#### 安全防护firewalld防火墙
+### 安全防护firewalld防火墙
 
 - 防火墙分为硬件防火墙和软件防火墙
 - 防火墙：匹配及停止；防火墙过滤入站请求
@@ -5605,11 +5605,11 @@ public
   rich rules: 
 ```
 
-#### iptables防火墙
+### iptables防火墙
 
 - netfilter/iptables：工作在主机或网络的边缘，对于进出本主机或网络的报文根据先定义号的检查做匹配检测，对于能够被规则所匹配到的报文做处相应的处理
 
-#### iptables
+### iptables
 
 - **iptables的4表**
   - filter：数据过滤表
@@ -5632,7 +5632,7 @@ public
   - REJECT：拒绝通过
   - LOG：记录日志，然后传给下一条规则
 
-#### iptables命令格式
+### iptables命令格式
 
 - 命令格式：iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
 - 添加规则：
@@ -5649,7 +5649,7 @@ public
   - -P   #为指定的链设置默认规则
 - service iptables save 永久保存规则
 
-#### iptables防火墙规则的条件
+### iptables防火墙规则的条件
 
 - 通用匹配：
   - 协议匹配：-p   #协议名称
@@ -5669,7 +5669,7 @@ public
 [root@service135 ~]# systemctl start iptables
 ```
 
-#### 主机型防火墙规则配置
+### 主机型防火墙规则配置
 
 ```shell
 #查看filter表规则
@@ -5875,7 +5875,7 @@ ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0
 ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           
 ```
 
-#### 设置防火墙默认规则
+### 设置防火墙默认规则
 
 ```shell
 #查看filter表
@@ -5943,7 +5943,7 @@ target     prot opt source               destination
 REJECT     all  --  192.168.49.0/24      0.0.0.0/0            reject-with icmp-port-unreachable
 ```
 
-#### 网络型防火墙规则配置
+### 网络型防火墙规则配置
 
 - 通过路由转发配置网络型防火墙
 
@@ -5955,7 +5955,7 @@ REJECT     all  --  192.168.49.0/24      0.0.0.0/0            reject-with icmp-p
 
 ![linux](imgs/netasubas.png)
 
-##### 防火墙主机添加网卡转发功能；IP：192.168.0.26/24 192.168.1.135/24
+**防火墙主机添加网卡转发功能；IP：192.168.0.26/24 192.168.1.135/24**
 
 ```shell
 #开启路由转发功能
@@ -5968,14 +5968,14 @@ net.ipv4.ip_forward = 1
 1
 ```
 
-##### web服务器IP：192.168.0.27 将网关指向防火墙内网IP 192.168.0.26
+**web服务器IP：192.168.0.27 将网关指向防火墙内网IP 192.168.0.26**
 
 ```shell
 #开启web服务
 [root@client ~]# systemctl start httpd
 ```
 
-##### client客户端服务器IP：192.168.49.134,将网关指向防火墙主机第二块网卡：192.168.0.26
+**client客户端服务器IP：192.168.49.134,将网关指向防火墙主机第二块网卡：192.168.0.26**
 
 - 访问测试：curl http://192.168.0.27
 
@@ -6027,7 +6027,7 @@ REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:3306 rejec
 welcome to my homepage
 ```
 
-#### 防火墙扩展模块
+### 防火墙扩展模块
 
 - 命令格式：iptables 选项 链名 -m 扩展模块 --具体扩展条件 -j 动作
 
@@ -6056,7 +6056,7 @@ REJECT     tcp  --  192.168.49.134       0.0.0.0/0            tcp dpt:80 reject-
 curl: (7) Failed to connect to 192.168.0.27 port 80: 拒绝连接
 ```
 
-#### 基于多端口设置过滤规则
+### 基于多端口设置过滤规则
 
 - multiport：多端口模块
 - iprange：ip范围模块
@@ -6078,7 +6078,7 @@ target     prot opt source               destination
 REJECT     all  --  0.0.0.0/0            0.0.0.0/0            source IP range 192.168.49.10-192.168.49.20 reject-with icmp-port-unreachable
 ```
 
-#### 配置SNAT实现共享上网
+### 配置SNAT实现共享上网
 
 - 通过防火墙规则，允许局域网中的主机访问外网
 
@@ -6118,7 +6118,7 @@ welcome to my homepage
 192.168.0.26 - - [07/May/2023:15:52:46 +0800] "GET / HTTP/1.1" 200 23 "-" "curl/7.61.1"
 ```
 
-#### sudo用户提权
+### sudo用户提权
 
 - 管理员提前为用户设置执行权限许可
 - 被授权用户有权知晓授权的命令
@@ -6164,7 +6164,7 @@ May  7 17:59:15 : tom : TTY=pts/1 ; PWD=/var/log ; USER=root ;
     COMMAND=/bin/systemctl status httpd
 ```
 
-#### OpenSSH
+### OpenSSH
 
 - OpenSSH开源免费提供ssh远程登录的程序
 - ssh协议端口：22/tcp
@@ -6204,7 +6204,7 @@ id_rsa  id_rsa.pub  known_hosts
 [root@RHCE ~]# ssh-copy-id -i .ssh/id_rsa.pub root@192.168.49.141
 ```
 
-#### scp远程复制工具
+### scp远程复制工具
 
 - scp可以实现跨主机文件拷贝
 
@@ -6222,7 +6222,7 @@ id_rsa  id_rsa.pub  known_hosts
 141.txt
 ```
 
-#### 提高ssh服务安全性
+### 提高ssh服务安全性
 
 - 配置文件：/etc/ssh/sshd_config
 
@@ -6236,7 +6236,7 @@ AllowUsers 用户1 用户2 用户3		#定义账号白名单
 #DenyUsers 用户1 用户2 用户3		#定义账号黑名单
 ```
 
-#### 文件共享服务FTP
+### 文件共享服务FTP
 
 ![Raysync_FTP_Server](imgs/Raysync_FTP_Server.png)
 
@@ -6246,7 +6246,7 @@ AllowUsers 用户1 用户2 用户3		#定义账号白名单
   - 端口20（数据端口）用于数据传输
   - 端口21（命令端口）用于接收客户端发出的相关FTP命令
 
-#### FTP工作模式
+### FTP工作模式
 
 - 主动模式：FTP客户端从本机的非特殊端口（>1023）连接FTP服务器的命令端口21，服务端通过本机的20号端口主动向客户端的随机端口发起连接请求，开始传输数据
 - 被动模式：FTP客户端通过向FTP服务器发送PASFV命令进入被动模式，FTP服务器会另外开一个随机端口，客户端主动连接到服务器随机端口后，开始传输数据
@@ -6263,17 +6263,17 @@ AllowUsers 用户1 用户2 用户3		#定义账号白名单
   - curl
   - FileZilla：windows客户端工具，可从商店直接下载
 
-#### vsftpd介绍
+### vsftpd介绍
 
 - vsftpd（very secure ftp daemon）非常安全的FTP守护进程；是一款运行在Linux操作系统上开源且免费FTP程序，不仅完全开源而且免费，还为我们提供了一个快速的、稳定的并且安全的服务
 
-#### vsftpd用户模式
+### vsftpd用户模式
 
 - 本地用户
 - 虚拟用户
 - 匿名用户
 
-#### vsftpd服务相关参数
+### vsftpd服务相关参数
 
 - /var/ftp #匿名用户共享目录
 - /etc/vsftpd #配置文件所在目录
@@ -6283,7 +6283,7 @@ AllowUsers 用户1 用户2 用户3		#定义账号白名单
 - /etc/vsftpd/user_list #控制名单（配置文件控制黑名单与白名单）
 - /var/log/xferlog #日志目录
 
-#### vsftpd配置文件
+### vsftpd配置文件
 
 ```shell
 # 设置是否允许匿名用户登录
@@ -6412,7 +6412,7 @@ allow_writeable_chroot=YES
 
 ```
 
-#### NFS网络文件系统
+### NFS网络文件系统
 
 ![nfs-server-jagolinux.com_-768x377](imgs/nfs-server-jagolinux.com_-768x377.png)
 
@@ -6425,7 +6425,7 @@ allow_writeable_chroot=YES
 - RPC协议：端口号 111
 - 软件包：rpcbind ；服务名：rpcbind
 
-#### httpd介绍
+### httpd介绍
 
 httpd是Apache基金会下一个开源且免费的web服务器软件，高度模块化设计基于B/S（Browser/Server）模式：服务端提供页面，浏览器显示并下载页面基于TCP/HTTP协议传输
 
@@ -6446,7 +6446,7 @@ httpd是Apache基金会下一个开源且免费的web服务器软件，高度模
   - 基于端口
   - 基于ip地址
 
-#### NTP网络时间协议
+### NTP网络时间协议
 
 NTP（Network Time Protocol）网络时间协议基于UDP，用于网络时间同步协议，使网络中的计算机时钟同步到UTC（世界统一时间），再配合各个时区的偏移调整就能实现精准同步校准时间功能。
 
@@ -6457,7 +6457,7 @@ chrony是网络时间协议NTP的实现方式，Chrony是一个开源的自由�
 - 命令程序：chronyc
 - 配置文件：/etc/chrony.conf
 
-#### rsync远程同步
+### rsync远程同步
 
 rsync（Remote Sync）：是一款开源，快速，多功能的可实现本地或远程主机数据同步与增量备份的优秀工具。（数据同步与备份的工具）可使本地主机不同分区或目录之间及本地和远程两台主机之前的数据快速同步，远程备份等功能。
 
@@ -6465,7 +6465,7 @@ rsync（Remote Sync）：是一款开源，快速，多功能的可实现本地�
 
 > 传统的cp，scp工具拷贝每次均为完整拷贝，而rsync除了完整拷贝，还具备增量拷贝的功能，因此更加灵活。
 
-##### rsync特性
+#### rsync特性
 
 - 支持拷贝特殊文件；如连接，设备文件等
 - 可以有排除指定文件或目录同步的功能
