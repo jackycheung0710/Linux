@@ -967,7 +967,7 @@ free：					空闲交换分区内存
 TYPE="Ethernet"							#网卡类型=以太网
 PROXY_METHOD="none"					#代理方式=关闭
 BROWSER_ONLY="no"						#只是浏览器=否
-BOOTPROTO="none"						#获取ip地址的方式=none固定ip，DHCP自动获取ip
+BOOTPROTO="static"						#获取ip地址的方式=none固定ip，DHCP自动获取ip
 DEFROUTE="yes"							#是否设置默认路由=是
 IPV4_FAILURE_FATAL="no"			#是否开启ipv4致命检测=否（如果ipv4配置失败禁用设备）
 IPV6INIT="yes"							
