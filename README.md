@@ -2,17 +2,21 @@
 
 <img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
 
-- [UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
-- Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
-- 1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
+[UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
+
+Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
+
+1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
 
 ### Linux系统
 
 <img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
 
-- [Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
-- GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
-- 1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
+[Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
+
+GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
+
+1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
 
 ![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
 
