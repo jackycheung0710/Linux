@@ -5755,7 +5755,7 @@ no crontab for root
 
 Security-Enhanced Linux美国NSA国家安全局主导开发，一套增强Linux系统安全的强制访问控制体系
 
-集成了L inux内核（2.6及以上）针对用户、进程、目录和问津啊提供预设的保护策略，以及管理工具
+集成了L inux内核（2.6及以上）针对用户、进程、目录和文件提供预设的保护策略，以及管理工具
 
 SELinux运行模式
 - enforcing #强制模式
