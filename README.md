@@ -6336,7 +6336,7 @@ net.ipv4.ip_forward = 1
 - 访问测试：curl http://192.168.0.27
 
 ```shell
-#防火墙没有开发路由转发功能；访问不了
+#防火墙没有开放路由转发功能；访问不了
 [root@client ~]# curl http://192.168.0.27
 curl: (7) Failed to connect to 192.168.0.27 port 80: 没有到主机的路由
 #防火墙主机开启了路由转发功能，正常访问
