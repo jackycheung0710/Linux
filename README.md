@@ -5558,7 +5558,8 @@ nobody 65534 /sbin/nologin
 #打印文件中第三列小于1000，打印第1列，3列，7列
 [root@RHCE ~]# awk -F: '$3<1000 {print $1,$3,$7}' passwd 
 root 0 /bin/bash
-bin 1 /sbin/nologin[root@RHCE ~]# awk -F: '$3>500 && $3<1000 {print $1,$3,$7}' passwd 
+bin 1 /sbin/nologin
+[root@RHCE ~]# awk -F: '$3>500 && $3<1000 {print $1,$3,$7}' passwd 
 systemd-coredump 999 /sbin/nologin
 polkitd 998 /sbin/nologin
 unbound 997 /sbin/nologin
