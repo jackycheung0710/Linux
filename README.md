@@ -3623,8 +3623,8 @@ dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
 [BaseOS]		#仓库名称，可自定义，单具有唯一性
 name=BaseOS  #仓库描述（类似于仓库解释），描述信息自定义，不具备唯一性
 baseurl=file:///mnt/cdrom/BaseOS #指定软件仓库地址，file://用于指定本地软件包存放位置
-gpgcheck=0  #软件仓库是否启动，1启动，0不启动
-enabled=1	#是否检测软件包签名，0不检测，1检测
+gpgcheck=0  #是否进行gpg校验，0不检测，1检测
+enabled=1	#软件仓库是否启动，1启动，0不启动
 [AppStream]
 name=AppStream
 baseurl=file:///mnt/cdrom/AppStream
