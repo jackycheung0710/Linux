@@ -268,6 +268,8 @@ drwxr-xr-x.  79 root root 8192 4月  25 21:06 etc
 #查看当前目录的详细信息
 [root@localhost dev]# ll -d
 drwxr-xr-x. 19 root root 3080 4月  25 21:06  
+[root@jackycheung /]# ll -dh /etc/
+drwxr-xr-x. 85 root root 8.0K Oct 29 17:08 /etc/
 ~~~
 
 <img src="imgs/list_content.webp" style="zoom:150%;" />
@@ -1043,6 +1045,16 @@ uname命令用于显示系统内核信息
 - -s：显示内核名称
 - -r：显示内核版本
 
+```shell
+[root@jackycheung ~]# uname
+Linux
+[root@jackycheung ~]# uname -r
+3.10.0-1160.el7.x86_64
+[root@jackycheung ~]# uname -s
+Linux
+[root@jackycheung ~]# 
+```
+
 ### 查看CPU信息
 
 /proc/cpuinfo文件用于存放系统CPU信息
@@ -1337,6 +1349,61 @@ vi/vim共分为三种模式：命令模式、输入模式、末行模式
   - :r       读入另一个文件的数据，文件内容添加到光标的下一行
   - :%s    替换文件内容，末尾g表示全文替换；命令用`,` ` / ` `#`分隔符
 
+```shell
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin     
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+hello world
+你好 世界
+tomcat:x:53:53:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+user:x:1000:1000::/home/user:/bin/bash
+user1:x:1001:1001::/home/user1:/bin/bash
+~
+~
+:%s,nologin,yeslogin,g
+
+[root@jackycheung ~]# cat passwd 
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+tomcat:x:53:53:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
+user:x:1000:1000::/home/user:/bin/bash
+user1:x:1001:1001::/home/user1:/bin/bash
+[root@jackycheung ~]#
+```
+
 ### 修改网卡IP地址
 
 网卡配置文件：/etc/sysconfig/network-scripts/网卡名
@@ -1347,18 +1414,339 @@ ifup 网卡名     #启动该网卡设备
 
 ifdown 网卡名   #禁用网卡名
 
-使用**nmcli**命令修改网卡IP地址
-- nmcli connection modify ens160 ipv4.method manual ipv4.addresses 192.168.49.200/24 connection.autoconnect yes
-  - nmcli connection modify： 修改
-  - ens160 ipv4.method： 配置ipv4的地址方法
-  - manual：自动配置
-  - ipv4.addresses 192.168.49.200/24 ：ipv4地址/子网掩码
-  - connection.autoconnect yes ：开机自动连接
+```shell
+DEVICE=eth0
+HWADDR=00:0C:29:87:58:5E
+TYPE=Ethernet
+UUID=d42dc586-7220-4266-b43b-fdfe0ca2eb21
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=自己要设置的ip地址
+NETMASK=子网掩码
+GATEWAY=网关地址
+DNS1=114.114.114.114
+DNS2=202.102.224.68
+```
 
-- nmcli常用命令
-  - nmcli connection up ens160：激活网卡
-  - nmcli connection down ens160：关闭网卡
-  - nmcli connection reload ens160：重载网卡
+### nmcli命令
+
+nmcli是一个命令行工具，用于管理NetworkManager并报告网络状态。它能够配置网络接口、连接和设备。
+
+NetworkManager可以用于以下类型的连接：Ethernet、VLANS、Bridges、Bonds、Teams、WI-FI、mobile boradband以及IP-over-InfiniBand。针对与这些网络类型，NetworkManager可以配置它们的网络别名、IP地址、DHCP、DNS、VPN连接以及其它的特殊参数。
+
+nmcli常用命令
+
+- nmcli connection up ens160：激活网卡
+- nmcli connection down ens160：关闭网卡
+- nmcli connection reload ens160：重载网卡
+
+#### nmcli connection show：显示所有连接
+
+```shell
+#显示所有连接
+[root@jackycheung ~]# nmcli c show
+NAME                UUID                                  TYPE      DEVICE 
+ens33               25670750-d065-4b47-9133-42c5c0e7bab9  ethernet  ens33  
+ens35               1777ed92-ff58-7956-b8b3-ed928f82e0c8  ethernet  ens35  
+Wired connection 1  ea10203e-7aac-3dba-ad6c-01083f136d58  ethernet  ens36  
+#显示所有连接
+[root@jackycheung ~]# nmcli connection show
+NAME                UUID                                  TYPE      DEVICE 
+ens33               25670750-d065-4b47-9133-42c5c0e7bab9  ethernet  ens33  
+ens35               1777ed92-ff58-7956-b8b3-ed928f82e0c8  ethernet  ens35  
+Wired connection 1  ea10203e-7aac-3dba-ad6c-01083f136d58  ethernet  ens36    
+```
+
+#### nmcli device status：显示设备状态
+
+```shell
+[root@jackycheung ~]# nmcli device status
+DEVICE  TYPE      STATE      CONNECTION
+ens33   ethernet  connected  ens33
+ens35   ethernet  connected  ens35
+ens36   ethernet  connected  Wired connection 1 
+ens37   ethernet  connected  Wired connection 2 
+lo      loopback  unmanaged  --
+[root@jackycheung ~]# nmcli dev statuws
+Error: argument 'statuws' not understood. Try passing --help instead.
+[root@jackycheung ~]# nmcli dev status
+DEVICE  TYPE      STATE      CONNECTION
+ens33   ethernet  connected  ens33
+ens35   ethernet  connected  ens35
+ens36   ethernet  connected  Wired connection 1 
+ens37   ethernet  connected  Wired connection 2 
+lo      loopback  unmanaged  --
+```
+
+#### 添加新的网络连接
+
+- nmcli connection add ethernet ifname eth0：创建一个动态ip的以太网连接
+
+- nmcli connection add ifname ens35 autoconnect yes type ethernet ipv4.addresses ip地址 / 子网掩码 ipv4.gateway 网关 ：创建一个静态ip的以太网连接
+
+- nmcli connection add type ethernet con-name ens35 ifname ens35 ipv4.method manual ipv4.address  "192.168.194.31/24"  gw4 192.168.194.1
+
+  - type ethernet ：网络类型为 以太网
+
+  - con-name ens35：连接名称为ens35
+
+  -  ifname ens35：接口名称为ens35
+
+  -  ipv4.method manual ：使用手动配置IPv4地址
+
+  - ipv4.address  "192.168.194.31/24"：设置IPv4地址为192.168.194.31，子网掩码为24
+
+  - gw4 192.168.194.1：设置网关为192.168.194.1
+
+```shell
+[root@jackycheung network-scripts]# nmcli connection add type ethernet con-
+name ens35 ifname ens35 ipv4.method manual ipv4.address "192.168.194.31/24"
+ gw4 192.168.194.1
+Warning: There is another connection with the name 'ens35'. Reference the c
+onnection by its uuid 'daef8ece-7865-4e26-9b5a-6d4b6f5bf63b'
+Connection 'ens35' (daef8ece-7865-4e26-9b5a-6d4b6f5bf63b) successfully adde
+d.
+[root@jackycheung network-scripts]# ll ifcfg-*
+-rw-r--r--. 1 root root 347 Oct 29 18:59 ifcfg-ens33
+-rw-r--r--. 1 root root 334 Oct 29 23:23 ifcfg-ens35
+-rw-r--r--. 1 root root 254 May 22  2020 ifcfg-lo
+[root@jackycheung network-scripts]# cat ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.31
+PREFIX=24
+GATEWAY=192.168.194.1
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+```
+
+#### 重载网卡
+
+nmcli connection reload ens35：重载ens35网卡
+
+```shell
+[root@jackycheung network-scripts]# nmcli connection reload ens35
+[root@jackycheung network-scripts]# ifconfig ens35
+ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.194.31  netmask 255.255.255.0  broadcast 192.168.194.2
+55
+        inet6 fe80::c2f4:e168:c3bc:265a  prefixlen 64  scopeid 0x20<link>  
+        ether 00:0c:29:2f:f9:7d  txqueuelen 1000  (Ethernet)
+        RX packets 401  bytes 25582 (24.9 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 30  bytes 2324 (2.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+```
+
+#### 修改网卡配置
+
+- nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码：修改指定网卡的ip地址和子网掩码
+
+- nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码 ipv4.gateway 网关：修改指定网卡的ip地址和子网掩码及网关
+
+- nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码 ipv4.gateway 网关 ipv4.dns dns地址：修改指定网卡的ip地址和子网掩码、网关及DNS
+
+- nmcli connection modify 网卡名 +ipv4.addresses ip地址/子网掩码：添加第二个ip
+
+- nmcli connection modify 网卡名 -ipv4.addresses ip地址/子网掩码：删除第二个ip
+
+- nmcli connection modify 网卡名 +ipv4.dns dns地址 ：添加第二个DNS
+
+- nmcli connection modify 网卡名 -ipv4.dns  dns地址：删除第二个DNS
+
+- nmcli c m 网卡名 ipv4.method manual：修改为静态配置，默认是auto
+
+- nmcli c m 网卡名 ipv6.method disabled：禁用IPv6
+
+- nmcli c m 网卡名 connection.autoconnect yes：开机启动
+
+- nmcli c m ipv4.method auto：从DHCP地址池动态获取ip地址，如果没有获取到ip会激活配置的静态地址
+
+- nmcli c m ipv4.dns-search test.com：修改/etc/resolv.conf以在search指令中使用的这个域
+
+```shell
+#修改ip地址、子网掩码
+[root@jackycheung ~]# nmcli connection modify ens35 ipv4.addresses 192.
+168.194.33/24
+[root@jackycheung ~]# nmcli connection up ens35
+Connection successfully activated (D-Bus active path: /org/freedesktop/
+NetworkManager/ActiveConnection/7)
+[root@jackycheung ~]# ifconfig ens35
+ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.194.33  netmask 255.255.255.0  broadcast 192.168.1
+94.255
+        inet6 fe80::c2f4:e168:c3bc:265a  prefixlen 64  scopeid 0x20<lin
+k>
+        ether 00:0c:29:2f:f9:7d  txqueuelen 1000  (Ethernet)
+        RX packets 1139  bytes 71330 (69.6 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 56  bytes 4308 (4.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0     
+
+#修改IP地址、字码掩码、网关
+[root@jackycheung ~]# nmcli connection modify ens35 ipv4.addresses "192.168
+.194.99/24" ipv4.gateway "192.168.194.1"
+[root@jackycheung ~]# nmcli connection up ens35
+Connection successfully activated (D-Bus active path: /org/freedesktop/Netw
+orkManager/ActiveConnection/6)
+[root@jackycheung ~]# ifconfig ens35
+ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.194.99  netmask 255.255.255.0  broadcast 192.168.194.2
+55
+        inet6 fe80::c2f4:e168:c3bc:265a  prefixlen 64  scopeid 0x20<link>  
+        ether 00:0c:29:2f:f9:7d  txqueuelen 1000  (Ethernet)
+        RX packets 552  bytes 34670 (33.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 43  bytes 3316 (3.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+#修改IP地址、子网掩码、网关、dns
+[root@jackycheung ~]# nmcli connection modify ens35 ipv4.addresses 192.
+168.194.50/24 ipv4.gateway 192.168.194.2 ipv4.dns 114.114.114.114
+[root@jackycheung ~]# nmcli connection up ens35
+Connection successfully activated (D-Bus active path: /org/freedesktop/
+NetworkManager/ActiveConnection/8)
+[root@jackycheung ~]# ifconfig ens35
+ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.194.50  netmask 255.255.255.0  broadcast 192.168.1
+94.255
+        inet6 fe80::c2f4:e168:c3bc:265a  prefixlen 64  scopeid 0x20<lin
+k>
+        ether 00:0c:29:2f:f9:7d  txqueuelen 1000  (Ethernet)
+        RX packets 1169  bytes 73130 (71.4 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 68  bytes 5238 (5.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0     
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-ens35   
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.2
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy        
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+DNS1=114.114.114.114
+
+#添加第二个ip
+[root@jackycheung ~]# nmcli connection modify ens35 +ipv4.addresses 10.1.10.20/23 
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.2
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+DNS1=114.114.114.114
+IPADDR1=10.1.10.20
+PREFIX1=23
+
+#删除第二个ip
+[root@jackycheung ~]# nmcli connection modify ens35 -ipv4.addresses 10.1.10.20/23 
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.2
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy        
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+DNS1=114.114.114.114
+
+#添加第二个dns
+[root@jackycheung ~]# nmcli connection modify ens35 +ipv4.dns 8.8.8.8
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.2
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy        
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+DNS1=114.114.114.114
+DNS2=8.8.8.8
+
+#删除第二个DNS
+[root@jackycheung ~]# nmcli connection modify ens35 -ipv4.dns 8.8.8.8
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.2
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy        
+NAME=ens35
+UUID=daef8ece-7865-4e26-9b5a-6d4b6f5bf63b
+DEVICE=ens35
+ONBOOT=yes
+DNS1=114.114.114.114
+```
+
 
 
 ### host命令
