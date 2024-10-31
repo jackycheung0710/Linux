@@ -1440,6 +1440,8 @@ nmcli常用命令
 - nmcli connection up ens160：激活网卡
 - nmcli connection down ens160：关闭网卡
 - nmcli connection reload ens160：重载网卡
+- nmcli general status：将NetworkManager的所有状态都打印出来
+- nmcli connection delete 网卡名：删除连接
 
 #### nmcli connection show：显示所有连接
 
@@ -1456,6 +1458,13 @@ NAME                UUID                                  TYPE      DEVICE
 ens33               25670750-d065-4b47-9133-42c5c0e7bab9  ethernet  ens33  
 ens35               1777ed92-ff58-7956-b8b3-ed928f82e0c8  ethernet  ens35  
 Wired connection 1  ea10203e-7aac-3dba-ad6c-01083f136d58  ethernet  ens36    
+#-a参数是仅显示活动的连接
+[root@jackycheung ~]# nmcli connection show -a
+NAME                UUID                                  TYPE      DEVICE
+ens33               25670750-d065-4b47-9133-42c5c0e7bab9  ethernet  ens33
+ens35               daef8ece-7865-4e26-9b5a-6d4b6f5bf63b  ethernet  ens35
+Wired connection 1  ea10203e-7aac-3dba-ad6c-01083f136d58  ethernet  ens36
+Wired connection 2  273aa031-5eb0-357f-834c-d63ff433cd34  ethernet  ens37
 ```
 
 #### nmcli device status：显示设备状态
@@ -1491,12 +1500,17 @@ lo      loopback  unmanaged  --
 
   - con-name ens35：连接名称为ens35
 
-  -  ifname ens35：接口名称为ens35
+  -  ifname ens35：是物理接口名称为ens35
 
-  -  ipv4.method manual ：使用手动配置IPv4地址
-
+  - ipv4.method manual ：使用手动配置IPv4地址
+    - `manual`：表示您将手动输入IPv4地址、子网掩码等信息。
+  
+    - `auto`：表示通过 DHCP 自动获取 IPv4 地址。
+    - `link-local`：仅使用无需配置的链路本地地址。
+    - `disabled`：禁用 IPv4 叠层。
+  
   - ipv4.address  "192.168.194.31/24"：设置IPv4地址为192.168.194.31，子网掩码为24
-
+  
   - gw4 192.168.194.1：设置网关为192.168.194.1
 
 ```shell
@@ -1576,6 +1590,8 @@ ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 - nmcli c m ipv4.method auto：从DHCP地址池动态获取ip地址，如果没有获取到ip会激活配置的静态地址
 
 - nmcli c m ipv4.dns-search test.com：修改/etc/resolv.conf以在search指令中使用的这个域
+
+- nmcli con modify 网卡名 con-name 新网卡名：修改网卡名字
 
 ```shell
 #修改ip地址、子网掩码
@@ -1747,7 +1763,574 @@ ONBOOT=yes
 DNS1=114.114.114.114
 ```
 
+### 双网卡链路聚合bond
 
+Linux网卡绑定mode共有七种：
+
+- bond0：（balance-rr）Round-robin policy（平衡抡循环策略）
+  - 特点：传输数据包顺序是依次传输（即：第1个包走eth0，下一个包就走eth1....一直循环下去，直到最后一个传输完毕），此模式提供负载平衡和容错能力；但是我们知道如果一个连接或者会话的数据包从不同的接口发出的话，中途再经过不同的链路，在客户端很有可能出现数据包无序到达的问题，而无序到达的数据包需要重新要求被发送，这样网络的吞吐量就会下降。
+- bond1：（active-backup）Active-backup policy（主-备策略）
+  - 特点：只有一个设备处于活动状态，当一个宕掉另一个马上由备份转为主设备。mac地址是外部可见的，从外面看来，bond的MAC地址是唯一的，以避免switch发生混乱。此模式只提供了容错能力；由此可见此算法的有点是可以提供高网络连接的可用性，但是它的资源利用率较低，只有一个接口处于工作状态，在有N个网络接口的情况下，资源利用率为1/N
+- bond2：（balance-xor）XOR policy（平衡策略）
+  - 特点：基于指定的传输HASH策略传输数据包。缺省的策略是：（源MAC地址XOR目标MAC地址）%slave数量。其他的传输策略可以通过xmit_hash_policy选项指定，此模式提供负载平衡和容错能力
+- bond3：broadcast（广播策略）
+  - 特点：在每个slave接口上传输每个数据包，此模式提供了容错能力
+- bond4：（802.3ad）IEEE 802.3ad Dynamic link aggregation（IEEE 802.3ad动态链接聚合）
+  - 特点：创建一个聚合组，它们共享同样的速率和双工设定。根据802.3ad规范将多个slave工作在同一个激活的聚合体下。外出流量的slave选举是基于传输hash策略，该策略可以通过xmit_hash_policy选项从缺省的XOR策略改变到其他策略。注意的是并不是所有的传输策略都是802.3ad适应的。
+  - 必要条件：
+    - ethtool支持获取每个slave的速率和双工设定
+    - switch支持IEEE802.3ad Dynamic link aggregation
+    - 大多数switch需要经过特定配置才能支持802.3ad模式
+- bond5：（balance-tlb）Adaptive transmit load balancing（适配器传输负载均衡）
+  - 特点：不需要任何特别的switch支持的通道bonding。在灭个slave上根据当前的负载（根据速度计算）分配外出流量。如果正在接受数据的slave出现故障了，另一个slave接管失败slave的MAC地址
+  - 该模式必要条件：ethtool支持获取每个slave的速率
+- bond6：（balance-alb）Adaptive load balancing（适配器适应性负载均衡）
+  - 特点：
+    - 该模式包含了balance-tlb模式，同时加上针对IPV4流量的接收负载均衡（receive load balance，rlb），而且不需要任何switch的支持。接受负载均衡是通过ARP协商实现的。bonding驱动截获本机发送的ARP应答，并把源硬件地址改写成为bond中某个slave的唯一硬件地址，从而使得不同的对端使用不同硬件的地址进行通信。
+    - 来自服务器端的接收流量也会被均衡。当本机发送ARP请求时，bonding驱动把对端的IP信息从ARP包中复制并保存下来。当ARP应答从对端到达时，bonding驱动把它的硬件地址提取出来，并发起一个ARP应答给bond中的某个slave。使用ARP协商进行负载均衡的一个问题是：每次广播ARP请求时都会使用bond的硬件地址，因此对端学习到这个硬件地址后，接收流量将会全部流向当前的slave。这个问题可以通过给所有的对端发送更新（ARP应答）来解决，应答中包含他们独一无二的硬件地址，从而导致流量重新分布。当新的slave加入到bond中时。或者某个未激活的slave重新激活时。接收流量也要重新分布。接收的负载被顺序地分布（round robin）在bond中最高速的slave上
+    - 当某个链路被重新接上，或者一个新的slave加入到bond中，接收流量在所有当前激活的slave全部重新分配，通过使用指定的MAC地址给每个client发起ARP应答。
+
+常用的有三种：
+
+- bond0：平衡负载模式，有自动备援，但需要“Switch”支援及设定
+- bond1：自动备援模式，其中一条线若断线，其他线路将会自动备援
+- bond6：平衡负载模式，有自动备援，不必“Switch”支援及设定
+
+```shell
+[root@jackycheung ~]# nmcli con show
+NAME                UUID                                  TYPE      DEVICE
+ens33               25670750-d065-4b47-9133-42c5c0e7bab9  ethernet  ens33
+Wired connection 1  43578612-2966-4b8a-ab86-f86ff1cec79d  ethernet  ens35
+Wired connection 2  f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa  ethernet  ens36
+
+[root@192.168.118.11 ~]#nmcli con delete 'Wired connection 1' 'Wired connection 2'
+Connection 'Wired connection 1' (43578612-2966-4b8a-ab86-f86ff1cec79d) successfully deleted.
+Connection 'Wired connection 2' (f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa) successfully deleted.
+ 
+[root@jackycheung ~]# nmcli con add ifname ens35 con-name ens35 type ethernet
+Connection 'ens35' (43578612-2966-4b8a-ab86-f86ff1cec79d) successfully added.
+[root@jackycheung ~]# nmcli con up ens35
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/5)
+[root@jackycheung ~]# nmcli con add type ethernet ifname ens36 con-name ens36 
+Connection 'ens36' (f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa) successfully added.
+[root@jackycheung ~]# nmcli con up ens36
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/5)
+[root@jackycheung ~]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens33  34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+ens35  43578612-2966-4b8a-ab86-f86ff1cec79d  ethernet  ens35  
+ens36  f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa  ethernet  ens36  
+[root@jackycheung ~]# ll /etc/sysconfig/network-scripts/ifcfg-ens3*
+-rw-r--r--. 1 root root 334 Oct 31 17:09 /etc/sysconfig/network-scripts/ifcfg-ens33
+-rw-r--r--. 1 root root 280 Oct 31 18:53 /etc/sysconfig/network-scripts/ifcfg-ens35
+-rw-r--r--. 1 root root 280 Oct 31 18:55 /etc/sysconfig/network-scripts/ifcfg-ens36
+```
+
+#### 手动配置，使用bond6
+
+```shell
+[root@jackycheung ~]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens35  43578612-2966-4b8a-ab86-f86ff1cec79d  ethernet  ens35  
+ens33  34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+ens36  f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa  ethernet  ens36  
+[root@jackycheung ~]# cd /etc/sysconfig/network-scripts/
+[root@jackycheung network-scripts]# vim ifcfg-ens35
+[root@jackycheung network-scripts]# vim ifcfg-ens36
+[root@jackycheung network-scripts]# cat ifcfg-ens35
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+NAME=ens35
+UUID=43578612-2966-4b8a-ab86-f86ff1cec79d
+DEVICE=ens35
+ONBOOT=yes
+MASTER=bond6		#bond名
+SLAVE=yes
+
+[root@jackycheung network-scripts]# cat ifcfg-ens36
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+NAME=ens36
+UUID=f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa
+DEVICE=ens36
+ONBOOT=yes
+MASTER=bond6	#bond名
+SLAVE=yes
+
+[root@jackycheung network-scripts]# vim ifcfg-bond6
+[root@jackycheung network-scripts]# cat ifcfg-bond6 
+TYPE=Bond
+BOOTPROTO=none
+DEVICE=bond6	#bond名
+ONBOOT=yes
+IPADDR=192.168.194.30
+NETMASK=255.255.255.0
+GATEWAY=192.168.194.1
+DNS1=114.114.114.114
+#mode=模式号，来进行切换不同的模式。如果是虚拟机环境fail_over_mac=1是必须带上，否则vmware会出警告信息，在进行切换时，是无法进行切换的。
+BONDING_OPTS='miimon=100 mode=6 fail_over_mac=1'
+
+
+[root@jackycheung network-scripts]# systemctl restart network
+[root@jackycheung network-scripts]# systemctl restart NetworkManager
+[root@jackycheung network-scripts]# cat /proc/net/bonding/bond6     
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: adaptive load balancing
+Primary Slave: None
+Currently Active Slave: ens36
+MII Status: up
+MII Polling Interval (ms): 100
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: ens35
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 00:0c:29:2f:f9:7d
+Slave queue ID: 0
+
+Slave Interface: ens36
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 00:0c:29:2f:f9:87
+Slave queue ID: 0
+
+[root@jackycheung network-scripts]# ethtool bond6                   
+Settings for bond6:
+        Supported ports: [ ]
+        Supported link modes:   Not reported
+        Supported pause frame use: No
+        Supports auto-negotiation: No
+        Supported FEC modes: Not reported
+        Advertised link modes:  Not reported
+        Advertised pause frame use: No
+        Advertised auto-negotiation: No
+        Advertised FEC modes: Not reported
+        Speed: 2000Mb/s
+        Duplex: Full
+        Port: Other
+        PHYAD: 0
+        Transceiver: internal
+        Auto-negotiation: off
+        Link detected: yes
+```
+
+通过nmcli con down 网卡名 模拟故障切换
+
+```shell
+[root@jackycheung network-scripts]# nmcli con show
+NAME        UUID                                  TYPE      DEVICE 
+ens33       34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+Bond bond6  f756ae28-d0c4-86c5-a33f-ca9158bab64d  bond      bond6  
+ens35       43578612-2966-4b8a-ab86-f86ff1cec79d  ethernet  ens35  
+ens36       f51bf1c8-c21e-4cad-9c2a-0f5f4cbd6ffa  ethernet  ens36  
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE      CONNECTION 
+ens33   ethernet  connected  ens33      
+bond6   bond      connected  Bond bond6 
+ens35   ethernet  connected  ens35      
+ens36   ethernet  connected  ens36      
+lo      loopback  unmanaged  --         
+
+[root@jackycheung network-scripts]# nmcli con down ens35
+Connection 'ens35' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)
+[root@jackycheung network-scripts]# cat /proc/net/bonding/bond6
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: adaptive load balancing
+Primary Slave: None
+Currently Active Slave: ens36
+MII Status: up
+MII Polling Interval (ms): 100
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: ens36
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 1
+Permanent HW addr: 00:0c:29:2f:f9:87
+Slave queue ID: 0
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE         CONNECTION 
+ens33   ethernet  connected     ens33      
+bond6   bond      connected     Bond bond6 
+ens36   ethernet  connected     ens36      
+ens35   ethernet  disconnected  --         
+lo      loopback  unmanaged     --      
+
+```
+
+![](imgs/ens35down.png)
+
+```shell
+[root@jackycheung network-scripts]# nmcli con down ens36
+Connection 'ens36' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)
+[root@jackycheung network-scripts]# cat /proc/net/bonding/bond6 
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: adaptive load balancing
+Primary Slave: None
+Currently Active Slave: ens35
+MII Status: up
+MII Polling Interval (ms): 100
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: ens35
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 00:0c:29:2f:f9:7d
+Slave queue ID: 0
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE         CONNECTION 
+ens33   ethernet  connected     ens33      
+bond6   bond      connected     Bond bond6 
+ens35   ethernet  connected     ens35      
+ens36   ethernet  disconnected  --         
+lo      loopback  unmanaged     --         
+[root@jackycheung network-scripts]# nmcli con up ens36    
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/6)
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE      CONNECTION 
+ens33   ethernet  connected  ens33      
+bond6   bond      connected  Bond bond6 
+ens35   ethernet  connected  ens35      
+ens36   ethernet  connected  ens36      
+lo      loopback  unmanaged  --       
+```
+
+![](imgs/ens36down.png)
+
+#### 同通过nmcli配置bond1
+
+```shell
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE         CONNECTION 
+ens33   ethernet  connected     ens33      
+ens35   ethernet  disconnected  --         
+ens36   ethernet  disconnected  --         
+lo      loopback  unmanaged     --         
+
+
+[root@jackycheung network-scripts]# nmcli con add type bond ifname bond1 con-name bond1 mode 1 ipv4.method manual ipv4.addresses 192.168.194.40/24 ipv4.gateway 192.168.194.1 ipv4.dns 114.114.114.114
+Connection 'bond1' (aaaa5bbb-ea48-41d9-9421-767db54c5655) successfully added.
+
+[root@jackycheung network-scripts]# nmcli con add type bond-slave ifname ens35 con-name bond1-ens35 master bond1
+Connection 'bond1-ens35' (6f8d9366-85c6-4cc1-8489-532682b6cbe2) successfully added.
+[root@jackycheung network-scripts]# nmcli con add type bond-slave ifname ens36 con-name bond1-ens36 master bond1  
+Connection 'bond1-ens36' (3ee28ada-0233-4e36-944b-b4fd8b8ca415) successfully added.
+
+[root@jackycheung network-scripts]# nmcli con show
+NAME         UUID                                  TYPE      DEVICE 
+ens33        34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+bond1        aaaa5bbb-ea48-41d9-9421-767db54c5655  bond      bond1  
+bond1-ens35  6f8d9366-85c6-4cc1-8489-532682b6cbe2  ethernet  ens35  
+bond1-ens36  3ee28ada-0233-4e36-944b-b4fd8b8ca415  ethernet  ens36  
+[root@jackycheung network-scripts]# ll ifcfg-*
+-rw-r--r--. 1 root root 402 Oct 31 22:37 ifcfg-bond1
+-rw-r--r--. 1 root root 120 Oct 31 22:39 ifcfg-bond1-ens35
+-rw-r--r--. 1 root root 120 Oct 31 22:39 ifcfg-bond1-ens36
+-rw-r--r--. 1 root root 334 Oct 31 17:09 ifcfg-ens33
+-rw-r--r--. 1 root root 254 May 22  2020 ifcfg-lo
+
+#虚拟机环境fail_over_mac=1是必须带上，否则vmware会出警告信息，在进行切换时，是无法进行切换的。
+[root@jackycheung network-scripts]# echo 'BONDING_OPTS="miimon=100 mode=1 fail_over_mac=1"' >> ifcfg-bond1
+[root@jackycheung network-scripts]# cat ifcfg-bond1
+TYPE=Bond
+BONDING_MASTER=yes
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.40
+PREFIX=24
+GATEWAY=192.168.194.1
+DNS1=114.114.114.114
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=bond1
+UUID=aaaa5bbb-ea48-41d9-9421-767db54c5655
+DEVICE=bond1
+ONBOOT=yes
+BONDING_OPTS="miimon=100 mode=1 fail_over_mac=1"
+
+[root@jackycheung network-scripts]# systemctl restart network
+[root@jackycheung network-scripts]# cat /proc/net/bonding/bond1 
+Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+
+Bonding Mode: fault-tolerance (active-backup) (fail_over_mac active)
+Primary Slave: None
+Currently Active Slave: ens35
+MII Status: up
+MII Polling Interval (ms): 100
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: ens35
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 00:0c:29:2f:f9:7d
+Slave queue ID: 0
+
+Slave Interface: ens36
+MII Status: up
+Speed: 1000 Mbps
+Duplex: full
+Link Failure Count: 0
+Permanent HW addr: 00:0c:29:2f:f9:87
+Slave queue ID: 0
+[root@jackycheung network-scripts]# ethtool bond1
+Settings for bond1:
+        Supported ports: [ ]
+        Supported link modes:   Not reported
+        Supported pause frame use: No
+        Supports auto-negotiation: No
+        Supported FEC modes: Not reported
+        Advertised link modes:  Not reported
+        Advertised pause frame use: No
+        Advertised auto-negotiation: No
+        Advertised FEC modes: Not reported
+        Speed: 1000Mb/s
+        Duplex: Full
+        Port: Other
+        PHYAD: 0
+        Transceiver: internal
+        Auto-negotiation: off
+        Link detected: yes
+```
+
+### 双网卡链路聚合team
+
+Teaming技术就是把同一台服务器上的多个物理网卡通过软件绑定称一个虚拟网卡；
+
+可以通过Teaming技术做链路聚合，实现不同网卡的负载均衡和冗余
+
+Team常用工作模式：
+
+- roundrobin：以轮循的模式传输所有端口的包
+- activebakup：主备模式这是一个故障迁移程序，监控连接更改选择活动的端口进行传输
+- loadbalance：监控流量并使用哈希函数以尝试在选择传输端口的时候达到完美均衡
+- broadcast：广播容错，设备通过所有端口传输数据包
+
+bonding和Teaming区别：
+
+- 一般在RHEL5/RHEL6中使用的是Bonding，而RHEL7提供了一项新的实现技术Teaming，用来实现链路聚合的功能。
+- 网卡的链路聚合一般常用的有bond和team两种模式，bond模式最多可以添加两块网卡，team模式最多可以添加八块网卡。
+
+| Feature                                                      | Bonding | Team     |
+| ------------------------------------------------------------ | ------- | -------- |
+| broadcast TX policy                                          | Yes     | Yes      |
+| round-robin TX policy                                        | Yes     | Yes      |
+| active-backup TX policy                                      | Yes     | Yes      |
+| LACP (802.3ad) support                                       | Yes     | Yes      |
+| hash-based TX policy                                         | Yes     | Yes      |
+| TX load-balancing support (TLB)                              | Yes     | Yes      |
+| VLAN support                                                 | Yes     | Yes      |
+| LACP hash port select                                        | Yes     | Yes      |
+| Ethtool link monitoring                                      | Yes     | Yes      |
+| ARP link monitoring                                          | Yes     | Yes      |
+| ports up/down delays                                         | Yes     | Yes      |
+| configurable via Network Manager (gui,  tui, and cli)        | Yes     | Yes      |
+| multiple device stacking                                     | Yes     | Yes      |
+| highly customizable hash function setup                      | No      | Yes      |
+| D-Bus interface                                              | No      | Yes      |
+| ØMQ interface                                                | No      | Yes      |
+| port priorities and stickiness (“primary”  option enhancement) | No      | Yes      |
+| separate per-port link monitoring setup                      | No      | Yes      |
+| logic in user-space                                          | No      | Yes      |
+| modular design                                               | No      | Yes      |
+| NS/NA (IPV6) link monitoring                                 | No      | Yes      |
+| load-balancing for LACP support                              | No      | Yes      |
+| lockless TX/RX path                                          | No      | Yes      |
+| user-space runtime control                                   | Limited | Full     |
+| multiple link monitoring setup                               | Limited | Yes      |
+| extensibility                                                | Hard    | Easy     |
+| performance overhead                                         | Low     | Very Low |
+| RX load-balancing support (ALB)                              | Yes     | Planned  |
+| RX load-balancing support (ALB) in bridge  or OVS            | No      | Planned  |
+
+#### nmcli 配置team
+
+```shell
+[root@jackycheung network-scripts]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens33  34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+[root@jackycheung network-scripts]# nmcli device status
+DEVICE  TYPE      STATE         CONNECTION 
+ens33   ethernet  connected     ens33      
+ens35   ethernet  disconnected  --         
+ens36   ethernet  disconnected  --         
+lo      loopback  unmanaged     --    
+
+#在虚拟机环境下一定注意："hwaddr_policy":"by_active" 这个参数意义和 fail_over_mac =1 是一致的，在虚拟机环境中必须添加上，否则网卡高可用失败。
+[root@jackycheung network-scripts]# nmcli con add type team ifname team1 con-name team1 config '{"runner":{"name":"activebackup", "hwaddr_policy":"by_active"}}' \ipv4.method manual ipv4.address 192.168.194.50/24 ipv4.gateway 192.168.194.1 ipv4.dns 114.114.114.114
+Connection 'team1' (925891ab-82ad-4225-8d0c-ce2c2ca34402) successfully added.
+[root@jackycheung network-scripts]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens33  34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+team1  925891ab-82ad-4225-8d0c-ce2c2ca34402  team      team1  
+
+[root@jackycheung network-scripts]# nmcli con add type team-slave ifname ens35 con-name team1-ens35 master team1
+Connection 'team1-ens35' (89f8798d-9cab-4c03-9de2-e8d83dcd8e24) successfully added.
+[root@jackycheung network-scripts]# nmcli con add type team-slave ifname ens36 con-name team1-ens36 master team1  
+Connection 'team1-ens36' (1cecfc0d-3c4b-4fb5-9fc5-e9354a3e297b) successfully added.
+[root@jackycheung network-scripts]# nmcli con show
+NAME         UUID                                  TYPE      DEVICE 
+ens33        34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
+team1        925891ab-82ad-4225-8d0c-ce2c2ca34402  team      team1  
+team1-ens35  89f8798d-9cab-4c03-9de2-e8d83dcd8e24  ethernet  ens35  
+team1-ens36  1cecfc0d-3c4b-4fb5-9fc5-e9354a3e297b  ethernet  ens36  
+[root@jackycheung ~]# ll /etc/sysconfig/network-scripts/ifcfg-*
+-rw-r--r--. 1 root root 334 Oct 31 17:09 /etc/sysconfig/network-scripts/ifcfg-ens33
+-rw-r--r--. 1 root root 254 May 22  2020 /etc/sysconfig/network-scripts/ifcfg-lo
+-rw-r--r--. 1 root root 445 Oct 31 23:05 /etc/sysconfig/network-scripts/ifcfg-team1
+-rw-r--r--. 1 root root 121 Oct 31 23:10 /etc/sysconfig/network-scripts/ifcfg-team1-ens35
+-rw-r--r--. 1 root root 121 Oct 31 23:10 /etc/sysconfig/network-scripts/ifcfg-team1-ens36
+
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-team1
+TEAM_CONFIG="{\"runner\":{\"name\":\"activebackup\", \"hwaddr_policy\":\"by_active\"}}"
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+IPADDR=192.168.194.50
+PREFIX=24
+GATEWAY=192.168.194.1
+DNS1=114.114.114.114
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=team1
+UUID=925891ab-82ad-4225-8d0c-ce2c2ca34402
+DEVICE=team1
+ONBOOT=yes
+DEVICETYPE=Team  
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-team1-ens35
+NAME=team1-ens35
+UUID=89f8798d-9cab-4c03-9de2-e8d83dcd8e24
+DEVICE=ens35
+ONBOOT=yes
+TEAM_MASTER=team1
+DEVICETYPE=TeamPort
+[root@jackycheung ~]# cat /etc/sysconfig/network-scripts/ifcfg-team1-ens36
+NAME=team1-ens36
+UUID=1cecfc0d-3c4b-4fb5-9fc5-e9354a3e297b
+DEVICE=ens36
+ONBOOT=yes
+TEAM_MASTER=team1
+DEVICETYPE=TeamPort
+```
+
+通过 ifdown 网卡名 模拟故障切换
+
+```shell
+[root@jackycheung ~]# teamdctl team1 st
+setup:
+  runner: activebackup
+ports:
+  ens35
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+  ens36
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+runner:
+  active port: ens35
+[root@jackycheung ~]# ifdown ens35
+Device 'ens35' successfully disconnected.
+[root@jackycheung ~]# teamdctl team1 st
+setup:
+  runner: activebackup
+ports:
+  ens36
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+runner:
+  active port: ens36
+
+```
+
+![team_ens35down](imgs/team_ens35down.png)
+
+```shell
+[root@jackycheung ~]# ifup ens35
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/21)
+[root@jackycheung ~]# teamdctl team1 st
+setup:
+  runner: activebackup
+ports:
+  ens35
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+  ens36
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+runner:
+  active port: ens36
+[root@jackycheung ~]# ifdown ens36
+Device 'ens36' successfully disconnected.
+[root@jackycheung ~]# teamdctl team1 st
+setup:
+  runner: activebackup
+ports:
+  ens35
+    link watches:
+      link summary: up
+      instance[link_watch_0]:
+        name: ethtool
+        link: up
+        down count: 0
+runner:
+  active port: ens35
+```
+
+![](imgs/team_ens36down.png)
 
 ### host命令
 
