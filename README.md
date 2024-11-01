@@ -631,7 +631,7 @@ total 0
 drwxr-xr-x. 3 root root 15 Aug 13 23:00 A
 ```
 
-> rm -rf /tmp/ 会删除tmp目录
+> rm -rf /tmp/ 会删除tmp目录本身
 >
 > rm -rf /tmp/* 删除tmp下的内容
 
@@ -838,6 +838,8 @@ help命令用于查看**shell**内部命令的相关信息，包括使用方法�
 - -s 为每一个匹配PATTERN模式的主题仅显示一个用法
 
 ```shell
+[root@jackycheung ~]# help -d cd
+cd - Change the shell working directory.
 [root@localhost ~]# help cd
 cd: cd [-L|[-P [-e]] [-@]] [目录]
     改变 shell 工作目录。
@@ -1401,7 +1403,6 @@ postfix:x:89:89::/var/spool/postfix:/sbin/nologin
 tomcat:x:53:53:Apache Tomcat:/usr/share/tomcat:/sbin/nologin
 user:x:1000:1000::/home/user:/bin/bash
 user1:x:1001:1001::/home/user1:/bin/bash
-[root@jackycheung ~]#
 ```
 
 ### 修改网卡IP地址
@@ -1441,6 +1442,7 @@ nmcli常用命令
 - nmcli connection down ens160：关闭网卡
 - nmcli connection reload ens160：重载网卡
 - nmcli general status：将NetworkManager的所有状态都打印出来
+- journalctl -u NetworkManager：查看NetworkManager所有日志
 - nmcli connection delete 网卡名：删除连接
 
 #### nmcli connection show：显示所有连接
@@ -2337,6 +2339,7 @@ runner:
 host用于将一个域名解析到一个IP地址
 
 ```shell
+[root@jackycheung ~]# yum install bind-utils -y
 [root@Canvs ~]# host www.baidu.com
 www.baidu.com has address 39.156.66.18
 www.baidu.com has address 39.156.66.14
@@ -2400,11 +2403,49 @@ history命令用于显示历史记录和执行过的命令，登录shell时会�
 - -a 追加本次新执行的命令至历史命令文件中
 - -d 删除历史命令中指定的命令
 - -c 清空历史命令列表
+- -r 从历史文件中重新读取历史记录
+- -w 立即将当前shell会话中的命令历史记录写入到历史文件中。即使在不同的终端会话中，也可以立即看到最新的历史命令
 
 快捷操作：
 - !#  调用历史命令中第N条命令
 - !string  调用历史命令中以string开头的命令
 - !!  重复执行上一条命令
+
+```shell
+[root@jackycheung ~]# history
+.............
+ 1201  free -h
+ 1202  cat /proc/meminfo 
+ 1203  cat /etc/hostname 
+ 1204  hostnamectl set-hostname jackycheung
+ 1205  ls
+ 1206  vim passwd 
+ 1207  host www.baidu.com
+ 1208  yum install bind-utils -y
+ 1209  host www.baidu.com
+ 1210  ping www.baidu.com
+ 1211  host www.baidu.com
+ 1212  ping 110.242.68.3
+ 1213  history
+ 1214  history -d 1213
+ 1215  history 
+ 1216  histor
+ 1217  history ls
+ 1218  ls
+ 1219  lscpu
+ 1220  history 
+[root@jackycheung ~]# history -d 1219
+[root@jackycheung ~]# !1201
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           3.7G        255M        3.2G         11M        268M        3.2G
+Swap:          2.0G          0B        2.0G
+[root@jackycheung ~]# !!
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           3.7G        255M        3.2G         11M        268M        3.2G
+Swap:          2.0G          0B        2.0G
+```
 
 ### date和clock命令
 
@@ -2825,6 +2866,10 @@ umask用于显示或设置创建文件的权限掩码
 - -p         如果省略 MODE 模式，以可重用为输入的格式输入
 - -S         以符号形式输出，否则以八进制数格式输出
 
+```shell
+[root@jackycheung ~]# umask
+0022
+```
 
 ### chown归属关系管理
 
@@ -4598,6 +4643,7 @@ dr-xr-xr-x. 2 root root  2048 4月   4 2019 isolinux
 2、创建配置repo文件
 
 ~~~~shell
+#Redhat8镜像目录有改变
 [root@localhost /]# cat /etc/yum.repos.d/local.repo 
 [BaseOS]		#仓库名称，可自定义，单具有唯一性
 name=BaseOS  #仓库描述（类似于仓库解释），描述信息自定义，不具备唯一性
@@ -4609,6 +4655,7 @@ name=AppStream
 baseurl=file:///mnt/cdrom/AppStream
 gpgcheck=0
 enabled=1
+#redhat8以下
 ~~~~
 
 3、验证yum源
@@ -4936,6 +4983,16 @@ systemd是内核加载的第一个进程（PID=1），systemd负责整个Linux�
   - systemctl disable 服务名   #设置服务不开机启动
   - systemctl is-enabled 服务名  #查看服务是否被设置开机启动
   - systemctl status 服务名  #查看服务状态
+  - systemctl list-unit-files #命令用于列出系统中所有已知的单元文件及其状态。这些单元文件包括服务（.service）、套接字（.socket）、设备（.device）、挂载点（.mount）、目标（.target）等。每个单元文件的状态可以是 enabled、disabled、static、masked 等
+    - unit file：单元文件的名称
+    - state：单元文件的状态，常见的状态有：
+      - enable：该单元文件在系统启动时会被自动启动
+      - disable：该单元文件在系统启动时不会被自动启动
+      - static：该单元文件不能被直接启动，但可以作为依赖项被其他单元文件启动
+      - masked：该单元文件被屏蔽，无法启动。
+  - systemctl list-units --type=service --state=active：查看当前系统中正在运行的服务
+  - systemctl list-unit-files|grep enabled #查看系统启动所有会启动的服务
+  - systemctl list-unit-files|grep disabled #查看系统启动不会自启动的服务
 
 ```shell
 [root@RHCE Packages]# systemctl start vsftpd
@@ -4961,6 +5018,9 @@ Created symlink /etc/systemd/system/multi-user.target.wants/vsftpd.service → /
 enabled
 [root@RHCE ~]# systemctl disable vsftpd
 Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
+#查看firwalld服务是否开机自启动
+[root@jackycheung ~]# systemctl list-unit-files |grep firewalld
+firewalld.service                             enabled 
 ```
 
 ### Shell概述
@@ -6735,7 +6795,7 @@ no crontab for root
 
 Security-Enhanced Linux美国NSA国家安全局主导开发，一套增强Linux系统安全的强制访问控制体系
 
-集成了L inux内核（2.6及以上）针对用户、进程、目录和文件提供预设的保护策略，以及管理工具
+集成了Linux内核（2.6及以上）针对用户、进程、目录和文件提供预设的保护策略，以及管理工具
 
 SELinux运行模式
 - enforcing #强制模式
@@ -6790,11 +6850,52 @@ SELINUXTYPE=targeted
 
 ### 安全防护firewalld防火墙
 
-防火墙分为硬件防火墙和软件防火墙
+firewalld是由红帽发起的提供了支持网络 / 防火墙区域（zone）定义网络链接以及接口安全等级的动态防火墙管理工具。它支持IPv4、IPV6防火墙设置以及以太网桥接，并且拥有运行时配置和永久配置选项。它也支持允许服务或者应用程序直接添加防火墙规则的接口。
 
-防火墙：匹配及停止；防火墙过滤入站请求
+firewalld防火墙是Redhat7系统默认的防火墙管理工具，取代了之前的iptables防火墙，也是工作在网络层，属于包过滤防火墙。
 
-系统服务：firewalld，CentOS7默认使用的防火墙，CentOS6默认使用防火墙iptables
+#### firewalld与iptables
+
+- firewalld和iptables都是用来管理防火墙的工具（属于用户态）来定义防火墙的各种规则功能，内部结构都指向netfilter网络过滤子系统（属于内核态）来实现包过滤防火墙功能。
+- firewalld提供了支持网络区域所定义的网络连接以及接口、安全等级的动态防火墙管理工具。它支持IPv4、IPv6防火墙设置，以及以太网桥（在某些高级服务可能会用到，比如云计算），并且拥有两种配置模式：运行时配置和永久配置
+
+#### firewalld和iptables区别
+
+- iptables主要是基于接口来设置规则，从而判断网络的安全性；firewalld是基于区域，根据不同的区域来设置不同的规则，从而保证网络的安全。与硬件防火墙的设置类似。
+- iptables在/etc/sysconfig/iptables中存储配置；firewalld将配置文件存储在/etc/firewalld/（优先加载）和/usr/lib/firewalld/（默认的配置文件）中的各种XML文件里。
+- 使用iptables每一个单独更改意味这清除所有旧有的规则和从/etc/sysconfig/iptables里读取所有新的规则。使用firewalld却不会再创建任何新的规则，仅仅运行规则中的不同之处。因此firewalld可以再运行时间内，改变设置而不丢失现行连接。
+- iptable防火墙类型为静态防火墙firewalld防火墙类型为动态防火墙
+
+#### firewalld防火墙预定了9个区域
+
+- trusted（信任区域）：允许所有的传入流量。
+- public（公共区域）：允许与ssh、dhcpv6-client预定义服务匹配的传入流量，其余均拒绝，是新添加网络接口的默认区域
+- external（外部区域）：允许与ssh预定义服务匹配的传入流量，其余均拒绝。默认将通过此区域转发的IPv4传入流量进行地址伪装，可用于为路由器启用了伪装功能的外部网络。
+- home（家庭区域）：允许与ssh、ipp-client、mdns、samba-client、dhcpv6-client预定服务匹配的传入流量，其余均拒绝。
+- internal（内部区域）：默认值时与home区域相同。
+- work（工作区域）：允许与ssh、ipp-client、dhcpv6-client预定义服务匹配的传入流量，其余均拒绝
+- dmz（隔离区域也称非军事区域）：允许与ssh预定义服务匹配的传入流量，其余均拒绝。
+- block（限制区域）：拒绝所有传入流量。
+- drop（丢弃区域）：丢弃所有传入流量，并且不产生包含ICMP的错误响应
+
+> 默认情况下，public区域是默认区域，包含所有接口（网卡）
+
+#### firewalld数据处理流程
+
+firewalld对于进入系统的数据包，会根据数据包源IP地址或传入的网络接口灯条件，将数据流量转入相应区域的防火墙规则。对于进入系统的数据包，首先检查的就是其源地址：
+
+- 若源地址关联到特定的区域（即源地址或接口绑定的区域有冲突），则执行该区域高制定的规则。
+- 若源地址未关联到特定的区域（即源地址或接口绑定的区域没有冲突），则使用传入网络接口区域并执行该区域所制定的规则
+- 若网络接口也未关联到特定的区域（即源地址或接口都没有绑定特定的某个区域），则使用默认区域并执行该区域所制定的规则
+
+> 绑定源地址的区域规则 > 网卡接口绑定的区域规则 > 默认区域的规则
+>
+> - firewalld：只关心区域
+> - iptables：四标五链及流量的进出
+
+
+
+
 
 - 防火墙预设安全区域
   - public：仅允许访问本机的sshd、dhcp、ping等少量服务
@@ -6817,12 +6918,21 @@ SELINUXTYPE=targeted
 
 - 管理工具：firewall-cmd
   - 常用命令：
-    - firewall-cmd --get-default-zone  #查看防火墙默认区域
-    - firewall-cmd --set-default-zone=区域名  #设置默认区域
-    - firewall-cmd --zone=区域名 --list-all  #查看区域名的所有规则
-    - firewall-cmd --zone=区域名 --add-规则名=服务名  #为区域添加服务
-    - firewall-cmd --reload  #重新加载防火墙配置
-    - firewall-cmd --zone=区域名  --remove-规则名=规则   #删除规则
+    - firewall-cmd --version：查看版本
+    - firewall-cmd --help：查看帮助
+    - firewall-cmd --state：查看状态
+    - firewall-cmd  --get-default-zone  ：查看防火墙默认区域
+    - firewall-cmd --get-active-zones：查看区域信息
+    - firewall-cmd --get-zone-of-interface=eth0：查看指定接口所属区域
+    - firewall-cmd --panic-on：拒绝所有包
+    - firewall-cmd --panic-off ：取消拒绝状态
+    - firewall-cmd --query-panic：查看是否拒绝
+    - firewall-cmd  --set-default-zone=区域名  ：设置默认区域
+    - firewall-cmd  --zone=区域名 --list-all  ：查看区域名的所有规则
+    - firewall-cmd --zone=去域名 --list-ports：查看所有打开的端口
+    - firewall-cmd  --zone=区域名 --add-规则名=服务名  ：为区域添加服务
+    - firewall-cmd  --reload  ：重新加载防火墙配置
+    - firewall-cmd  --zone=区域名  --remove-规则名=规则   ：删除规则
   - 选项：
     - --permanent    #永久配置规则如：firewall-cmd --permanent --zone=区域名 --add-service=服务名
 
@@ -6945,7 +7055,7 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 **iptables的4表**
 
 - filter：数据过滤表
-  - 包含三个链：INPUT，UOTPUT，FORWARD
+  - 包含三个链：INPUT，UOTPUT，FORWARD
 - nat：地址转换表，不能过滤数据包，仅仅修改数据包中的ip和端口
   - 包含四个链：PREROUTING，POSTROUTING，OUTPUT，INPUT
 - raw：状态跟踪表，决定是否跟踪数据包
@@ -7507,6 +7617,50 @@ May  7 17:59:15 : tom : TTY=pts/1 ; PWD=/var/log ; USER=root ;
 - 服务名：sshd
 - ssh提供密钥认证登录方式
 - ssh-copy-id #用于拷贝私钥
+- systemctl status sshd：查看ssh服务状态
+- tail -f /var/log/secure：查看ssh服务日志文件
+- journalctl -u sshd：查看ssh服务日志
+
+修改ssh默认端口
+
+```shell
+[root@jackycheung /]# cd /etc/ssh
+[root@jackycheung ssh]# vim sshd_config 
+[root@jackycheung ssh]# head -17 sshd_config
+#       $OpenBSD: sshd_config,v 1.100 2016/08/15 12:32:04 naddy Exp $
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+# This sshd was compiled with PATH=/usr/local/bin:/usr/bin
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+# If you want to change the port on a SELinux system, you have to tell
+# SELinux about this change.
+# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
+#
+Port 10022
+[root@jackycheung ssh]# systemctl restart sshd
+[root@jackycheung ssh]# 
+[root@jackycheung ssh]# systemctl status sshd
+● sshd.service - OpenSSH server daemon
+   Loaded: loaded (/usr/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+   Active: active (running) since 五 2024-11-01 23:04:30 CST; 10s ago
+     Docs: man:sshd(8)
+           man:sshd_config(5)
+ Main PID: 19726 (sshd)
+   CGroup: /system.slice/sshd.service
+           └─19726 /usr/sbin/sshd -D
+
+11月 01 23:04:30 jackycheung systemd[1]: Starting OpenSSH server daemon...
+11月 01 23:04:30 jackycheung sshd[19726]: Server listening on 0.0.0.0 port 10022.
+11月 01 23:04:30 jackycheung sshd[19726]: Server listening on :: port 10022.
+11月 01 23:04:30 jackycheung systemd[1]: Started OpenSSH server daemon.
+```
 
 ```shell
 #生成公私钥
