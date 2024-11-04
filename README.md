@@ -584,6 +584,27 @@ spremotetablet  46998/tcp               # Capture handwritten signatures
 [root@localhost ~]# tail -f hello.py 
 helloworldls!
 你好，世界！
+
+[root@jackycheung ~]# head -5 cdrom.log 
+-r--r--r-- 1 root root  1.8M 6月  23 2020 389-ds-base-1.3.10.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root  714K 6月  23 2020 389-ds-base-libs-1.3.10.2-6.el7.x86_64.rpm
+-r--r--r-- 1 root root  150K 3月  30 2017 abattis-cantarell-fonts-0.0.25-1.el7.noarch.rpm
+-r--r--r-- 1 root root  539K 7月   2 2020 abrt-2.1.11-60.el7.x86_64.rpm
+-r--r--r-- 1 root root  195K 7月   2 2020 abrt-addon-ccpp-2.1.11-60.el7.x86_64.rpm
+[root@jackycheung ~]# tail -5 cdrom.log 
+-r--r--r-- 1 root root   51K 7月   9 2018 zlib-devel-1.2.7-18.el7.i686.rpm
+-r--r--r-- 1 root root   50K 7月   9 2018 zlib-devel-1.2.7-18.el7.x86_64.rpm
+-r--r--r-- 1 root root  2.4M 3月   3 2020 zsh-5.0.2-34.el7_8.2.x86_64.rpm
+-r--r--r-- 1 root root   84K 10月 29 2019 zziplib-0.13.62-12.el7.i686.rpm
+-r--r--r-- 1 root root   83K 10月 29 2019 zziplib-0.13.62-12.el7.x86_64.rpm
+[root@jackycheung ~]# tail -5f cdrom.log 
+-r--r--r-- 1 root root   51K 7月   9 2018 zlib-devel-1.2.7-18.el7.i686.rpm
+-r--r--r-- 1 root root   50K 7月   9 2018 zlib-devel-1.2.7-18.el7.x86_64.rpm
+-r--r--r-- 1 root root  2.4M 3月   3 2020 zsh-5.0.2-34.el7_8.2.x86_64.rpm
+-r--r--r-- 1 root root   84K 10月 29 2019 zziplib-0.13.62-12.el7.i686.rpm
+-r--r--r-- 1 root root   83K 10月 29 2019 zziplib-0.13.62-12.el7.x86_64.rpm
+^C
+[root@jackycheung ~]# 
 ```
 
 ### rm命令
@@ -1008,23 +1029,24 @@ Linux会将文件存储在名为**虚拟目录**（virtual directory）的单个
 Linux虚拟目录结构只包含一个称为**根**（root）目录的基础目录。
 
 - /（根）：系统所有数据都存放在根目录下
-- /bin：存放用户和管理员必备的可执行的二进制程序文件
-- /boot：存放Linux系统内核及引导系统程序所需要的文件目录
-- /dev：存放硬件设备的目录，如键盘、鼠标、硬盘、光盘等
-- /etc：存放服务的配置文件，用户信息文件
-- /root：超级管理员的家目录
-- /home：系统普通用户的家目录
-- /lib：存放系统中的程序运行所需要的共享库及内核模块
-- /opt：额外安装的可选应用程序包所放置的位置
-- /srv：服务启动之后需要访问的数据目录
-- /tmp：一般用户或正在执行的程序临时存放文件的目录，任何人都可以访问，重要数据不可放置在此目录下
-- /var：存放系统执行过程中经常变化的文件，如随时都在变化的日志文件就存放在/var/log/下
+- /bin：存放系统启动和运行基本命令所需的二进制文件；常见文件：bash 、ls、cp、mv、rm、cat、echo、grep等。
+- /boot：存放启动Linux所需的文件，包括内核文件和引导加载程序（如GRUB）的配置文件；常见文件：vmlinuz（内核文件）、initrd.img（初始RAM磁盘）、grub（GRUB引导加载程序的配置文件）。
+- /dev：存放设备文件，这些文件代表系统中的硬件设备；常见文件：null、zero、tty、sda、sdb等
+- /etc：存放系统配置文件，这些文件通常由管理员编辑。常见文件：passwd、group、hosts、resolve.conf、fstab、sysconfig等。
+- /root：超级管理员（root）的家目录；常见文件：/root/.bashrc、/root/.profile等
+- /home：存放普通用户的家目录；常见目录：/home/user1、/home/user2等
+- /lib：存放系统启动和运行基本命令所需的共享库文件；常见文件：libc.so、libm.so、ld-linux.so等
+- /opt：存放可选的应用程序包，通常由第三方软件使用；常见目录：/opt/google/chrome，/opt/java等
+- /srv：存放服务数据，如web服务器的数据文件；常见目录：/srv/www、/srv/ftp等
+- /tmp：存放临时文件，这些文件在系统重启时通常会被删除。
+- /var：存放可变数据文件，如日志文件、邮件队列、数据库文件等；常见目录：/var/log 、/var/mail、 /var/spool、/var/tmp等。
 - /mnt、/media：光盘和镜像等预设的挂载点
-- /proc：Linux伪文件系统，该目录下的数据存在于内存当中，不占用磁盘空间
+- /proc：Linux虚拟文件系统（procfs），提供有关系统内核和进程的信息，常见目录：/proc/1234（进程信息）、/proc/cpuinfo、/proc/meminfo等
 - /lib64:存放函式库
-- /run：程序或服务启动后，存放PID的目录
-- /sys：存放被建立在内存中的虚拟文件系统
-- /usr：操作系统软件资源所放置的目录
+- /run：存放系统运行时的数据，如：PID文件、套接字文件等；常见文件：/run/ssh、/run/systemd等
+- /sbin：存放系统管理员使用的系统维护和管理命令；常见文件：ifconfig、iptables、fdisk、shutdown、reboot等。
+- /sys：虚拟文件系统，提供有关设备和内核信息的详细数据；常见目录：/sys/class、/sys/devices、/sys/block等
+- /usr：存放用户程序和文件，包括应用程序、库文件、文档等
   - /usr/bin：与/bin目录相同，存放用户可以使用的命令程序
   - /usr/lib：与/lib目录相同，存放系统中的程序运行所需要的共享库及内核模块
   - /usr/etc：用于存放安装软件时使用的配置文件
@@ -1496,7 +1518,7 @@ lo      loopback  unmanaged  --
 
 - nmcli connection add ifname ens35 autoconnect yes type ethernet ipv4.addresses ip地址 / 子网掩码 ipv4.gateway 网关 ：创建一个静态ip的以太网连接
 
-- nmcli connection add type ethernet con-name ens35 ifname ens35 ipv4.method manual ipv4.address  "192.168.194.31/24"  gw4 192.168.194.1
+- nmcli connection add type ethernet con-name ens35 ifname ens35 ipv4.method manual ipv4.address  192.168.194.31/24  ipv4.gateway 192.168.194.1
 
   - type ethernet ：网络类型为 以太网
 
@@ -1513,7 +1535,7 @@ lo      loopback  unmanaged  --
   
   - ipv4.address  "192.168.194.31/24"：设置IPv4地址为192.168.194.31，子网掩码为24
   
-  - gw4 192.168.194.1：设置网关为192.168.194.1
+  - ipv4.gateway 192.168.194.1：设置网关为192.168.194.1
 
 ```shell
 [root@jackycheung network-scripts]# nmcli connection add type ethernet con-
@@ -2485,6 +2507,66 @@ clock用于显示硬件时间
 16 17 18 19 20 21 22
 23 24 25 26 27 28 29
 30                  
+```
+
+### timedatectl
+
+timedatectl是一个用于查询和更改系统时间和日期设置的命令行工具。它不仅允许你设置系统时间，还可以管理时区、NTP（网络时间协议）同步等。
+
+```shell
+#查看当前时间和日期设置
+[root@jackycheung ~]# timedatectl 
+      Local time: 一 2024-11-04 17:01:41 CST
+  Universal time: 一 2024-11-04 09:01:41 UTC
+        RTC time: 一 2024-11-04 09:01:41
+       Time zone: Asia/Shanghai (CST, +0800)
+     NTP enabled: no
+NTP synchronized: no
+ RTC in local TZ: no
+      DST active: n/a
+#开启ntp同步
+[root@jackycheung ~]# timedatectl set-ntp true
+[root@jackycheung ~]# timedatectl 
+      Local time: 一 2024-11-04 17:02:31 CST
+  Universal time: 一 2024-11-04 09:02:31 UTC
+        RTC time: 一 2024-11-04 09:02:31
+       Time zone: Asia/Shanghai (CST, +0800)
+     NTP enabled: yes
+NTP synchronized: no
+ RTC in local TZ: no
+      DST active: n/a
+#禁用ntp同步
+[root@jackycheung ~]# timedatectl set-ntp false 
+#设置系统时间
+[root@jackycheung ~]# timedatectl set-time "2024-11-4 14:20:00"
+[root@jackycheung ~]# timedatectl 
+      Local time: 一 2024-11-04 14:20:05 CST
+  Universal time: 一 2024-11-04 06:20:05 UTC
+        RTC time: 一 2024-11-04 06:20:06
+       Time zone: Asia/Shanghai (CST, +0800)
+     NTP enabled: no
+NTP synchronized: no
+ RTC in local TZ: no
+      DST active: n/a
+#列出可用时区
+[root@jackycheung ~]# timedatectl list-timezones
+#设置时区为上海
+[root@jackycheung ~]# timedatectl set-timezone Africa/Lome
+[root@jackycheung ~]# timedatectl
+      Local time: 一 2024-11-04 06:25:08 GMT
+  Universal time: 一 2024-11-04 06:25:08 UTC
+        RTC time: 一 2024-11-04 06:25:09
+       Time zone: Africa/Lome (GMT, +0000)
+     NTP enabled: no
+NTP synchronized: no
+ RTC in local TZ: no
+      DST active: n/a
+[root@jackycheung ~]# timedatectl set-timezone Asia/Shanghai
+[root@jackycheung ~]# timedatectl set-time "2024-11-4 17:15:00"
+#将硬件时间写入硬件时钟
+[root@jackycheung ~]# hwclock -w
+#将硬件时间写入硬件时钟
+[root@jackycheung ~]# timedatectl set-local-rtc 1
 ```
 
 ### 管道符
