@@ -1,94 +1,3 @@
-### UNIX系统
-
-<img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
-
-[UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
-
-Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
-
-1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
-
-### Linux系统
-
-<img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
-
-[Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
-
-GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
-
-1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
-
-![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
-
-> Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
-
-### Linux内核
-
-Linux系统的核心是**内核**。内核控制着计算机系统的所有硬件和软件，在必要时分配硬件，并根据需要执行软件。
-
-内核主要负责功能
-
-- 系统内存管理
-- 软件程序管理
-  - Linux操作系统统称运行中的程序为**进程**。进程可以在前台运行，将输出显示在屏幕上；也可以在后台运行，隐藏到幕后。
-  - 内核创建了第一个进程（为**init进程**）来启动系统中所有其他进程。
-
-| 运行级 | 描述                     |
-| ------ | ------------------------ |
-| `0`    | 关闭系统                 |
-| `1`    | 单用户模式，用于系统维护 |
-| `2`    | 多用户模式，无联网服务   |
-| `3`    | 多用户模式，有联网服务   |
-| `4`    | 自定义                   |
-| `5`    | 配有GUI的多用户模式      |
-| `6`    | 重启系统                 |
-
-- 硬件设备管理
-  - 字符设备文件
-  - 块设备文件
-  - 网络设备文件
-- 文件系统管理
-  - Linux内核采用虚拟文件系统（virtual file system， VFS）作为和各种文件系统交互的接口。
-
-| 文件系统 | 描述                                            |
-| -------- | ----------------------------------------------- |
-| ext      | Linux扩展文件系统，最早的Linux文件系统          |
-| ext2     | 第二扩展文件系统，在ext的基础上提供了更多的功能 |
-| ext3     | 第三扩展文件系统，支持日志功能                  |
-| ext4     | 第四扩展文件系统，支持高级日志功能              |
-| btrfs    | 一种新的高性能文件系统，支持日志功能和大文件    |
-| exfat    | 扩展Windows文件系统，主要用于SD卡和U盘          |
-| hpfs     | OS/2高性能文件系统                              |
-| jfs      | IBM日志文件系统                                 |
-| iso9660  | ISO 9660文件系统（CD-ROM）                      |
-| minix    | MINIX文件系统                                   |
-| msdos    | Microsoft FAT16                                 |
-| ncp      | Netware文件系统                                 |
-| nfs      | 网络文件系统                                    |
-| ntfs     | 支持Microsoft NT文件系统                        |
-| proc     | 访问系统信息                                    |
-| smb      | 用于网络访问的Samba SMB文件系统                 |
-| sysv     | 期的Unix文件系统                                |
-| ufs      | BSD文件系统                                     |
-| umsdos   | 建立在msdos之上的类Unix文件系统                 |
-| vfat     | Windows 95文件系统（FAT32）                     |
-| XFS      | 高性能64位日志文件系统                          |
-
-### shell
-
-GNU/Linux shell是一种特殊的交互式工具，为用户提供了启动程序、管理文件系统中的文件以运行在Linux系统中的进程的途径。
-
-shell包含一组内部命令，可用于完成复制文件、移动文件、重命名文件、显示和终止系统中正在运行的程序这类操作。
-
-将多个shell命令放入文件中作为程序执行。这些文件成为**shell脚本**
-
-| shell | 描述                                                         |
-| ----- | ------------------------------------------------------------ |
-| ash   | 一种简单的轻量级shell，运行在内存受限环境中，但与bash shell完全兼容 |
-| korn  | 一种与Bourne shell兼容的编程shell，但支持如关联数组和浮点算术等高级编程特性 |
-| tcsh  | 一种将C语言中的一些元素引入shell脚本中的shell                |
-| zsh   | 一种结合了bash、tcsh和korn的特性，同时提供高级编程特性、共享历史文件和主题化提示符的高级shell |
-
 ### Linux桌面
 
 - X window软件
@@ -178,6 +87,10 @@ tty代表**电传打字机**（teletypewriter）
 - ctrl + w：删除一个单词
 
 - ctrl + v+方向键：vim中选中特殊区域，配合x删除
+
+- ctrl + s：暂停终端输出；终端会停止显示输出，但后台的进程仍在运行，这对于大量输出淹没屏幕非常有用
+
+- ctrl + q：恢复被ctrl+s暂停的输出
 
 ### 命令一般格式
 
@@ -1004,6 +917,23 @@ N 3
 # systemctl set-default TARGET.target
 [root@localhost ~]# systemctl get-default		# 查看系统默认级别
 multi-user.target
+```
+
+### /etc/motd
+
+如果想让登录者取得一些讯息，想要大家都知道的讯息
+
+```shell
+[root@jackycheung ~]# cat /etc/motd
+Hello everone,
+Our server will be maintained at 2024/11/7 0:00 - 24:00.
+Please don't login server at that time. ^_^
+
+Last login: Thu Nov  7 14:58:27 2024 from 192.168.194.1
+Hello everone,
+Our server will be maintained at 2024/11/7 0:00 - 24:00.
+Please don't login server at that time. ^_^
+[root@jackycheung ~]#
 ```
 
 ### 关机与重启
@@ -2569,9 +2499,16 @@ NTP synchronized: no
 [root@jackycheung ~]# timedatectl set-local-rtc 1
 ```
 
-### 管道符
+### 管道符 pipe
 
-管道符 **'|'** :将命令的输出结果交给另外一条命令作为参数继续处理 
+管道符 `|` :将命令的输出结果交给另外一条命令作为参数继续处理 
+
+`|`仅能处理经由前面一个指令传来的正确信息，也就是standard output的信息，对于stdandard error并没有直接处理的能力
+
+在每个管线后面接的第一个数据必定是指令。而且这个指令必须要能够接受standard input的数据才行；比如：less、more、head、tail等都是可以接受的standard input的管线命令。例如ls、cp、mv等并不会接受来自standard input的数据。
+
+- 管线命令仅会处理standard output，对于standard error ouput会予以忽略
+- 管线命令必须要能接受来自前一个指令的数据成为standard input继续处理才行
 
 ```shell
 # 以行号显示文件前10行后5行的内容
@@ -2581,6 +2518,34 @@ NTP synchronized: no
      8  repo --name="AppStream" --baseurl=file:///run/install/repo/AppStream
      9  # Use CDROM installation media
     10  cdrom
+#查看/etc下有多少文件
+[root@jackycheung ~]# ll -h /etc/ | less
+
+[root@jackycheung ~]# last | cut -d ' ' -f 1  
+root
+root
+root
+root
+root
+root
+reboot
+root
+reboot
+root
+reboot
+root
+root
+reboot
+root
+reboot
+root
+root
+root
+root
+root
+root
+root
+reboot
 ```
 
 ### wc命令
@@ -2610,6 +2575,17 @@ wc用于统计文件的字节数、行数，并将统计结果输出到屏幕
 - \<<: 输入重定向追加
 - 2>:  只收集错误的输出结果
 - &> : 正确错误都收集
+
+```shell
+[root@jackycheung ~]# cat > test
+hello
+world!  
+#ctrl+d：退出
+[root@jackycheung ~]# cat test 
+hello
+world!
+
+```
 
 ### echo命令
 
@@ -2982,7 +2958,7 @@ total 4
 
 ### SetUID特殊权限
 
-SetUID（SUID）：对于一个可执行的文件用了SUID权限后，普通用户在执行该文件后，临时拥有了所有者的身份，该权限只在程序执行过程中有效，程序执行完毕后用户恢复原油身份
+SetUID（SUID）：对于一个可执行的文件用了SUID权限后，普通用户在执行该文件后，临时拥有了所有者的身份，该权限只在程序执行过程中有效，程序执行完毕后用户恢复原有身份
 
 SetUID权限会附加在所有者的x权限位上，所有者的x权限标识会变成s，如果该文件没有x权限那么权限位会变成S
 
@@ -3395,6 +3371,26 @@ home/jack/.bashrc
 home/jack/.bash_history
 ```
 
+### 磁盘的组成
+
+- 圆形的盘片（主要记录数据的部分）
+- 机械手臂，与在机械手臂上的磁头（可读写盘片上的数据）
+- 主轴马达，可以转动盘片，让机械手臂的磁头在盘片上读写数据。
+
+数据存储与读取的重点在于盘片：
+
+- 扇区（Sector）为最小的物理存储单位，且依据磁盘设计的不同，目前主要有512Bytes与4K两种格式；
+- 将扇区组成一个圆，那就是柱面（Cylinder）
+- 早期的分区主要以柱面为最小单位，现在得分区通常使用扇区为最小分区单位（每个扇区都有其号码，就好像座位一样；
+- 磁盘分区表主要有两种格式，一种是限制较多的MBR分区表，一种是较新且限制较少的GPT分区表。
+- MBR分区表中，第一个扇区最重要，里面有：主要开机区（Master boot record，MBR）及分区表（partition table），其中MBR占有446Bytes，而partition table则占有64Bytes。
+- GPT分区表除了分区数量扩充较多之外，支持的磁盘容量也可以超过2TB
+
+磁盘的文件名部分，基本上，所有实体磁盘的文件名都已经被仿真成 /dev/sd[a-p]的格式，第一颗磁盘文件名为 /dev/sda。而分区的文件名若以第一颗磁盘为例，则为 /dev/sda[1-128]。虚拟机的磁盘通常为 /dev/vd[a-p]的格式。若有使用到软件磁盘阵列， /dev/md[0-128]的磁盘文件名。使用LVM时，文件名则为 /dev/VGNAME/LVNAME等格式。
+
+- /dev/sd[a-p\][1-128]：为实体磁盘的磁盘文件名
+- /dev/vd[a-d\][1-128]：为虚拟磁盘的磁盘文件名
+
 ### 磁盘类型介绍
 
 - IDE接口类型：主要用于个人家用计算机
@@ -3425,6 +3421,14 @@ home/jack/.bash_history
   - 单个文件系统最大支持8EB分区容量，单个文件最大可以存储500TB的数据
   - 单个文件每秒读写数据的速度可以达到4G
 - swap文件系统：交换分区，硬盘空间充当内存使用
+
+- LVM与软件磁盘阵列（software raid）技术可以将一个分区格式化为多个文件系统（例如LVM），也能够将多个分区合成一个文件系统（LVM，RAID）
+
+文件系统运行与操作系统的文件数据有关。较新的操作系统的文件数据除了文件实际内容外，通常含有非常多的属性，例如Linux操作系统的文件权限（rwx）与文件属性（拥有者、群组、时间参数等）。文件系统通常会将这两部分的数据分别存放在不同的区块，权限与属性放置到inode中，至于实际数据则放置到data block区块中，还有一个超级区块（superblock）会记录整个文件系统的整体信息，包括inode与block的总量、使用量、剩余量等。
+
+- superblock：记录file system的整体信息，包括inode/block的总量、使用量、剩余量，以及文件系统的格式与相关的信息等；
+- inode：记录文件的属性，一个文件占用一个inode，同时记录此文件的数据所在的block号码；
+- block：实际记录文件的内容，若文件 太大时，会占用多个block。
 
 ### 挂载
 
@@ -5105,13 +5109,96 @@ Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
 firewalld.service                             enabled 
 ```
 
-### Shell概述
+###   UNIX系统
 
-Shell是一个程序，它连接了用户和linux内核，它可以解释用户输入的命令传递给内核，让用户可以方便的使用linux系统
+<img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
 
-Shell本身并不是内核的一部分，它是站在内核的基础上编写的一个应用程序
+[UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
 
-Shell具备编程的能力，shell也是一种解释型语言
+Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
+
+1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
+
+### Linux系统
+
+<img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
+
+[Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
+
+GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
+
+1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
+
+![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
+
+> Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
+
+### Linux内核
+
+Linux系统的核心是**内核**。内核控制着计算机系统的所有硬件和软件，在必要时分配硬件，并根据需要执行软件。
+
+内核主要负责功能
+
+- 系统内存管理
+- 软件程序管理
+  - Linux操作系统统称运行中的程序为**进程**。进程可以在前台运行，将输出显示在屏幕上；也可以在后台运行，隐藏到幕后。
+  - 内核创建了第一个进程（为**init进程**）来启动系统中所有其他进程。
+
+| 运行级 | 描述                     |
+| ------ | ------------------------ |
+| `0`    | 关闭系统                 |
+| `1`    | 单用户模式，用于系统维护 |
+| `2`    | 多用户模式，无联网服务   |
+| `3`    | 多用户模式，有联网服务   |
+| `4`    | 自定义                   |
+| `5`    | 配有GUI的多用户模式      |
+| `6`    | 重启系统                 |
+
+- 硬件设备管理
+  - 字符设备文件
+  - 块设备文件
+  - 网络设备文件
+- 文件系统管理
+  - Linux内核采用虚拟文件系统（virtual file system， VFS）作为和各种文件系统交互的接口。
+
+| 文件系统 | 描述                                            |
+| -------- | ----------------------------------------------- |
+| ext      | Linux扩展文件系统，最早的Linux文件系统          |
+| ext2     | 第二扩展文件系统，在ext的基础上提供了更多的功能 |
+| ext3     | 第三扩展文件系统，支持日志功能                  |
+| ext4     | 第四扩展文件系统，支持高级日志功能              |
+| btrfs    | 一种新的高性能文件系统，支持日志功能和大文件    |
+| exfat    | 扩展Windows文件系统，主要用于SD卡和U盘          |
+| hpfs     | OS/2高性能文件系统                              |
+| jfs      | IBM日志文件系统                                 |
+| iso9660  | ISO 9660文件系统（CD-ROM）                      |
+| minix    | MINIX文件系统                                   |
+| msdos    | Microsoft FAT16                                 |
+| ncp      | Netware文件系统                                 |
+| nfs      | 网络文件系统                                    |
+| ntfs     | 支持Microsoft NT文件系统                        |
+| proc     | 访问系统信息                                    |
+| smb      | 用于网络访问的Samba SMB文件系统                 |
+| sysv     | 期的Unix文件系统                                |
+| ufs      | BSD文件系统                                     |
+| umsdos   | 建立在msdos之上的类Unix文件系统                 |
+| vfat     | Windows 95文件系统（FAT32）                     |
+| XFS      | 高性能64位日志文件系统                          |
+
+### shell
+
+GNU/Linux shell是一种特殊的交互式工具，为用户提供了启动程序、管理文件系统中的文件以运行在Linux系统中的进程的途径。
+
+shell包含一组内部命令，可用于完成复制文件、移动文件、重命名文件、显示和终止系统中正在运行的程序这类操作。
+
+将多个shell命令放入文件中作为程序执行。这些文件成为**shell脚本**
+
+| shell | 描述                                                         |
+| ----- | ------------------------------------------------------------ |
+| ash   | 一种简单的轻量级shell，运行在内存受限环境中，但与bash shell完全兼容 |
+| korn  | 一种与Bourne shell兼容的编程shell，但支持如关联数组和浮点算术等高级编程特性 |
+| tcsh  | 一种将C语言中的一些元素引入shell脚本中的shell                |
+| zsh   | 一种结合了bash、tcsh和korn的特性，同时提供高级编程特性、共享历史文件和主题化提示符的高级shell |
 
 ![Linux1-1Z41G31T3628](imgs/Linux1-1Z41G31T3628.gif)
 
