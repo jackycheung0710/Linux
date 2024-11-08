@@ -1,3 +1,79 @@
+###   UNIX系统
+
+<img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
+
+[UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
+
+Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
+
+1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
+
+### Linux系统
+
+<img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
+
+[Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
+
+GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
+
+1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
+
+![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
+
+> Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
+
+### Linux内核
+
+Linux系统的核心是**内核**。内核控制着计算机系统的所有硬件和软件，在必要时分配硬件，并根据需要执行软件。
+
+内核主要负责功能
+
+- 系统内存管理
+- 软件程序管理
+  - Linux操作系统统称运行中的程序为**进程**。进程可以在前台运行，将输出显示在屏幕上；也可以在后台运行，隐藏到幕后。
+  - 内核创建了第一个进程（为**init进程**）来启动系统中所有其他进程。
+
+| 运行级 | 描述                     |
+| ------ | ------------------------ |
+| `0`    | 关闭系统                 |
+| `1`    | 单用户模式，用于系统维护 |
+| `2`    | 多用户模式，无联网服务   |
+| `3`    | 多用户模式，有联网服务   |
+| `4`    | 自定义                   |
+| `5`    | 配有GUI的多用户模式      |
+| `6`    | 重启系统                 |
+
+- 硬件设备管理
+  - 字符设备文件
+  - 块设备文件
+  - 网络设备文件
+- 文件系统管理
+  - Linux内核采用虚拟文件系统（virtual file system， VFS）作为和各种文件系统交互的接口。
+
+| 文件系统 | 描述                                            |
+| -------- | ----------------------------------------------- |
+| ext      | Linux扩展文件系统，最早的Linux文件系统          |
+| ext2     | 第二扩展文件系统，在ext的基础上提供了更多的功能 |
+| ext3     | 第三扩展文件系统，支持日志功能                  |
+| ext4     | 第四扩展文件系统，支持高级日志功能              |
+| btrfs    | 一种新的高性能文件系统，支持日志功能和大文件    |
+| exfat    | 扩展Windows文件系统，主要用于SD卡和U盘          |
+| hpfs     | OS/2高性能文件系统                              |
+| jfs      | IBM日志文件系统                                 |
+| iso9660  | ISO 9660文件系统（CD-ROM）                      |
+| minix    | MINIX文件系统                                   |
+| msdos    | Microsoft FAT16                                 |
+| ncp      | Netware文件系统                                 |
+| nfs      | 网络文件系统                                    |
+| ntfs     | 支持Microsoft NT文件系统                        |
+| proc     | 访问系统信息                                    |
+| smb      | 用于网络访问的Samba SMB文件系统                 |
+| sysv     | 期的Unix文件系统                                |
+| ufs      | BSD文件系统                                     |
+| umsdos   | 建立在msdos之上的类Unix文件系统                 |
+| vfat     | Windows 95文件系统（FAT32）                     |
+| XFS      | 高性能64位日志文件系统                          |
+
 ### Linux桌面
 
 - X window软件
@@ -5108,82 +5184,6 @@ Removed /etc/systemd/system/multi-user.target.wants/vsftpd.service.
 [root@jackycheung ~]# systemctl list-unit-files |grep firewalld
 firewalld.service                             enabled 
 ```
-
-###   UNIX系统
-
-<img src="imgs/Snipaste_2023-05-01_13-29-12.png" alt="Snipaste_2023-05-01_13-29-12" style='float:left;' />
-
-[UNIX](https://linuxhistory.hdert.com/)开源且免费理念；被收购，商业系统
-
-Unix 是一系列多任务、多用户计算机操作系统，源自最初的 AT&T Unix，由  **肯·汤普森 (Ken Thompson) 和丹尼斯·里奇 (Dennis Ritchie)**   等人于1970 年代在贝尔实验室研究中心开始开发。
-
-1973年由C语言之父 - 丹尼斯·里奇 (Dennis Ritchie) 用C语言重写了UNIX
-
-### Linux系统
-
-<img src="imgs/Snipaste_2023-05-01_13-30-51.png" style='float:left;'/>
-
-[Linux](https://linuxhistory.hdert.com/)开源且免费理念，免费使用，源代码可以自由传播，做二次开发，遵循GPL协议
-
-GPL协议：GNU自由软件基金会（通用公共的许可协议，GPL），linus加入GNU组织，形成GNU/Linux（GNU的软件加上Linux的内核）
-
-1991年10月使用bash解释器和gcc编译器等开源工具编写出了一个名为Linux的全新的系统内核，并且在技术论坛中低调地上传了该内核的0.02版本。该系统内核因其较高的代码质量且基于GNU GPL许可证的开放源代码特性，迅速得到了GNU源代码开放计划和一大批黑客程序员的支持，随后Linux正式进入如火如荼的发展阶段。Linus Torvalds最早发布的帖子内容的截图如下。
-
-![LinusTorvaldsdemo](imgs/LinusTorvaldsdemo.png)
-
-> Linux系统的吉祥物名为Tux，是一只呆萌的小企鹅。相传Linus Torvalds在童年时期去澳大利亚的动物园游玩时，不幸被一只企鹅咬伤，所以为了“报复”就选择了这个物种作为吉祥物。
-
-### Linux内核
-
-Linux系统的核心是**内核**。内核控制着计算机系统的所有硬件和软件，在必要时分配硬件，并根据需要执行软件。
-
-内核主要负责功能
-
-- 系统内存管理
-- 软件程序管理
-  - Linux操作系统统称运行中的程序为**进程**。进程可以在前台运行，将输出显示在屏幕上；也可以在后台运行，隐藏到幕后。
-  - 内核创建了第一个进程（为**init进程**）来启动系统中所有其他进程。
-
-| 运行级 | 描述                     |
-| ------ | ------------------------ |
-| `0`    | 关闭系统                 |
-| `1`    | 单用户模式，用于系统维护 |
-| `2`    | 多用户模式，无联网服务   |
-| `3`    | 多用户模式，有联网服务   |
-| `4`    | 自定义                   |
-| `5`    | 配有GUI的多用户模式      |
-| `6`    | 重启系统                 |
-
-- 硬件设备管理
-  - 字符设备文件
-  - 块设备文件
-  - 网络设备文件
-- 文件系统管理
-  - Linux内核采用虚拟文件系统（virtual file system， VFS）作为和各种文件系统交互的接口。
-
-| 文件系统 | 描述                                            |
-| -------- | ----------------------------------------------- |
-| ext      | Linux扩展文件系统，最早的Linux文件系统          |
-| ext2     | 第二扩展文件系统，在ext的基础上提供了更多的功能 |
-| ext3     | 第三扩展文件系统，支持日志功能                  |
-| ext4     | 第四扩展文件系统，支持高级日志功能              |
-| btrfs    | 一种新的高性能文件系统，支持日志功能和大文件    |
-| exfat    | 扩展Windows文件系统，主要用于SD卡和U盘          |
-| hpfs     | OS/2高性能文件系统                              |
-| jfs      | IBM日志文件系统                                 |
-| iso9660  | ISO 9660文件系统（CD-ROM）                      |
-| minix    | MINIX文件系统                                   |
-| msdos    | Microsoft FAT16                                 |
-| ncp      | Netware文件系统                                 |
-| nfs      | 网络文件系统                                    |
-| ntfs     | 支持Microsoft NT文件系统                        |
-| proc     | 访问系统信息                                    |
-| smb      | 用于网络访问的Samba SMB文件系统                 |
-| sysv     | 期的Unix文件系统                                |
-| ufs      | BSD文件系统                                     |
-| umsdos   | 建立在msdos之上的类Unix文件系统                 |
-| vfat     | Windows 95文件系统（FAT32）                     |
-| XFS      | 高性能64位日志文件系统                          |
 
 ### shell
 
