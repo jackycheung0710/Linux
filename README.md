@@ -1507,8 +1507,6 @@ ens35   ethernet  connected  ens35
 ens36   ethernet  connected  Wired connection 1 
 ens37   ethernet  connected  Wired connection 2 
 lo      loopback  unmanaged  --
-[root@jackycheung ~]# nmcli dev statuws
-Error: argument 'statuws' not understood. Try passing --help instead.
 [root@jackycheung ~]# nmcli dev status
 DEVICE  TYPE      STATE      CONNECTION
 ens33   ethernet  connected  ens33
@@ -1528,9 +1526,9 @@ lo      loopback  unmanaged  --
 
   - type ethernet ：网络类型为 以太网
 
-  - con-name ens35：连接名称为ens35
+  - con-name ens35：网络连接名称为ens35；网络连接配置的名称，由用户定义
 
-  -  ifname ens35：是物理接口名称为ens35
+  -  ifname ens35：实际接口名称为ens35；实际网络接口名称，由系统定义
 
   - ipv4.method manual ：使用手动配置IPv4地址
     - `manual`：表示您将手动输入IPv4地址、子网掩码等信息。
@@ -1542,6 +1540,7 @@ lo      loopback  unmanaged  --
   - ipv4.address  "192.168.194.31/24"：设置IPv4地址为192.168.194.31，子网掩码为24
   
   - ipv4.gateway 192.168.194.1：设置网关为192.168.194.1
+- nmcli c m 网卡名 connection.autoconnect yes：开机启动
 
 ```shell
 [root@jackycheung network-scripts]# nmcli connection add type ethernet con-
@@ -1598,29 +1597,16 @@ ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 #### 修改网卡配置
 
 - nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码：修改指定网卡的ip地址和子网掩码
-
 - nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码 ipv4.gateway 网关：修改指定网卡的ip地址和子网掩码及网关
-
 - nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码 ipv4.gateway 网关 ipv4.dns dns地址：修改指定网卡的ip地址和子网掩码、网关及DNS
-
 - nmcli connection modify 网卡名 +ipv4.addresses ip地址/子网掩码：添加第二个ip
-
 - nmcli connection modify 网卡名 -ipv4.addresses ip地址/子网掩码：删除第二个ip
-
 - nmcli connection modify 网卡名 +ipv4.dns dns地址 ：添加第二个DNS
-
 - nmcli connection modify 网卡名 -ipv4.dns  dns地址：删除第二个DNS
-
 - nmcli c m 网卡名 ipv4.method manual：修改为静态配置，默认是auto
-
 - nmcli c m 网卡名 ipv6.method disabled：禁用IPv6
-
-- nmcli c m 网卡名 connection.autoconnect yes：开机启动
-
 - nmcli c m ipv4.method auto：从DHCP地址池动态获取ip地址，如果没有获取到ip会激活配置的静态地址
-
 - nmcli c m ipv4.dns-search test.com：修改/etc/resolv.conf以在search指令中使用的这个域
-
 - nmcli con modify 网卡名 con-name 新网卡名：修改网卡名字
 
 ```shell
