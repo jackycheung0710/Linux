@@ -2188,6 +2188,18 @@ bonding和Teaming区别：
 | RX load-balancing support (ALB)                              | Yes     | Planned  |
 | RX load-balancing support (ALB) in bridge  or OVS            | No      | Planned  |
 
+#### teamdctl
+
+teamdctl是一个用于管理Linux系统上teaming（链路聚合）接口的命令行工具。Teaming允许多个网络接口卡（NIC）被组合成一个逻辑的网络接口，以提供冗余或增强带宽。teamd是后台服务守护进程，它实现了teaming逻辑，而teamdctl则是用来与teamd守护进程交互并管理teaming接口状态的工具。
+
+- teamdctl  \<team-interface> state view：显示指定team接口的当前状态。
+- teamdctl \<team-interface> start：启动指定team接口
+- teamdctl \<team-interface> stop：停止指定的team接口。
+- teamdctl \<team-interface> restart：重启指定的team接口
+- teamdctl \<team-interface> port add \<port>：将指定的端口添加到team接口
+- teamdctl \<team-interface> port remove \<port>：从team接口移除指定的端口。
+- teamdctl \<team-interface> option set \<key>=\<value>：设置team接口的配置选项
+
 #### nmcli 配置team
 
 ```shell
