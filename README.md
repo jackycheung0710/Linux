@@ -2225,6 +2225,9 @@ team1  925891ab-82ad-4225-8d0c-ce2c2ca34402  team      team1
 Connection 'team1-ens35' (89f8798d-9cab-4c03-9de2-e8d83dcd8e24) successfully added.
 [root@jackycheung network-scripts]# nmcli con add type team-slave ifname ens36 con-name team1-ens36 master team1  
 Connection 'team1-ens36' (1cecfc0d-3c4b-4fb5-9fc5-e9354a3e297b) successfully added.
+[root@jackycheung network-scripts]# nmcli con modify team1 connection.autoconnect yes
+[root@jackycheung network-scripts]# nmcli con modify team1-ens35 connection.autoconnect yes
+[root@jackycheung network-scripts]# nmcli con modify team1-ens36 connection.autoconnect yes
 [root@jackycheung network-scripts]# nmcli con show
 NAME         UUID                                  TYPE      DEVICE 
 ens33        34baea3a-2868-4551-a30b-12721318e31f  ethernet  ens33  
