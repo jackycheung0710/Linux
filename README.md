@@ -4776,7 +4776,18 @@ YUM(Yellowdog Updater Modified)：是一个基于RPM的软件包管理器，能�
 
 > yum remove卸载软件的同时会**卸载相关依赖**，导致其他程序不能正常运行；强烈建议使用rpm -e卸载软件
 
-#### 配置本地yum源
+#### CentOS配置本地yum源
+
+```shell
+[root@localhost /]# cat /etc/yum.repos.d/local.repo 
+[LocalOS]		#仓库名称，可自定义，单具有唯一性
+name=LocalOS  #仓库描述（类似于仓库解释），描述信息自定义，不具备唯一性
+baseurl=file:///mnt/cdrom #指定软件仓库地址，file://用于指定本地软件包存放位置
+gpgcheck=0  #是否进行gpg校验，0不检测，1检测
+enabled=1	#软件仓库是否启动，1启动，0不启动
+```
+
+#### Redhat配置本地yum源
 
 1、挂载本地iso镜像
 
