@@ -2363,6 +2363,17 @@ runner:
 
 ![](imgs/team_ens36down.png)
 
+### wget命令
+
+`wget` 是一个从网络上非交互地下载文件的自由软件工具。它支持HTTP，HTTPS和FTP协议，可以使用HTTP代理。`wget`最常用于Unix类操作系统中，但它也可以在Windows下运行。
+
+- wget http://example.com/file.zip ：下载单个文件
+- wget -c http://example.com/file.zip ：继续下载未完成的文件（断点续传）
+- wget -b http://example.com/file.zip ：在后台下载文件
+- wget -O newfile.zip http://example.com/file.zip ：下载文件并保存为不同的文件名
+- wget -q http://example.com/file.zip ：静默下载，不显示进度信息
+- 
+
 ### host命令
 
 host用于将一个域名解析到一个IP地址
