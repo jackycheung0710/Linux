@@ -3420,6 +3420,7 @@ tar命令格式：tar 选项 压缩包名 被压缩文件
 - -x 释放打包文件
 - -C 指定解压路径
 - -v 显示详细信息
+- --transform 's/oldfilel/newfile/'：将解压出来的文件名oldfile改为newfile
 
 ```shell
 # tar打包/etc/crontab /etc/passwd /home/
@@ -3457,6 +3458,7 @@ home/jack/.bash_logout
 home/jack/.bash_profile
 home/jack/.bashrc
 home/jack/.bash_history
+[root@Canvs ~]# tar --transform 's/hello/test/' -xvf hello.tar -C /opt/test/destination
 ```
 
 ### 磁盘的组成
@@ -7042,14 +7044,11 @@ SELINUXTYPE=targeted
 
 ### 安全防护firewalld防火墙
 
-firewalld是由红帽发起的提供了支持网络 / 防火墙区域（zone）定义网络链接以及接口安全等级的动态防火墙管理工具。它支持IPv4、IPV6防火墙设置以及以太网桥接，并且拥有运行时配置和永久配置选项。它也支持允许服务或者应用程序直接添加防火墙规则的接口。
-
 firewalld防火墙是Redhat7系统默认的防火墙管理工具，取代了之前的iptables防火墙，也是工作在网络层，属于包过滤防火墙。
 
-#### firewalld与iptables
+firewalld和iptables都是用来管理防火墙的工具（属于用户态）来定义防火墙的各种规则功能，内部结构都指向netfilter网络过滤子系统（属于内核态）来实现包过滤防火墙功能。
 
-- firewalld和iptables都是用来管理防火墙的工具（属于用户态）来定义防火墙的各种规则功能，内部结构都指向netfilter网络过滤子系统（属于内核态）来实现包过滤防火墙功能。
-- firewalld提供了支持网络区域所定义的网络连接以及接口、安全等级的动态防火墙管理工具。它支持IPv4、IPv6防火墙设置，以及以太网桥（在某些高级服务可能会用到，比如云计算），并且拥有两种配置模式：运行时配置和永久配置
+firewalld提供了支持网络区域所定义的网络连接以及接口、安全等级的动态防火墙管理工具。它支持IPv4、IPv6防火墙设置，以及以太网桥（在某些高级服务可能会用到，比如云计算），并且拥有两种配置模式：运行时配置和永久配置
 
 #### firewalld和iptables区别
 
@@ -7074,7 +7073,7 @@ firewalld防火墙是Redhat7系统默认的防火墙管理工具，取代了之�
 
 #### firewalld数据处理流程
 
-firewalld对于进入系统的数据包，会根据数据包源IP地址或传入的网络接口灯条件，将数据流量转入相应区域的防火墙规则。对于进入系统的数据包，首先检查的就是其源地址：
+firewalld对于进入系统的数据包，会根据数据包源IP地址或传入的网络接口等条件，将数据流量转入相应区域的防火墙规则。对于进入系统的数据包，首先检查的就是其源地址：
 
 - 若源地址关联到特定的区域（即源地址或接口绑定的区域有冲突），则执行该区域高制定的规则。
 - 若源地址未关联到特定的区域（即源地址或接口绑定的区域没有冲突），则使用传入网络接口区域并执行该区域所制定的规则
@@ -7085,15 +7084,8 @@ firewalld对于进入系统的数据包，会根据数据包源IP地址或传入
 > - firewalld：只关心区域
 > - iptables：四标五链及流量的进出
 
+#### firewalld防火墙配置
 
-
-
-
-- 防火墙预设安全区域
-  - public：仅允许访问本机的sshd、dhcp、ping等少量服务
-  - trusted：允许任何访问
-  - block：阻塞任何来访请求 
-  - drop：丢弃任何来访的数据包
 - 常用命令
   - systemctl start firewalld  #开启防火墙
   - systemctl status firewalld #查看防火墙状态
@@ -7244,7 +7236,7 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 
 ### iptables
 
-**iptables的4表**
+#### iptables的4表
 
 - filter：数据过滤表
   - 包含三个链：INPUT，UOTPUT，FORWARD
@@ -7255,7 +7247,7 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 - mangle：包标记录，不能过滤也不能修改数据包
   - 包含五个链：PREROUTING，FORWARD，POSTROUTING，INPUT，OUTPUT
 
-**iptables的5链**
+#### iptables的五链
 
 - PREROUTING链：路由前规则，防火墙在刚刚接收到数据包，对数据包进行路径选择之前所需要的链
 - FORWARD链：转发规则，将数据包从一个网络转发到另外一个网络所需要的链
@@ -7263,7 +7255,7 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 - INPUT链：入站规则，限制客户端数据包目的地址是防火墙主机的上层应用所需要的链
 - OUTPUT链：出战规则，限制防火墙主机上层应用产生的数据包是否可以出战需要的链
 
-**目标操作：**
+#### 目标操作：
 
 - ACCEPT：允许通过/放行
 - DROP：直接丢弃，不给出任何回应
@@ -7272,33 +7264,43 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 
 ### iptables命令格式
 
-- 命令格式：iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
-- 添加规则：
-  - -A   #追加一条防火墙规则至链的末尾
-  - -I    #大写的i插入一条防火墙规则至链的开头
-- 查看规则：
-  - -L    #查看iptables所有规则
-  - -n    #以数字形式显示地址、端口等信息；-n选项必须在最左边
-  - --line-numbers  #查看规则时，显示规则的行号
-- 删除规则：
-  - -D  #删除链内指定的序号（或内容）的一条规则
-  - -F   #清空所有规则
+iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
+
+#### 添加规则
+
+- -A   #追加一条防火墙规则至链的末尾
+- -I    #大写的i插入一条防火墙规则至链的开头
+
+#### 查看规则
+
+- -L    #查看iptables所有规则
+- -n    #以数字形式显示地址、端口等信息；-n选项必须在最左边
+- --line-numbers  #查看规则时，显示规则的行号
+
+#### 删除规则
+
+- -D  #删除链内指定的序号（或内容）的一条规则
+- -F   #清空所有规则
+
 - 默认规则：
   - -P   #为指定的链设置默认规则
 - service iptables save 永久保存规则
 
 ### iptables防火墙规则的条件
 
-- 通用匹配：
-  - 协议匹配：-p   #协议名称
-  - 地址匹配：-s 源地址、-d 目标地址
-  - 接口匹配：-i 接受数据的网卡、-o 发送数据的网卡
-  - 端口匹配：--sport 源端口号、--dport 目标端口号
-  - ICMP类别匹配：--icmp-type ICMP 类型
-- 创建规则注意事项
-  - 可以不指定表，默认为filter表
-  - 如果没有找到匹配条件，执行防火墙默认规则
-  - 选项/链名/目标操作用大写字母，其余都小写
+#### 通用匹配
+
+- 协议匹配：-p   #协议名称
+- 地址匹配：-s 源地址、-d 目标地址
+- 接口匹配：-i 接受数据的网卡、-o 发送数据的网卡
+- 端口匹配：--sport 源端口号、--dport 目标端口号
+- ICMP类别匹配：--icmp-type ICMP 类型
+
+#### 创建规则注意事项
+
+- 可以不指定表，默认为filter表
+- 如果没有找到匹配条件，执行防火墙默认规则
+- 选项/链名/目标操作用大写字母，其余都小写
 
 ```shell
 #安装iptables
@@ -7572,7 +7574,7 @@ REJECT     tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 reject-
 [root@client134 ~]# curl http://192.168.49.135
 curl: (7) Failed to connect to 192.168.49.135 port 80: 拒绝连接
 
-#设置防火墙拒绝某个网断
+#设置防火墙拒绝某个网段
 [root@service135 ~]# iptables -t filter -F
 [root@service135 ~]# iptables -t filter -I INPUT -s 192.168.49.0/24 -j REJECT
 [root@service135 /]# iptables -t filter -nL INPUT
@@ -7618,10 +7620,10 @@ net.ipv4.ip_forward = 1
 - 访问测试：curl http://192.168.0.27
 
 ```shell
-#防火墙没有开放路由转发功能；访问不了
+#防火墙没有开放路由转发功能前；访问不了
 [root@client ~]# curl http://192.168.0.27
 curl: (7) Failed to connect to 192.168.0.27 port 80: 没有到主机的路由
-#防火墙主机开启了路由转发功能，正常访问
+#防火墙主机开启了路由转发功能后，正常访问
 [root@client ~]# curl http://192.168.0.27
 welcome to my homepage
 ```
@@ -7723,7 +7725,7 @@ REJECT     all  --  0.0.0.0/0            0.0.0.0/0            source IP range 19
 | 主机名          | 网卡、IP地址、网关设置                                  |
 | --------------- | ------------------------------------------------------- |
 | 内部主机client  | ens160：192.168.49.141 ，网关：192.168.1.135            |
-| 内部防火墙proxy | ens224外网ip：192.168.0.26，ens160内网IP：192.168.1.135 |
+| 内部防火墙proxy | ens224内网ip：192.168.0.26，ens160外网IP：192.168.1.135 |
 | 外部主机web     | ens160:  192.168.0.27，网关：192.168.0.26               |
 
 ![zvzvzxvzsd](imgs/zvzvzxvzsd.png)
