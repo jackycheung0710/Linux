@@ -1471,9 +1471,13 @@ nmcli常用命令
 - nmcli connection reload ens160：重载网卡
 - nmcli general status：将NetworkManager的所有状态都打印出来
 - journalctl -u NetworkManager：查看NetworkManager所有日志
-- nmcli connection delete 网卡名：删除连接
-
-#### nmcli connection show：显示所有连接
+- nmcli connection delete <connection_name>  #删除连接
+- nmcli con show --active ：查看已连接的网络
+- nmcli device show  <device_name>：显示指定设备详细信息
+- nmcli con show #显示设备状态
+- nmcli --version #查看NetworkManager版本
+- systemctl restart NetworkManager #重启NetworkManager
+- nmcli device status  #列出网络设备状态
 
 ```shell
 #显示所有连接
@@ -1497,8 +1501,6 @@ Wired connection 1  ea10203e-7aac-3dba-ad6c-01083f136d58  ethernet  ens36
 Wired connection 2  273aa031-5eb0-357f-834c-d63ff433cd34  ethernet  ens37
 ```
 
-#### nmcli device status：显示设备状态
-
 ```shell
 [root@jackycheung ~]# nmcli device status
 DEVICE  TYPE      STATE      CONNECTION
@@ -1514,9 +1516,37 @@ ens35   ethernet  connected  ens35
 ens36   ethernet  connected  Wired connection 1 
 ens37   ethernet  connected  Wired connection 2 
 lo      loopback  unmanaged  --
+[root@jackycheung ~]# nmcli dev status ens33
+DEVICE  TYPE      STATE      CONNECTION
+ens33   ethernet  connected  ens33
+lo      loopback  unmanaged  --
 ```
 
-#### 添加新的网络连接
+#### 网络设备管理
+
+- nmcli device set <device_name> managed yes	#允许NetworkManager管理设备
+- nmcli device set <device_name> managed no     #禁止NetworkManager管理设备
+- nmcli device connect <device_name>   #启用设备 
+- nmcli device disconnect <device_name>  #禁止设备
+
+```shell
+[root@localhost ~]# nmcli con show 
+NAME   UUID                                  TYPE      DEVICE 
+ens33  5d3ddf37-4ec4-4df4-9932-171da85f8026  ethernet  ens33  
+ens35  b230714e-0162-4ca1-8fba-3437619f1fc1  ethernet  ens35  
+[root@localhost ~]# nmcli device set ens35 managed no
+[root@localhost ~]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens33  5d3ddf37-4ec4-4df4-9932-171da85f8026  ethernet  ens33  
+ens35  b230714e-0162-4ca1-8fba-3437619f1fc1  ethernet  --     
+[root@localhost ~]# nmcli device set ens35 managed yes
+[root@localhost ~]# nmcli con show
+NAME   UUID                                  TYPE      DEVICE 
+ens33  5d3ddf37-4ec4-4df4-9932-171da85f8026  ethernet  ens33  
+ens35  b230714e-0162-4ca1-8fba-3437619f1fc1  ethernet  ens35  
+```
+
+#### 网络连接管理
 
 - nmcli connection add ethernet ifname eth0：创建一个动态ip的以太网连接
 
@@ -1594,7 +1624,7 @@ ens35: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 ```
 
-#### 修改网卡配置
+#### 修改网络
 
 - nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码：修改指定网卡的ip地址和子网掩码
 - nmcli connection modify 网卡名 ipv4.addresses ip地址/子网掩码 ipv4.gateway 网关：修改指定网卡的ip地址和子网掩码及网关
@@ -4357,6 +4387,64 @@ RAID10
 - 硬RAID比软RAID更加安全稳定，RAID卡带有缓存功能可实现数据自恢复。
 
 > [**华为2288H-V5服务器做raid的详细步骤**](https://blog.csdn.net/qq_50263172/article/details/114539789)
+
+### watch命令
+
+`watch` 是一个 Linux 命令，用于定期执行指定的命令，并将其输出显示在终端。其常见用途是在终端中实时查看命令的输出，尤其适用于那些需要周期性更新的信息，比如系统监控、日志查看等。
+
+#### 基本语法
+
+watch [OPTION] COMMAND [ARGUMENTS...]
+
+- `COMMAND` 是你希望定期执行的命令。
+
+- `OPTION` 是 `watch` 命令的选项，用于定制其行为。
+
+#### 常用选项
+
+- **`-n <seconds>`**: 指定 `watch` 刷新间隔的时间，单位是秒（默认是 2 秒）。
+- **`-d`**: 高亮显示当前命令输出与上次输出之间的差异。可以帮助快速查看变化的部分
+- **`-t`**: 禁用 `watch` 命令默认的标题行显示。默认情况下，`watch` 会在屏幕顶部显示命令的名称和当前时间。使用 `-t` 会让输出更简洁
+- **`-c`**: 在每次执行命令时清除屏幕。这有助于避免命令输出积累在屏幕上，使屏幕始终显示最新的输出。
+- **`-p`**: 用于“预处理”命令，确保以终端兼容的方式执行命令
+- **`-h`**: 显示 `watch` 命令的帮助信息
+
+```shell
+#使用 watch 来定期查看系统的资源使用情况，如 CPU 使用率、内存等。
+[root@docker ~]# watch -n 1 free -h
+Every 1.0s: free -h                                                Fri Jan 17 18:22:52 2025
+
+              total        used        free      shared  buff/cache   available
+Mem:           7.6G        457M        6.8G         11M        421M        6.9G
+Swap:          5.0G          0B        5.0G
+
+#监控进程的状态
+[root@docker ~]# watch -n 2 'ps aux | grep nginx'
+Every 2.0s: ps aux | grep nginx                                    Fri Jan 17 18:25:50 2025
+
+root       1925  0.0  0.0  39312  3936 ?        Ss   18:05   0:00 nginx: master process /us
+polkitd    1945  0.0  0.0  39700  1816 ?        S    18:06   0:00 nginx: worker process
+polkitd    1946  0.0  0.0  39700  1816 ?        S    18:06   0:00 nginx: worker process
+polkitd    1947  0.0  0.0  39700  1816 ?        S    18:06   0:00 nginx: worker process
+polkitd    1948  0.0  0.0  39700  1556 ?        S    18:06   0:00 nginx: worker process
+root       2103  0.0  0.0 113280  1188 pts/0    S+   18:25   0:00 sh -c ps aux | grep nginx
+root       2105  0.0  0.0 112808   948 pts/0    S+   18:25   0:00 grep nginx
+s
+
+#watch 定期查看网络接口的状态
+[root@docker ~]# watch -n 1 ifconfig team1
+Every 1.0s: ifconfig team1                                         Fri Jan 17 18:30:09 2025
+
+team1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.194.10  netmask 255.255.255.0  broadcast 192.168.194.255
+        inet6 fe80::2d3:c7ef:d265:437  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:50:69:c4  txqueuelen 1000  (Ethernet)
+        RX packets 866  bytes 53769 (52.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 554  bytes 81845 (79.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+```
 
 ### 进程管理
 
@@ -7234,20 +7322,48 @@ public
 
 netfilter/iptables：工作在主机或网络的边缘，对于进出本主机或网络的报文根据先定义号的检查做匹配检测，对于能够被规则所匹配到的报文做处相应的处理
 
-### iptables
+官方操作手册：https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html
+
+#### iptables执行流程
+
+- 防火墙是层层过滤的，
+- 实际是按照配置规则的 **顺序从上到下** ，从前到后进行过滤的。
+- 如果 **匹配成功 ** 规则，即明确表示是 **拒绝** (DROP)还是接收(ACCEPT)**，**数据包就不再向下匹配新的规则**。**
+- 如果规则中没有明确表明是阻止还是通过的，也就是没有匹配规则，向下进行匹配，直到  **匹配默认规则** 得到明确的阻止还是通过。
+-  防火墙的 **默认规则** 是 **所有规则都匹配完才会匹配的**。
+
+![](imgs/Iptables-flow.PNG)
 
 #### iptables的4表
 
-- filter：数据过滤表
-  - 包含三个链：INPUT，UOTPUT，FORWARD
-- nat：地址转换表，不能过滤数据包，仅仅修改数据包中的ip和端口
+- filter：是iptables默认的表
+  - 实现防火墙功能（对数据包的filter过滤）屏蔽或准许、端口、IP
+  - 主要和主机自身相关，真正负责主机防火墙功能的（过滤流入流出主机的数据包）filter表是iptables默认使用的表，这个表定义了三个链（chains）企业工作场景：主机防火墙
+  - 包含三个链：INPUT，OUTPUT，FORWARD
+    - INPUT：负责过滤所有目标地址是本机地址的数据包
+    - FORWARD：负责转发流经主机的数据包。net.ipv4.ip_forward=0 
+    - OUTPUT：处理所有源地址是本机地址的数据包；就是处理从主机发出的数据包
+  
+- NAT：NAT(Network Address Translation) 表用于网络地址转换，包括源地址转换（SNAT）、目标地址转换（DNAT）以及端口映射（Port Forwarding）等
+  - 实现共享上网（内网服务器上外网）；网络地址转换，即来源与目的的IP地址和port的转换
+  - 不能过滤数据包，仅仅修改数据包中的ip和端口
+  - 工作场景
+    - 用于企业路由（zebra）或网关（iptables），共享上网（POSTROUTING）
+    - 做内部外部IP地址一对一映射（dmz），硬件防火墙映射IP到内部服务器，ftp服务（PREROUTING）
+    - WEB，单个端口的映射，直接映射到80端口（PREROUTING）这个表定义了3个链，nat功能相当于网络的acl控制。和网络交换机acl类似
+
   - 包含四个链：PREROUTING，POSTROUTING，OUTPUT，INPUT
+    - OUTPUT：和主机放出的数据包有关，改变主机发出数据包的目的地址
+    - INPUT：处理进入本地系统的流量，用于对目标是本地设备的流量进行NAT操作
+    - PREROUTING ：在数据包到达防火墙时，进行路由判断之前执行的规则，作用是改变数据包的目的地址、目的端口等
+    - POSTROUTING：在数据包离开防火墙时进行路由判断之后执行的规则，作用改变数据包的源地址、源端口等。
+
 - raw：状态跟踪表，决定是否跟踪数据包
   - 包含两个链：OUTPUT，PREROUTING
 - mangle：包标记录，不能过滤也不能修改数据包
   - 包含五个链：PREROUTING，FORWARD，POSTROUTING，INPUT，OUTPUT
 
-#### iptables的五链
+#### iptables的伍链
 
 - PREROUTING链：路由前规则，防火墙在刚刚接收到数据包，对数据包进行路径选择之前所需要的链
 - FORWARD链：转发规则，将数据包从一个网络转发到另外一个网络所需要的链
@@ -7265,6 +7381,8 @@ netfilter/iptables：工作在主机或网络的边缘，对于进出本主机�
 ### iptables命令格式
 
 iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
+
+- -j #满足条件后的动作；ACCEPT、DROP、REJECT
 
 #### 添加规则
 
@@ -7296,6 +7414,20 @@ iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
 - 端口匹配：--sport 源端口号、--dport 目标端口号
 - ICMP类别匹配：--icmp-type ICMP 类型
 
+#### 匹配网络状态（TCP/IP连接状态）
+
+- -m state --state 状态即可
+- NEW：已经或将启动新的连接
+- ESTABLISHED：已建立的连接
+- RELATED：正在启动的新连接
+- INVALID：非法或无法识别的
+
+#### 限制并发及速率
+
+- -m limit 限制模块
+- -m limit --limit n/{second/minute/hour}: 指定时间内的请求速率n的速率
+- --limit-burst [n] ：在同一时间内允许通过的请求n位数字，不能指定默认5
+
 #### 创建规则注意事项
 
 - 可以不指定表，默认为filter表
@@ -7307,6 +7439,52 @@ iptables [-t 表名] 选项 [链名] [条件] [-j 目标操作]
 [root@service135 ~]# yum install iptables-services -y
 #启动iptables服务
 [root@service135 ~]# systemctl start iptables
+[root@service135 ~]# rpm -ql iptables-services 
+/etc/sysconfig/ip6tables
+/etc/sysconfig/iptables
+#防火墙的配置文件  
+/usr/lib/systemd/system/ip6tables.service  
+/usr/lib/systemd/system/iptables.service
+[root@service135 ~]# rpm -ql iptables
+/usr/sbin/iptables           #iptables 命令 添加/删除/查看 规则(4表伍链)
+/usr/sbin/iptables-save      #iptables规则 输出(保存)
+/usr/sbin/iptables-restore   # 恢复
+
+#防火墙相关模块 加载到内核中
+#写入到开机自启动.
+modprobe ip_tables
+modprobe iptable_filter
+modprobe iptable_nat
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+modprobe ipt_state 
+#永久
+cat >> /etc/rc.local <<EOF
+modprobe ip_tables
+modprobe iptable_filter
+modprobe iptable_nat
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+modprobe ipt_state 
+EOF
+[root@service135 ~]# lsmod |egrep 'filter|nat|ipt'
+nf_nat_ftp             12770  0
+nf_conntrack_ftp       18638  1 nf_nat_ftp
+iptable_nat            12875  0
+nf_nat_ipv4            14115  1 iptable_nat
+nf_nat                 26787  2
+nf_nat_ftp,nf_nat_ipv4
+nf_conntrack          133053  6
+nf_nat_ftp,nf_nat,xt_state,nf_nat_ipv4,nf_conntrack
+_ftp,nf_conntrack_ipv4
+iptable_filter         12810  0
+ip_tables              27126  2
+iptable_filter,iptable_nat
+libcrc32c              12644  3
+xfs,nf_nat,nf_conntrack
+[root@service135 ~]# systemctl stop firewalld
 ```
 
 ### 主机型防火墙规则配置
